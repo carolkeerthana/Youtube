@@ -1,13 +1,20 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const HomePage= () =>{
+    const location = useLocation();
+
+    const isSignInOrSignUp = location.pathname === '/signin' || location.pathname === '/signup';
+    
 return(
     <div>
+        {!isSignInOrSignUp && (
+        <>
         <h1>Home</h1>
         <nav>
-        <Link to="/signup">SIGN UP</Link><br/>
         <Link to="/signin">SIGN IN</Link>
         </nav>
+        </>
+        )}
         <Outlet/>
     </div>
 )

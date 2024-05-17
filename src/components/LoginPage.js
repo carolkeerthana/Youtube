@@ -1,21 +1,42 @@
-import { Form, json, redirect } from "react-router-dom";
+import { useState } from 'react';
+import './LoginPage.css';
+import { Form, Link, json, redirect } from "react-router-dom";
 
 function LoginPage(){
+    const [emailFocused, setEmailFocused] = useState(false);
+    const [passwordFocused, setPasswordFocused] = useState(false);
+
     return(
-       <div>
-             <div>
+        <div className='login'>
+       <div className='login-container'>
+             <div className='login-LeftSide'>
                 <h1>UTube</h1>
                 <div>
                 <h2>Sign in</h2>
                 <span>to continue to UTube</span>
                 </div>
              </div>
-                <Form method="post">
-                    <input id="email" type="email" name="email" placeholder="Email"/><br/>
-                    <input id="password" type="password" name="password" placeholder="Password"/><br/>   
-                    <Link to="/signin"/><button>create account</button> 
-                    <button>sign in</button>                  
+                <Form method="post" className='login-RightSide'>
+                <div className={`input-container ${emailFocused ? 'focused' : ''}`}>
+                    <label htmlFor="email" className="floating-label">Email</label>
+                    <input id="email" type="email" name="email"
+                    onFocus={() => setEmailFocused(true)}
+                    onBlur={(e) => setEmailFocused(e.target.value !== '')}/>
+                </div>
+                <div className={`input-container ${passwordFocused ? 'focused' : ''}`}>
+                <label htmlFor="password" className="floating-label">Password</label>
+                    <input id="password" type="password" name="password"
+                    onFocus={() => setPasswordFocused(true)}
+                    onBlur={(e) => setPasswordFocused(e.target.value !== '')}/>
+                </div>
+                    <p>forgot password?</p>    
+                <div className='button-container'>
+                    <Link to="/signup">
+                    <button className="create-account">create account</button></Link>
+                    <button className='sign-in'>sign in</button>   
+                </div>               
                 </Form>
+        </div>
         </div>
     )
 }
