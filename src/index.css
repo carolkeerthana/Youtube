@@ -1,6 +1,19 @@
-body {
+*{
   margin: 0;
-  width: 100vw;
-  height: 100vh;
-  font-family: Roboto, sans-serif;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+  /* width: 100vw;
+  height: 100vh; */
+}
+a{
+  text-decoration: none;
+  color: #5a5a5a;
+}
+img{
+  cursor: pointer;
+}
+.flex-div{
+  display: flex;
+  align-items: center;
 }

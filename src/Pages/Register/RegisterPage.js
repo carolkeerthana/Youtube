@@ -1,5 +1,5 @@
 import { Form, json, redirect } from "react-router-dom";
-import { getAuthToken } from "../util/auth";
+import './RegisterPage.css';
 
 function RegisterPage(){
     return(

@@ -1,16 +1,21 @@
 import {RouterProvider, createBrowserRouter } from 'react-router-dom';
 import './App.css';
-import RegisterPage, {action as registerAction} from './components/RegisterPage';
-import LoginPage, { action as loginAction} from './components/LoginPage';
-import ErrorPage from './components/ErrorPage';
-import HomePage from './components/Home';
+import RegisterPage, {action as registerAction} from './Pages/Register/RegisterPage';
+import LoginPage, { action as loginAction} from './Pages/Login/LoginPage';
+import ErrorPage from './Pages/Error/ErrorPage';
+import HomePage from './Pages/Home/Home';
+import RootLayout from './Pages/Home/Root';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />,
+    element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
       {
         path: '/signup',
         element: <RegisterPage />,
@@ -27,7 +32,9 @@ const router = createBrowserRouter([
 ])
 function App() {
   return (
-    <RouterProvider router={router} />
+    <div>
+      <RouterProvider router={router} />
+    </div>
   );
 }
 
