@@ -1,7 +1,19 @@
 import { Form, json, redirect } from "react-router-dom";
 import './RegisterPage.css';
+import { useState } from "react";
 
 function RegisterPage(){
+    const [formData, setFormData] = useState({
+        email: '',
+        channel: '',
+        password: '',
+        confirmPassword: ''
+    });
+    
+    const handleChange = (e) =>{
+        const {name,value} = e.target;
+        setFormData({...formData, [name]: value})
+    }
     return(
        <div>
              <div>
@@ -10,13 +22,41 @@ function RegisterPage(){
                 <h2>Create a UTube Account</h2>
                 </div>
              </div>
-                <Form method="post">
-                    <input id="email" type="email" name="email" placeholder="Email"/><br/>
-                    <input id="channel" type="text" name="channel" placeholder="Channel Name"/><br/>
-                    <input id="password" type="password" name="password" placeholder="Password"/><br/>
-                    <input id="confirm-password" type="password" name="confirm-password" placeholder="Confirm Password"/><br/>    
-                    <button>sign up</button>                   
-                </Form>
+             <Form method="post">
+                <input 
+                type="email" 
+                name="email"
+                value={formData.email}
+                onChange={handleChange} 
+                placeholder="Email"
+                required
+                /><br/>
+                <input 
+                type="text" 
+                name="channel"
+                value={formData.channel}
+                onChange={handleChange}  
+                placeholder="Channel Name"
+                required
+                /><br/>
+                <input  
+                type="password" 
+                name="password"
+                value={formData.password}
+                onChange={handleChange}  
+                placeholder="Password"
+                required
+                /><br/>
+                <input 
+                type="password"
+                name="confirm-password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm Password"
+                required
+                /><br/>    
+                <button type="submit">sign up</button>
+             </Form>
         </div>
     )
 }

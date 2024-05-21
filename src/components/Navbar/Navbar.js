@@ -5,10 +5,9 @@ import logo from '../../assets/logo.png';
 import searchIcon from '../../assets/search.png';
 import uploadIcon from '../../assets/upload.png';
 import notificationIcon from '../../assets/notification.png';
-import signinIcon from '../../assets/signin.png';
-import profileIcon from '../../assets/Woman-Icon.png';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 
 const Navbar = () => {
   const location = useLocation();
@@ -17,30 +16,32 @@ const Navbar = () => {
   return (
     <nav className='flex-div'>
       <div className='nav-left flex-div'>
-        <img className='menu-icon' src={menuIcon} alt=''/>
-        <img className='logo' src={logo} alt=''/> 
+        <img className='menu-icon' src={menuIcon} alt='menu' data-testid='menu-icon'/>
+        <img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/> 
       </div>
 
       <div className='nav-middle flex-div'>
         <div className='search-box flex-div'>
           <input type='text' placeholder='Search'></input>
-          <img className='search-icon' src={searchIcon} alt=''/>
+          <img className='search-icon' src={searchIcon} alt='search' data-testid='search-icon'/>
         </div>
       </div>
 
       <div className='nav-right flex-div'>
-        <img src={uploadIcon} alt=''/>
-        <img src={notificationIcon} alt=''/>
-        {/* <img src={profileIcon} className='user-icon' alt=''/> */}
+        <img src={uploadIcon} alt='upload' data-testid='upload-icon'/>
+        <img src={notificationIcon} alt='notify' data-testid='notify-icon'/>
+
         <div className='user-icon flex-div'>
         {!isSignInOrSignUp && (
         <Link to="/signin" className='signin-container'>
-          {/* <img src={signinIcon} alt=''/> */}
-          <FontAwesomeIcon icon="fal fa-user-circle" style={{color: "#2d82d2",}} />
-          <span className='signin-text'>SIGN IN</span>
+        <div>
+          <FontAwesomeIcon className='signin-icon' icon={faUserCircle} style={{color: "#2d82d2",}} 
+          data-testid="signin-icon"/>
+          <span className='signin-text'>Sign in</span>
+        </div>
         </Link>
         )}
-    </div>
+        </div>
       </div>
 
     </nav>

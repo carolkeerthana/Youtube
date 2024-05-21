@@ -1,12 +1,13 @@
+import Sidebar from '../../components/Sidebar/Sidebar';
 import './Home.css';
 
 const HomePage= () =>{
     
     
 return(
-    <div>
-        
-    </div>
+    <>
+    <Sidebar />
+    </>
 )
 }
 
