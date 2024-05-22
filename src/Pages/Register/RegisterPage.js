@@ -1,6 +1,7 @@
-import { Form, json, redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './RegisterPage.css';
 import { useState } from "react";
+import FieldValidation from "../Validation/FieldValidation";
 
 function RegisterPage(){
     const [formData, setFormData] = useState({
@@ -9,10 +10,68 @@ function RegisterPage(){
         password: '',
         confirmPassword: ''
     });
+
+    const [error, setError] = useState(null);
+    const [fieldErrors, setFieldErrors] = useState({});
+    const navigate = useNavigate();
     
     const handleChange = (e) =>{
         const {name,value} = e.target;
         setFormData({...formData, [name]: value})
+    };
+
+    const validateRegister = () => {
+        let errors = {};
+        if(!formData.email) errors.email = "Enter an email";
+        if(!formData.channel) errors.channel = "Enter channel name";
+        if(!formData.password) errors.password = "Enter password";
+        if(!formData.confirmPassword) errors.confirmPassword = "Enter confirm password";
+
+        setFieldErrors(errors);
+        return Object.keys(errors).length === 0;
+    }
+
+    const handleSubmit = async(e) =>{
+        e.preventDefault();
+
+        if (!validateRegister()) return;
+
+        const registerData = {
+            email: formData.email,
+            channelName: formData.channel,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword
+        }
+
+        console.log(registerData)
+
+        try {
+            const response = await fetch('https://apps.rubaktechie.me/api/v1/auth/user/register',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(registerData)
+            });
+            console.log(response)
+
+            if(!response.ok){
+                const errorData = await response.json();
+                console.error('Error Data:', errorData);
+                setError(errorData.message || 'Registration failed');
+                return;
+            }
+
+            const resData = await response.json();
+            const token = resData.token;
+
+            localStorage.setItem('token', token);
+
+            navigate('/signin');
+        } catch (error) {
+            console.error('Error:', error);
+            setError("An error occurred. Please try again");
+        }
     }
     return(
        <div>
@@ -22,79 +81,17 @@ function RegisterPage(){
                 <h2>Create a UTube Account</h2>
                 </div>
              </div>
-             <Form method="post">
-                <input 
-                type="email" 
-                name="email"
-                value={formData.email}
-                onChange={handleChange} 
-                placeholder="Email"
-                required
-                /><br/>
-                <input 
-                type="text" 
-                name="channel"
-                value={formData.channel}
-                onChange={handleChange}  
-                placeholder="Channel Name"
-                required
-                /><br/>
-                <input  
-                type="password" 
-                name="password"
-                value={formData.password}
-                onChange={handleChange}  
-                placeholder="Password"
-                required
-                /><br/>
-                <input 
-                type="password"
-                name="confirm-password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm Password"
-                required
-                /><br/>    
+             <form onSubmit={handleSubmit}>
+                <FieldValidation
+                formData={formData}
+                fieldErrors={fieldErrors}
+                handleChange={handleChange}
+                />     
                 <button type="submit">sign up</button>
-             </Form>
+             </form>
+             {error && <p className="error">{error}</p>}
         </div>
     )
 }
 
 export default RegisterPage;
-
-export async function action({request}){
-    // to get data from the form
-    const data = await request.formData();
-
-    const registerData = {
-        channelName: data.get('channel'),
-        email: data.get('email'),
-        password: data.get('password'),
-    };
-    console.log(registerData)
-
-    const response = await fetch('https://apps.rubaktechie.me/api/v1/auth/user/register',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(registerData)
-    });
-    console.log(response)
-
-    if(response.status === 422 || response.status === 401){
-        return response;
-    }
-
-    if(!response.ok){
-        throw json({message: 'Bad request'}, {status: 500})
-    }
-
-    const resData = await response.json();
-    const token = resData.token;
-
-    localStorage.setItem('token', token);
-
-    return redirect('/');
-    }
