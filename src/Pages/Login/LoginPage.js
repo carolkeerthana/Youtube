@@ -105,14 +105,3 @@ function LoginPage(){
 }
 
 export default LoginPage;
-
-// export async function action({request}){
-//     // to get data from the form
-//     const data = await request.formData();
-//     const registerData = {
-//         email: data.get('email'),
-//         password: data.get('password')
-//     };
-
-    
-//     }

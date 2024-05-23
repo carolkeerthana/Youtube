@@ -21,48 +21,41 @@
     flex: 1;
     padding: 20px;
 }
-
 .login-RightSide{
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    max-width: 50%;
-    width: 50%;
+    justify-content: center;
+    width: 100%;
     position: relative;
-    cursor: pointer;
 }
-
 .input-container {
     position: relative;
-    margin-bottom: 1.5rem;
-    width:400px;
+    margin-bottom: 2.5rem;
+    width:100%;
     transition: all 0.3s ease;
 }
-
 .floating-label {
     position: absolute;
     top: 1rem;
     left: 1rem;
-    font-size: 16px;
+    font-size: 20px;
     color: #999;
     transition: all 0.3s ease;
     background-color: white;
     padding: 0 4px;
 }
-
-.input-container.focused .floating-label {
+.input-container.focused .floating-label,
+.input-container input:not(:placeholder-shown)+ .floating-label {
     top: -0.75rem;
     left: 0.8rem;
-    font-size: 14px;
-    color: #1A73E8;
+    font-size: 16px;
+    color: #0b57d0;
     z-index: 10;
 }
-
 .input-container.focused input{
-    border-color: #1A73E8;
+    border:3px solid #0b57d0;
 }
-
 .login-RightSide input {
     width: 100%;
     padding: 1.3rem;
@@ -72,25 +65,24 @@
     outline: none;
     background: #fff;
     box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 .forgot-password{
-    transform: translateX(110%);
     color: #0b57d0;
     text-align: right; /* Align the text to the right */
+    width: 100%;
+    margin-top: -1rem;
 }
-
 .button-container {
     display: flex;
     justify-content: space-between;
-    align-items: end;
-    margin-top: 15%;
+    align-items: center;
+    margin-top: 4rem;
+    width: 100%;
 }
-
 .sign-in {
-    display: inline-block;
-    width: 130px;
-    padding: 0.75rem 2rem;
+    width: 100px;
+    padding: 0.75rem 0.75rem;
     outline: none;
     border: none;
     background-color: #0b57d0;
@@ -99,45 +91,36 @@
     font-weight: 500;
     border-radius: 20px;
     cursor: pointer;
-    position: relative;
-    margin: 0.5rem 0;
 }
-
-.button-container .create-account{
+.sign-in:hover {
+    background-color: #0d4cb3;
+}
+.create-account{
     outline: none;
     border: none;
     background-color: white;
     color:#0b57d0;
     font-size: 1.1rem;
     letter-spacing: 0.1rem;
-    font-weight: 500;
     font-weight: bold;
     border-radius: 20px;
     cursor: pointer;
-    position: relative;
-    text-align: left;
-    margin: 0.5rem 0;
-    padding: 0px;
 }
-
-.sign-in:hover {
-    background-color: #0d4cb3;
-}
-
 .create-account:hover{
     background-color: whitesmoke;
 }
 .login-LeftSide{
     display: flex;
+    align-items: start;
     flex-direction: column;
-    justify-content: space-between;
-    max-width: 50%;
-    width: 50%;
-    padding-bottom: 7%;
+    justify-content: center;
+    width: 100%;
+    margin-top: -5rem;
+    margin-left: 50px;
+    padding-bottom: 6rem;
 }
 h1{
     font-size: 60px;
-    padding-top: 0px;
     color: red;
 }
 h2{

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './RegisterPage.css';
 import { useState } from "react";
 import FieldValidation from "../Validation/FieldValidation";
@@ -21,18 +21,26 @@ function RegisterPage(){
     };
 
     const validateRegister = () => {
-        let errors = {};
-        if(!formData.email) errors.email = "Enter an email";
-        if(!formData.channel) errors.channel = "Enter channel name";
-        if(!formData.password) errors.password = "Enter password";
-        if(!formData.confirmPassword) errors.confirmPassword = "Enter confirm password";
 
-        setFieldErrors(errors);
-        return Object.keys(errors).length === 0;
+        return Object.keys(fieldErrors).length === 0;
     }
+
+    const allFieldsEmpty = () => {
+        return Object.values(formData).every(value => value.trim() === '');
+    };
 
     const handleSubmit = async(e) =>{
         e.preventDefault();
+
+        if (allFieldsEmpty()) {
+            setFieldErrors({
+                email: "Enter an email",
+                channel: "Enter channel name",
+                password: "Enter password",
+                confirmPassword: "Enter confirm password"
+            });
+            return;
+        }
 
         if (!validateRegister()) return;
 
@@ -74,22 +82,32 @@ function RegisterPage(){
         }
     }
     return(
-       <div>
-             <div>
+       <div className="register">
+        <div className="register-container">
+             <div className="register-leftSide">
                 <h1>UTube</h1>
                 <div>
                 <h2>Create a UTube Account</h2>
                 </div>
              </div>
+             <div className="register-rightSide">
              <form onSubmit={handleSubmit}>
                 <FieldValidation
-                formData={formData}
-                fieldErrors={fieldErrors}
-                handleChange={handleChange}
-                />     
-                <button type="submit">sign up</button>
+                   formData={formData} 
+                   fieldErrors={fieldErrors}
+                   handleChange={handleChange}
+                   setFieldErrors={setFieldErrors}
+                />
+                <div className='button-container'>
+                    <Link to="/signin">
+                        <button className="signin" type='button'>Sign in</button>
+                    </Link>    
+                <button type="submit" className='sign-up'>sign up</button>
+                </div>
              </form>
              {error && <p className="error">{error}</p>}
+             </div>
+        </div>
         </div>
     )
 }
