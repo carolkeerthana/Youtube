@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 function LoginPage(){
     const [formData, setFormData] = useState({
         email: '',
-        password: ''
+        password: ''    
     })
     const [emailFocused, setEmailFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
@@ -90,7 +90,10 @@ function LoginPage(){
                     />
                 </div>
                 {error && <p className="error-message">{error}</p>}
-                <p className='forgot-password'>forgot password?</p>    
+                <p className='forgot-password'>
+                    <Link to={'/forgotpassword'}>forgot password?</Link>
+                </p>
+                        
                 <div className='button-container'>
                     <Link to="/signup">
                         <button className="create-account" type='button'>create account</button>

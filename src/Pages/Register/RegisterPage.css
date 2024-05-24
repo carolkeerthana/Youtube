@@ -37,7 +37,7 @@
     width:100%;
     transition: all 0.3s ease;
 }
-.floating-label {
+.right-side .floating-label {
     position: absolute;
     top: 1rem;
     left: 1rem;
@@ -47,8 +47,8 @@
     background-color: white;
     padding: 0 4px;
 }
-.input-container.focused .floating-label,
-.input-container input:not(:placeholder-shown)+ .floating-label {
+.right-side .input-container.focused .floating-label,
+.right-side .input-container input:not(:placeholder-shown)+ .floating-label {
     top: -0.75rem;
     left: 0.8rem;
     font-size: 16px;
@@ -68,25 +68,25 @@
 .right-side input:focus{
     border: 3px solid #0b57d0;
 }
-.password-container{
+.right-side .password-container{
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 95%;
 }
-.pwd-input{
+.right-side .pwd-input{
     margin-left: -0.85rem;  
 }
-.confirm-input{
+.right-side .confirm-input{
     margin-left: 0.85rem;  
 }
-#pwd-label{
+.right-side #pwd-label{
     margin-left: -0.85rem;
 }
-#confirm-label{
+.right-side #confirm-label{
     margin-left: 0.85rem;
 }
-.button-container{
+.register-rightSide .button-container{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -94,7 +94,7 @@
     width: 100%;
     margin-left: -2rem;
 }
-.sign-up {
+.register-rightSide .sign-up {
     width: 100px;
     padding: 0.75rem 0.75rem;
     outline: none;
@@ -106,10 +106,10 @@
     border-radius: 20px;
     cursor: pointer;
 }
-.sign-up:hover {
+.register-rightSide .sign-up:hover {
     background-color: #0d4cb3;
 }
-.signin{
+.register-rightSide .signin{
     outline: none;
     border: none;
     background-color: white;
@@ -120,7 +120,7 @@
     border-radius: 20px;
     cursor: pointer;
 }
-.signin:hover{
+.register-rightSide .signin:hover{
     background-color: whitesmoke;
 }
 .register-leftSide{
@@ -133,11 +133,11 @@
     margin-left: 50px;
     padding-bottom: 6rem;
 }
-h1{
+.register-leftSide h1{
     font-size: 60px;
     color: red;
 }
-h2{
+.register-leftSide h2{
     font-size: 40px;
     font-weight: lighter;
     padding-bottom: 10px;
@@ -153,6 +153,6 @@ h2{
 .error svg {
     margin-right: 0.5rem;
 }
-.input-container.error input {
+.register-rightSide .input-container.error input {
     border-color: red;
 }

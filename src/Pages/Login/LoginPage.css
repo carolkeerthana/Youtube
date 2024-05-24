@@ -29,13 +29,13 @@
     width: 100%;
     position: relative;
 }
-.input-container {
+.login-RightSide .input-container {
     position: relative;
     margin-bottom: 2.5rem;
     width:100%;
     transition: all 0.3s ease;
 }
-.floating-label {
+.login-RightSide .floating-label {
     position: absolute;
     top: 1rem;
     left: 1rem;
@@ -45,15 +45,15 @@
     background-color: white;
     padding: 0 4px;
 }
-.input-container.focused .floating-label,
-.input-container input:not(:placeholder-shown)+ .floating-label {
+.login-RightSide .input-container.focused .floating-label,
+.login-RightSide .input-container input:not(:placeholder-shown)+ .floating-label {
     top: -0.75rem;
     left: 0.8rem;
     font-size: 16px;
     color: #0b57d0;
     z-index: 10;
 }
-.input-container.focused input{
+.login-RightSide .input-container.focused input{
     border:3px solid #0b57d0;
 }
 .login-RightSide input {
@@ -67,20 +67,20 @@
     box-sizing: border-box;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.forgot-password{
+.login-RightSide .forgot-password{
     color: #0b57d0;
     text-align: right; /* Align the text to the right */
     width: 100%;
     margin-top: -1rem;
 }
-.button-container {
+.login-RightSide .button-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 4rem;
     width: 100%;
 }
-.sign-in {
+.login-RightSide .sign-in {
     width: 100px;
     padding: 0.75rem 0.75rem;
     outline: none;
@@ -92,10 +92,10 @@
     border-radius: 20px;
     cursor: pointer;
 }
-.sign-in:hover {
+.login-RightSide .sign-in:hover {
     background-color: #0d4cb3;
 }
-.create-account{
+.login-RightSide .create-account{
     outline: none;
     border: none;
     background-color: white;
@@ -106,7 +106,7 @@
     border-radius: 20px;
     cursor: pointer;
 }
-.create-account:hover{
+.login-RightSide .create-account:hover{
     background-color: whitesmoke;
 }
 .login-LeftSide{
@@ -119,16 +119,16 @@
     margin-left: 50px;
     padding-bottom: 6rem;
 }
-h1{
+.login-LeftSide h1{
     font-size: 60px;
     color: red;
 }
-h2{
+.login-LeftSide h2{
     font-size: 40px;
     font-weight: lighter;
     padding-bottom: 10px;
 }
-.signin-text span{
+.login-LeftSide .signin-text span{
     font-size: 20px;
     font-weight: 400;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
