@@ -8,6 +8,7 @@ const ForgotPassword = () => {
       const [formData, setFormData] = useState({
         email: ''
       });
+      const [emailFocused, setEmailFocused] = useState(false);
       const [error, setError] = useState(null);
       const [successMessage, setSuccessMessage] = useState(null);
       const [fieldError, setFieldError] =  useState(null);
@@ -103,7 +104,7 @@ const ForgotPassword = () => {
         <button type='submit' className='email-submit'>submit</button>
         </div>
         )}
-      </form>
+      </form> 
       </div>
     </div>
     </div>

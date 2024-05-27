@@ -12,9 +12,9 @@ import news from '../../assets/music.png'
 import jack from '../../assets/jack.png'
 import tom from '../../assets/tom.png'
 
-const Sidebar = () => {
+const Sidebar = ({sidebar}) => { 
   return (
-    <div className='sidebar'>
+    <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`}>
         <div className='shortcut-links'>
             <div className='side-link'>
                 <img src={home} alt='' /><p>Home</p>

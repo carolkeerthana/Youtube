@@ -9,14 +9,18 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 
-const Navbar = () => {
+const Navbar = ({setSidebar}) => {
   const location = useLocation();
-
+ 
   const isSignInOrSignUp = location.pathname === '/signin' || location.pathname === '/signup';
+
+  const toggleSidebar = () =>{
+    setSidebar(prev=>prev===false?true:false)
+  }
   return (
     <nav className='flex-div'>
       <div className='nav-left flex-div'>
-        <img className='menu-icon' src={menuIcon} alt='menu' data-testid='menu-icon'/>
+        <img className='menu-icon' onClick={toggleSidebar} src={menuIcon} alt='menu' data-testid='menu-icon'/>
         <img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/> 
       </div>
 
