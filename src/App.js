@@ -9,6 +9,7 @@ import ForgotPassword from './Pages/Forgot_Password/ForgotPassword';
 import ResetPassword from './Pages/Reset_Password/ResetPassword';
 import { useState } from 'react';
 import Navbar from './components/Navbar/Navbar';
+import Video from './Pages/Video/Video';
 
 // const router = createBrowserRouter([
 //   {
@@ -51,10 +52,11 @@ function App() {
       <Routes>
         {/* <Route path='/' element={<RootLayout/>} /> */}
         <Route index element={<HomePage  sidebar={sidebar}/>} />
-        <Route path='/signup' element={<RegisterPage/>} />
-        <Route path='/signin' element={<LoginPage/>} />
-        <Route path='/forgotpassword' element={<ForgotPassword/>} />
-        <Route path='/resetpassword' element={<ResetPassword/>} />
+        <Route path='/signup' element={<RegisterPage />} />
+        <Route path='/signin' element={<LoginPage />} />
+        <Route path='/forgotpassword' element={<ForgotPassword />} />
+        <Route path='/resetpassword' element={<ResetPassword />} />
+        <Route path='/video/:categoryId/:videoId' element={<Video />} />
       </Routes>
     </div>
   );

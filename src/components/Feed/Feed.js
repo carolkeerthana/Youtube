@@ -1,30 +1,53 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Feed.css'
-import thumbnail1 from '../../assets/thumbnail1.png'
-import thumbnail2 from '../../assets/thumbnail2.png'
-import thumbnail3 from '../../assets/thumbnail3.png'
+import { Link } from 'react-router-dom'
 
-const Feed = () => {
+const Feed = ({category}) => {
+  const[data, setData] = useState([]);
+
+  const fetchData = async () =>{
+    const videoUrl= 'https://apps.rubaktechie.me/api/v1/videos/public'
+
+    try {
+      const response = await fetch(videoUrl);
+      const json = await response.json();
+      console.log('API response:', json);
+      if(json.success && Array.isArray(json.data)){
+        setData(json.data);
+      }else{
+        console.error('API response is not in the expected format:', json);
+        setData([]);
+      }   
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setData([]);
+    }
+  };
+
+  useEffect(()=>{
+    fetchData();
+  }, [category])
+
+  const getDaysAgo = (dateString) => {
+    const createdAt = new Date(dateString); //creates date obj from createdAt
+    const now = new Date();                 //creates date obj for the current date and tym 
+    const differenceInTime = now - createdAt; //calculated in milliseconds
+    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24)); //divided by milliseconds in a day
+    return differenceInDays;
+  };
+
   return (
     <div className='feed'>
-        <div className='card'>
-            <img src={thumbnail1} alt=''/>
-            <h2>Nature</h2>
-            <h3>Channel</h3>
-            <p>15l views &bull; 2 days ago</p>
-        </div>
-        <div className='card'>
-            <img src={thumbnail2} alt=''/>
-            <h2>Nature</h2>
-            <h3>Channel</h3>
-            <p>15l views &bull; 2 days ago</p>
-        </div>
-        <div className='card'>
-            <img src={thumbnail3} alt=''/>
-            <h2>Nature</h2>
-            <h3>Channel</h3>
-            <p>15l views &bull; 2 days ago</p>
-        </div>
+      {data.map((item) => {
+        return(
+        <Link to={`/watch/${item._id}`} className='card' key={item._id}>           
+            <img src={item.thumbnailUrl} alt={item.title}/>
+            <h2>{item.title}</h2>
+            <h3>{item.userId.channelName}</h3>
+            <p>{item.views} views &bull; {getDaysAgo(item.createdAt)} day ago</p>
+        </Link>
+        )
+      })}
     </div>
   )
 }
