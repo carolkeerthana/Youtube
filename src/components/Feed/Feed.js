@@ -41,7 +41,7 @@ const Feed = ({category}) => {
       {data.map((item) => {
         return(
         <Link to={`/watch/${item._id}`} className='card' key={item._id}>           
-            <img src={item.thumbnailUrl} alt={item.title}/>
+            <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${item.thumbnailUrl}`} alt={item.title}/>
             <h2>{item.title}</h2>
             <h3>{item.userId.channelName}</h3>
             <p>{item.views} views &bull; {getDaysAgo(item.createdAt)} day ago</p>

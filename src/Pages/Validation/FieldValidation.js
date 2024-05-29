@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import '../Register/RegisterPage.css'
 import { FaExclamationCircle } from 'react-icons/fa';
 
@@ -11,7 +11,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
     const handleChange = (e) =>{
         const {name,value} = e.target;
         setFormData({...formData, [name]: value});
-        validateField(name, value);
+        // validateField(name, value);
     };
 
     const validateField = ((name, value) =>{
@@ -20,7 +20,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
         switch(name){
             case 'email': 
             if(!value){
-                errors.email = "Enter an email";
+                errors.email = "hello email";
             }else if(!validateEmail(value)){
                 errors.email = "Enter a valid email";
             }else{
@@ -106,7 +106,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
                 onFocus={() => setPasswordFocused(true)}
                 onBlur={(e) => setPasswordFocused(e.target.value !== '')}  
             />
-            {fieldErrors.password && <p className="error"><FaExclamationCircle /> {fieldErrors.password}</p>}
+            {fieldErrors.password && <p className="error password-error"><FaExclamationCircle /> {fieldErrors.password}</p>}
         </div>
         <div className={`input-container ${confirmPasswordFocused || fieldErrors.confirmPassword ? 'focused' : ''}`}>
             <label htmlFor="confirmPassword" className="floating-label" id='confirm-label'>Confirm Password</label>
@@ -119,7 +119,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
                 onFocus={() => setConfirmPasswordFocused(true)}
                 onBlur={(e) => setConfirmPasswordFocused(e.target.value !== '')}
             />
-            {fieldErrors.confirmPassword && <p className="error"><FaExclamationCircle /> {fieldErrors.confirmPassword}</p>}
+            {fieldErrors.confirmPassword && <p className="error confirmPwd-error"><FaExclamationCircle /> {fieldErrors.confirmPassword}</p>}
         </div>
         </div>
       </div>

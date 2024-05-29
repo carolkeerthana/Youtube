@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: center;
     width: 75%;
-    height: 60%;
+    height: 70%;
     box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
     padding-top: 30px;
     padding-bottom: 20px;
@@ -29,6 +29,7 @@
     width: 100%;
     position: relative;
     margin-left: -2rem;
+    margin-bottom: 30px
 }
 .right-side .input-container {
     position: relative;
@@ -75,16 +76,16 @@
     width: 95%;
 }
 .right-side .pwd-input{
-    margin-left: -0.85rem;  
+    margin-left: -0.70rem;  
 }
 .right-side .confirm-input{
     margin-left: 0.85rem;  
 }
 .right-side #pwd-label{
-    margin-left: -0.85rem;
+    margin-left: -0.70rem;
 }
 .right-side #confirm-label{
-    margin-left: 0.85rem;
+    margin-left: 0.70rem;
 }
 .register-rightSide .button-container{
     display: flex;
@@ -142,17 +143,23 @@
     font-weight: lighter;
     padding-bottom: 10px;
 }
-.error {
+.input-container .error{
     color: red;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
+    font-size: 14px;
+    margin-top: 10px;
     display: flex;
     align-items: center;
+    margin-left: 10px;
 }
-
-.error svg {
+.input-container .password-error{
+    margin-left: 0px;
+}
+.input-container .confirmPwd-error{
+    margin-left: 25px;
+}
+.input-container .error svg {
     margin-right: 0.5rem;
 }
-.register-rightSide .input-container.error input {
+.input-container.error input {
     border-color: red;
 }
