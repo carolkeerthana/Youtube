@@ -11,53 +11,31 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
     const handleChange = (e) =>{
         const {name,value} = e.target;
         setFormData({...formData, [name]: value});
-        // validateField(name, value);
     };
 
-    const validateField = ((name, value) =>{
-        let errors = {...fieldErrors};
-
-        switch(name){
-            case 'email': 
-            if(!value){
-                errors.email = "hello email";
-            }else if(!validateEmail(value)){
-                errors.email = "Enter a valid email";
-            }else{
-                delete errors.email;
-            }
-            break;
-            case 'channel': 
-            if(!value){
-                errors.channel = "Enter channel name";
-            }else if(value.length <3){
-                errors.channel = "Channel name must be at least 3 characters long";
-            }else{
-                delete errors.channel;
-            }
-            break;
-            case 'password': 
-            if(!value){
-                errors.password = "Enter password";
-            }else if(!validatePassword(value)){
-                errors.password = "Password must be at least 8 characters long";
-            }else{
-                delete errors.password;
-            }
-            break;
-            case 'confirmPassword': 
-            if(!value){
-                errors.confirmPassword = "Enter confirm password";
-            }else if(value !== formData.password){
-                errors.confirmPassword = "Passwords do not match";
-            }else{
-                delete errors.confirmPassword;
-            }
-            break;
-            default: break;
+    const validateField = (name, value) => {
+        let errors = { ...fieldErrors };
+    
+        switch (name) {
+            case 'email':
+                errors.email = !value && emailFocused ? 'Email is required' : !validateEmail(value) ? 'Enter a valid email' : '';
+                break;
+            case 'channel':
+                errors.channel = !value && channelFocused ? 'Channel name is required' : value.length < 3 ? 'Channel name must be at least 3 characters long' : '';
+                break;
+            case 'password':
+                errors.password = !value && passwordFocused ? 'Password is required' : value.length < 8 ? 'Password must be at least 8 characters long' : '';
+                break;
+            case 'confirmPassword':
+                errors.confirmPassword = !value && confirmPasswordFocused ? 'Confirm password is required' : value !== formData.password ? 'Passwords do not match' : '';
+                break;
+            default:
+                break;
         }
+    
         setFieldErrors(errors);
-    }, [fieldErrors, formData.password, setFieldErrors]);
+    };
+    
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -67,57 +45,67 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
     const validatePassword = (password) => {
         return password.length>=8;
     }
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+        validateField(name, value);
+    }
 
   return (
       <div className='right-side'>
-        <div className={`input-container ${emailFocused || fieldErrors.email ? 'focused' : ''}`}>
-            <label htmlFor="email" className="floating-label">Email</label>
+        <div className={`input-container ${emailFocused || fieldErrors.email ? 'focused' : ''} ${fieldErrors.email ? 'error-border' : ''}`}>
+        <label htmlFor="email" className={`floating-label ${fieldErrors.email ? 'error-border' : ''}`}>Email</label>
             <input 
+                data-testid="email"
                 type="email" 
+                id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
                 onFocus={() => setEmailFocused(true)}
-                onBlur={(e) => setEmailFocused(e.target.value !== '')} 
+                onBlur={handleBlur} 
             />
             {fieldErrors.email && <p className="error"><FaExclamationCircle /> {fieldErrors.email}</p>}
         </div>
-        <div className={`input-container ${channelFocused || fieldErrors.channel ? 'focused' : ''}`}>
-            <label htmlFor="channel" className="floating-label">Channel Name</label>
+        <div className={`input-container ${channelFocused || fieldErrors.channel ? 'focused' : ''} ${fieldErrors.channel ? 'error-border' : ''}`}>
+        <label htmlFor="channel" className={`floating-label ${fieldErrors.channel ? 'error-border' : ''}`}>Channel Name</label>
             <input 
+                data-testid="channel"
+                id="channel"
                 type="text" 
                 name="channel"
                 value={formData.channel}
                 onChange={handleChange}
                 onFocus={() => setChannelFocused(true)}
-                onBlur={(e) => setChannelFocused(e.target.value !== '')}  
+                onBlur={handleBlur}  
             />
             {fieldErrors.channel && <p className="error"><FaExclamationCircle /> {fieldErrors.channel}</p>}
         </div>
         <div className='password-container'>
-        <div className={`input-container ${passwordFocused || fieldErrors.password ? 'focused' : ''}`}>
-            <label htmlFor="password" className="floating-label" id='pwd-label'>Password</label>
+        <div className={`input-container ${passwordFocused || fieldErrors.password ? 'focused' : ''} ${fieldErrors.password ? 'error-border' : ''}`}>
+        <label htmlFor="password" className={`floating-label ${fieldErrors.password ? 'error-border' : ''}`} id='password-label'>Password</label>
             <input
-                className="pwd-input"  
+                data-testid="password"
+                id="password"
                 type="password" 
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 onFocus={() => setPasswordFocused(true)}
-                onBlur={(e) => setPasswordFocused(e.target.value !== '')}  
+                onBlur={handleBlur}  
             />
             {fieldErrors.password && <p className="error password-error"><FaExclamationCircle /> {fieldErrors.password}</p>}
         </div>
-        <div className={`input-container ${confirmPasswordFocused || fieldErrors.confirmPassword ? 'focused' : ''}`}>
-            <label htmlFor="confirmPassword" className="floating-label" id='confirm-label'>Confirm Password</label>
+        <div className={`input-container ${confirmPasswordFocused || fieldErrors.confirmPassword ? 'focused' : ''} ${fieldErrors.confirmPassword ? 'error-border' : ''}`}>
+        <label htmlFor="confirmPassword" className={`floating-label ${fieldErrors.confirmPassword ? 'error-border' : ''}`} id='confirm-label'>Confirm Password</label>
             <input 
-                className="confirm-input"
+                data-testid="confirmPassword"
+                id="confirmPassword"
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onFocus={() => setConfirmPasswordFocused(true)}
-                onBlur={(e) => setConfirmPasswordFocused(e.target.value !== '')}
+                onBlur={handleBlur}
             />
             {fieldErrors.confirmPassword && <p className="error confirmPwd-error"><FaExclamationCircle /> {fieldErrors.confirmPassword}</p>}
         </div>

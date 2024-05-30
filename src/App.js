@@ -52,10 +52,12 @@ function App() {
       <Routes>
         {/* <Route path='/' element={<RootLayout/>} /> */}
         <Route index element={<HomePage  sidebar={sidebar}/>} />
-        <Route path='/signup' element={<RegisterPage />} />
-        <Route path='/signin' element={<LoginPage />} />
+        <Route path='/signup' element={<RegisterPage />} errorElement={<ErrorPage/>}/>
+        <Route path='/signin' element={<LoginPage />} errorElement={<ErrorPage/>}/>
         <Route path='/forgotpassword' element={<ForgotPassword />} />
         <Route path='/resetpassword' element={<ResetPassword />} />
+        <Route path='/error' element={<ErrorPage />} />
+        <Route path='/*' element={<ErrorPage />} />
         <Route path='/video/:categoryId/:videoId' element={<Video />} />
       </Routes>
     </div>

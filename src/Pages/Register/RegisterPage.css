@@ -75,10 +75,10 @@
     align-items: center;
     width: 95%;
 }
-.right-side .pwd-input{
+.right-side #password{
     margin-left: -0.70rem;  
 }
-.right-side .confirm-input{
+.right-side #confirmPassword{
     margin-left: 0.85rem;  
 }
 .right-side #pwd-label{
@@ -160,6 +160,9 @@
 .input-container .error svg {
     margin-right: 0.5rem;
 }
-.input-container.error input {
-    border-color: red;
-}
+.input-container.error-border .floating-label {
+    color: red;
+  }
+.input-container.error-border input {
+    border: 3px solid red;
+  }

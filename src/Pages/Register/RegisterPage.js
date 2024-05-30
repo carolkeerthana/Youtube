@@ -21,9 +21,9 @@ function RegisterPage(){
         setFormData({...formData, [name]: value})
     };
 
-    const validateRegister = () => {
-        return Object.keys(fieldErrors).length === 0;
-    }
+    // const validateRegister = () => {
+    //     return Object.keys(fieldErrors).length === 0;
+    // }
 
     const allFieldsEmpty = () => {
         return Object.values(formData).every(value => value.trim() === '');
@@ -32,6 +32,7 @@ function RegisterPage(){
     const handleSubmit = async(e) =>{
         e.preventDefault();
 
+        console.log("submit")
         if (allFieldsEmpty()) {
             setFieldErrors({
                 email: "Enter an email",
@@ -42,7 +43,12 @@ function RegisterPage(){
             return;
         }
 
-        if (!validateRegister()) return;
+        // console.log('Before validateRegister');
+        // if (!validateRegister()) {
+        //     console.log('Validation failed');
+        //     return;
+        // }
+        // console.log('After validateRegister');
 
         const registerData = {
             email: formData.email,
@@ -51,6 +57,7 @@ function RegisterPage(){
             confirmPassword: formData.confirmPassword
         }
         try {
+            console.log(registerData)
             const resData = await registerUser(registerData);
             const token = resData.token;
 
@@ -58,7 +65,8 @@ function RegisterPage(){
 
             navigate('/signin');
         } catch (error) {
-            setError(error.message || "An error occurred. please try again")
+            setError(error.message || "An error occurred. please try again");
+            navigate('/error', { state: { error } });
         }     
     }
     return(
@@ -86,7 +94,7 @@ function RegisterPage(){
                 <button type="submit" className='sign-up'>sign up</button>
                 </div>
              </form>
-             {/* {error && <p className="error">{error}</p>} */}
+             {error && <p className="error">{error}</p>}
              </div>
         </div>
         </div>
