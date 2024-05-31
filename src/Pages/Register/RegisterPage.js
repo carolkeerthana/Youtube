@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import './RegisterPage.css';
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FieldValidation from "../Validation/FieldValidation";
 import { registerUser } from "./RegisterApi";
 
@@ -12,62 +12,78 @@ function RegisterPage(){
         confirmPassword: ''
     });
 
-    const [error, setError] = useState(null);
     const [fieldErrors, setFieldErrors] = useState({});
     const navigate = useNavigate();
-    
-    const handleChange = (e) =>{
-        const {name,value} = e.target;
-        setFormData({...formData, [name]: value})
+ 
+    const validateAllFields = () => {
+        const errors = {};
+
+        if (!formData.email) {
+            console.log("valid")
+            errors.email = 'Enter an email';
+        } else if (!validateEmail(formData.email)) {
+            console.log("not valid")
+            errors.email = 'Enter a valid email';
+        }
+
+        if (!formData.channel) {
+            errors.channel = 'Enter channel name';
+        } else if (formData.channel.length < 3) {
+            console.log("ch")
+            errors.channel = 'Channel name must be at least 3 characters long';
+        }
+
+        if (!formData.password) {
+            errors.password = 'Enter password';
+        } else if (formData.password.length < 8) {
+            errors.password = 'Password must be at least 8 characters long';
+        }
+
+        if (!formData.confirmPassword) {
+            errors.confirmPassword = 'Enter confirm password';
+        } else if (formData.confirmPassword !== formData.password) {
+            errors.confirmPassword = 'Passwords do not match';
+        }
+
+        setFieldErrors(errors);
+        return Object.keys(errors).length === 0;
     };
 
-    // const validateRegister = () => {
-    //     return Object.keys(fieldErrors).length === 0;
-    // }
-
-    const allFieldsEmpty = () => {
-        return Object.values(formData).every(value => value.trim() === '');
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     };
 
     const handleSubmit = async(e) =>{
         e.preventDefault();
 
-        console.log("submit")
-        if (allFieldsEmpty()) {
-            setFieldErrors({
-                email: "Enter an email",
-                channel: "Enter channel name",
-                password: "Enter password",
-                confirmPassword: "Enter confirm password"
-            });
-            return;
+        if (validateAllFields()) {
+            try {
+                const response = await registerUser(formData);
+                localStorage.setItem('token', response.token);
+                navigate('/signin');
+            } catch (error) {
+                navigate('/error');
+            }
         }
 
-        // console.log('Before validateRegister');
-        // if (!validateRegister()) {
-        //     console.log('Validation failed');
-        //     return;
+        // const registerData = {
+        //     email: formData.email,
+        //     channelName: formData.channel,
+        //     password: formData.password,
+        //     confirmPassword: formData.confirmPassword
         // }
-        // console.log('After validateRegister');
+        // try {
+        //     console.log(registerData)
+        //     const resData = await registerUser(registerData);
+        //     const token = resData.token;
 
-        const registerData = {
-            email: formData.email,
-            channelName: formData.channel,
-            password: formData.password,
-            confirmPassword: formData.confirmPassword
-        }
-        try {
-            console.log(registerData)
-            const resData = await registerUser(registerData);
-            const token = resData.token;
+        //     localStorage.setItem('token', token);
 
-            localStorage.setItem('token', token);
-
-            navigate('/signin');
-        } catch (error) {
-            setError(error.message || "An error occurred. please try again");
-            navigate('/error', { state: { error } });
-        }     
+        //     navigate('/signin');
+        // } catch (error) {
+        //     navigate('/error');
+        // }     
     }
     return(
        <div className="register">
@@ -81,10 +97,10 @@ function RegisterPage(){
              <div className="register-rightSide">
              <form onSubmit={handleSubmit}>
                 <FieldValidation
+                validateAllFields={validateAllFields}
                    formData={formData} 
                    setFormData={setFormData}
                    fieldErrors={fieldErrors}
-                   handleChange={handleChange}
                    setFieldErrors={setFieldErrors}
                 />
                 <div className='button-container'>
@@ -94,7 +110,6 @@ function RegisterPage(){
                 <button type="submit" className='sign-up'>sign up</button>
                 </div>
              </form>
-             {error && <p className="error">{error}</p>}
              </div>
         </div>
         </div>

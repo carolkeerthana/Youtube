@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import '../Register/RegisterPage.css'
 import { FaExclamationCircle } from 'react-icons/fa';
 
-const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) => {
+const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors, validateAllFields}) => {
     const [emailFocused, setEmailFocused] = useState(false);
     const [channelFocused, setChannelFocused] = useState(false);
     const [passwordFocused, setPasswordFocused] = useState(false);
@@ -11,43 +11,67 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
     const handleChange = (e) =>{
         const {name,value} = e.target;
         setFormData({...formData, [name]: value});
+        // validateAllFields(name, value);
     };
 
-    const validateField = (name, value) => {
-        let errors = { ...fieldErrors };
-    
-        switch (name) {
-            case 'email':
-                errors.email = !value && emailFocused ? 'Email is required' : !validateEmail(value) ? 'Enter a valid email' : '';
-                break;
-            case 'channel':
-                errors.channel = !value && channelFocused ? 'Channel name is required' : value.length < 3 ? 'Channel name must be at least 3 characters long' : '';
-                break;
-            case 'password':
-                errors.password = !value && passwordFocused ? 'Password is required' : value.length < 8 ? 'Password must be at least 8 characters long' : '';
-                break;
-            case 'confirmPassword':
-                errors.confirmPassword = !value && confirmPasswordFocused ? 'Confirm password is required' : value !== formData.password ? 'Passwords do not match' : '';
-                break;
-            default:
-                break;
-        }
-    
-        setFieldErrors(errors);
-    };
-    
+    // const validateAllFields = (name, value) => {
+    //     let errors = { ...fieldErrors };
 
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
+    //     // Check if all fields are empty
+    //     if (
+    //         formData.email.trim() === '' &&
+    //         formData.channel.trim() === '' &&
+    //         formData.password.trim() === '' &&
+    //         formData.confirmPassword.trim() === ''
+    //     ) {
+    //         errors.allFields = 'All fields are required';
+    //     } else {
+    //         errors.allFields = ''; // Reset error message if fields are not empty
+    //     }
+    
+    //     switch (name) {
+    //         case 'email':
+    //             errors.email = !value && emailFocused ? 'Email is required' : !validateEmail(value) ? 'Enter a valid email' : '';
+    //             break;
+    //         case 'channel':
+    //             errors.channel = !value && channelFocused ? 'Channel name is required' : value.length < 3 ? 'Channel name must be at least 3 characters long' : '';
+    //             break;
+    //         case 'password':
+    //             errors.password = !value && passwordFocused ? 'Password is required' : value.length < 8 ? 'Password must be at least 8 characters long' : '';
+    //             break;
+    //         case 'confirmPassword':
+    //             errors.confirmPassword = !value && confirmPasswordFocused ? 'Confirm password is required' : value !== formData.password ? 'Passwords do not match' : '';
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    
+    //     setFieldErrors(errors);
+    //     return Object.keys(errors).length === 0;
+    // };
+    
+    // useImperativeHandle(ref, () => ({
+    //     validateAllFields
+        // validateAllFields: () => {
+        //     const isValidEmail = validateField('email', formData.email);
+        //     const isValidChannel = validateField('channel', formData.channel);
+        //     const isValidPassword = validateField('password', formData.password);
+        //     const isValidConfirmPassword = validateField('confirmPassword', formData.confirmPassword);
+        //     return isValidEmail && isValidChannel && isValidPassword && isValidConfirmPassword;
+        // }
+    // }));
 
-    const validatePassword = (password) => {
-        return password.length>=8;
-    }
+    // const validateEmail = (email) => {
+    //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //     return emailRegex.test(email);
+    // };
+
+    // const validatePassword = (password) => {
+    //     return password.length>=8;
+    // }
     const handleBlur = (e) => {
         const { name, value } = e.target;
-        validateField(name, value);
+        // validateAllFields(name, value);
     }
 
   return (
@@ -63,6 +87,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
                 onChange={handleChange}
                 onFocus={() => setEmailFocused(true)}
                 onBlur={handleBlur} 
+                required=''
             />
             {fieldErrors.email && <p className="error"><FaExclamationCircle /> {fieldErrors.email}</p>}
         </div>
@@ -112,6 +137,6 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors}) =
         </div>
       </div>
   )
-}
+};
 
 export default FieldValidation
