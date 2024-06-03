@@ -6,9 +6,9 @@ const FormInput = (props) => {
     
   return (
     <div className={`formInput ${emailFocused ? 'focused' : ''}`}>
-        <label htmlFor={id} className="floating-label">{label}</label>
+        <label htmlFor="inputField" className="floating-label">{label}</label>
         <input 
-        id={id}
+        id="inputField"
         className='input-container'
         {...inputProps}
         onChange={onChange}

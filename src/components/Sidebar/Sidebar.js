@@ -14,7 +14,7 @@ import tom from '../../assets/tom.png'
 
 const Sidebar = ({sidebar}) => { 
   return (
-    <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`}>
+    <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`} data-testid="sidebar">
         <div className='shortcut-links'>
             <div className='side-link'>
                 <img src={home} alt='' /><p>Home</p>

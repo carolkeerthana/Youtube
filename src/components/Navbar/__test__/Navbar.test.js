@@ -7,7 +7,14 @@ import uploadIcon from '../../../assets/upload.png'
 import notificationIcon from '../../../assets/notification.png'
 import { MemoryRouter } from "react-router-dom";
 
+const setSidebarMock = jest.fn();
+
 describe("Navbar", () => {
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+      });
+
     test('Menu icon must have src={menuIcon} alt="menu"', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
@@ -124,4 +131,47 @@ describe("Navbar", () => {
     //     // Verify that the sign-in page does not display the navbar
     //     expect(screen.queryByRole('navigation')).toBeNull();
     //   });
-})
+
+    test.skip('clicking sign-in link navigates to sign-in page without displaying navbar', () => {
+        render(
+          <MemoryRouter initialEntries={['/']}>
+            <Navbar />
+          </MemoryRouter>
+        );
+    
+        // Check for the sign-in link
+        const signInLink = screen.getByRole('link', { name: /sign in/i });
+        fireEvent.click(signInLink);
+    
+        // Verify that the sign-in page does not display the navbar
+        const navbarElement = screen.queryByTestId('menu-icon'); // Assuming 'menu-icon' is a test ID for navbar
+        expect(navbarElement).not.toBeInTheDocument();
+      });
+
+      test('toggleSidebar toggles sidebar state', () => {
+        render(
+            <MemoryRouter initialEntries={['/']}>
+            <Navbar setSidebar={setSidebarMock} />
+            </MemoryRouter>
+        );
+    
+        const toggleButton = screen.getByTestId('menu-icon');
+    
+        // Initial click should call setSidebar with the toggled state function
+        fireEvent.click(toggleButton);
+        expect(setSidebarMock).toHaveBeenCalledWith(expect.any(Function));
+
+        // calls the first agument frm first call    
+        const toggleFunction = setSidebarMock.mock.calls[0][0];
+        let prevState = false;
+        expect(toggleFunction(prevState)).toBe(true); 
+        
+        // First toggle from false to true
+        prevState = true;
+        expect(toggleFunction(prevState)).toBe(false); // Second toggle from true to false
+
+        // Ensure the function is called twice    
+        fireEvent.click(toggleButton);
+        expect(setSidebarMock).toHaveBeenCalledTimes(2);
+        });
+});

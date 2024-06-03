@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import './ForgotPassword.css'
 import FormInput from './FormInput';
 import { FaExclamationCircle } from 'react-icons/fa';
+import { forgotPasswordApi } from './ForgotPasswordApi';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
 
@@ -12,6 +14,7 @@ const ForgotPassword = () => {
       const [error, setError] = useState(null);
       const [successMessage, setSuccessMessage] = useState(null);
       const [fieldError, setFieldError] =  useState(null);
+      const navigate = useNavigate();
     
       const inputs = [
         {
@@ -47,7 +50,7 @@ const ForgotPassword = () => {
         e.preventDefault();
 
         if (emptyField()) {
-        setFieldError('Enter an email.');
+        setFieldError('Enter an email');
         return;
         }
 
@@ -62,46 +65,54 @@ const ForgotPassword = () => {
         console.log(emailData)
 
       try {
-        const response = await fetch('https://apps.rubaktechie.me/api/v1/auth/forgotpassword',{
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(emailData)
-        });
-        console.log(response)
-    
-        if(!response.ok){
-            const errorData = await response.json();
-            setError(errorData.message || 'An error occurred. Please try again.');
-            return;
-        }
+        const response = await forgotPasswordApi(formData)
+        console.log("res:",response)
 
-        setSuccessMessage('An email has been sent to your email address to reset your password ');
-        setFieldError(null);
-        } catch (error) {
-            setError(error.message);
+        if(response.success === true){
+          setSuccessMessage('An email has been sent to your email address to reset your password');
+          setFieldError(null);
+        }else{
+          setError(response.error);
+          setFormData({email: ''});
+          setFieldError(response.error);
         }
+        } catch (error) {
+            navigate('/error')
+        }
+    
+        // if(!response.ok){
+        //     const errorData = await response.json();
+        //     setError(errorData.message || 'An error occurred. Please try again.');
+        //     return;
+        // }
+
+        
 };
 
   return (
     <div className='forgotPassword'>
     <div className='forgot-password-container'>
       <div className='forgotPwd-leftSide'>
-        <h1>UTube</h1>
-        <h2>Account recovery</h2>
+        <h1 data-testid="utube-text">UTube</h1>
+        <h2 data-testid="static-text">Account recovery</h2>
       </div>
       <div className='forgotPwd-rightSide'> 
       <form onSubmit={handleSubmit} noValidate>
-        <p className='para'>Enter the email address to get the reset password link</p>
-        {!successMessage && inputs.map(input =>(
+      {!successMessage && <p className='para' data-testid="p-text">Enter the email address to get the reset password link</p>}
+        {!successMessage && 
+        inputs.map(input =>(
           <FormInput key={input.id} {...input} value={formData[input.name]} onChange={handleChange}/>
         ))}
-        {fieldError && <p className="error"><FaExclamationCircle />{fieldError}</p>}
+        <div className='error-container'>
+        {fieldError && <p className="error-text"><FaExclamationCircle className='error-icon'/>&nbsp;{fieldError}</p>}
+        </div>
         {successMessage ? (
         <span className="success">{successMessage}</span>) :(
         <div className='button-container'>
-        <button type='submit' className='email-submit'>submit</button>
+          <Link to="/signin">
+              <button className="back-btn" type='button'>back</button>
+          </Link>
+          <button type='submit' className='email-submit'>submit</button>
         </div>
         )}
       </form> 

@@ -133,3 +133,14 @@
     font-weight: 400;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+.input-container .error-message{
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+.login-RightSide .error .floating-label {
+    color: red;
+}
