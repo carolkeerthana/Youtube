@@ -97,7 +97,7 @@ const ForgotPassword = () => {
         <h2 data-testid="static-text">Account recovery</h2>
       </div>
       <div className='forgotPwd-rightSide'> 
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={handleSubmit} noValidate autocomplete="off">
       {!successMessage && <p className='para' data-testid="p-text">Enter the email address to get the reset password link</p>}
         {!successMessage && 
         inputs.map(input =>(

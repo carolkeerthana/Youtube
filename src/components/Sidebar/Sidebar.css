@@ -6,6 +6,7 @@
     top: 0;
     padding-left: 2%;
     padding-top: 80px;
+    overflow: scroll;
 }
 .shortcut-links img{
     width: 20px;
@@ -19,17 +20,20 @@
     flex-wrap: wrap;
     cursor: pointer;
 }
+.sidebar img{
+    /* width: 15%; */
+}
 .sidebar hr{
     border: 0;
     height: 1px;
     background: #ccc;
     width: 85%;
 }
-.subscribed-list h3{
+/* .subscribed-list h3{
     font-size: 13px;
     margin: 20px 0;
     color: #5a5a5a;
-}
+} */
 .subscribed-list img{
     width: 25px;
     border-radius: 50%;
@@ -47,4 +51,10 @@
 .small-sidebar hr{
     width: 50%;
     margin-bottom: 25px;
+}
+h3{
+    font-size: 16px;
+    font-weight: bolder;
+    margin: 20px 0;
+    color: #222121;
 }

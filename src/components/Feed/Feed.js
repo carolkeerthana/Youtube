@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './Feed.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Feed = ({category}) => {
   const[data, setData] = useState([]);
+  const navigate = useNavigate();
 
   const fetchData = async () =>{
     const videoUrl= 'https://apps.rubaktechie.me/api/v1/videos/public'

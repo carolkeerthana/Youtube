@@ -40,4 +40,12 @@ describe("Sidebar", () => {
         expect(screen.getByText('MrBeast')).toBeInTheDocument();
         expect(screen.getByText('5-min craft')).toBeInTheDocument();
       });
+
+      test('should show the active category', () => {
+        render(<Sidebar sidebar={true} />);
+    
+        expect(screen.getByText('Subscribed')).toBeInTheDocument();
+        expect(screen.getByText('MrBeast')).toBeInTheDocument();
+        expect(screen.getByText('5-min craft')).toBeInTheDocument();
+      });
 });

@@ -84,7 +84,7 @@ function LoginPage(){
                 </div>
              </div>
              <div className='login-RightSide'>
-                <form onSubmit={handleSubmit} noValidate className='login-RightSide'>
+                <form onSubmit={handleSubmit} noValidate className='login-RightSide' autocomplete="off">
                 <div className={`input-container ${emailFocused ? 'focused' : ''}`}>
                     <label htmlFor="email" className={`floating-label ${fieldErrors.email ? 'error-border' : ''}`}>Email</label>
                     <input 
@@ -94,7 +94,7 @@ function LoginPage(){
                     value={formData.email}
                     onChange={handleChange}
                     onFocus={() => setEmailFocused(true)}
-                    onBlur={(e) => setEmailFocused(e.target.value !== '')}
+                    // onBlur={(e) => setEmailFocused(e.target.value === '')}
                     />
                     {fieldErrors.email && <p className="error-message"><FaExclamationCircle />{fieldErrors.email}</p>}
                 </div>
@@ -104,7 +104,6 @@ function LoginPage(){
                     id="password"
                     type="password" 
                     name="password"
-                    pattern="^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$"
                     value={formData.password}
                     onChange={handleChange}
                     onFocus={() => setPasswordFocused(true)}

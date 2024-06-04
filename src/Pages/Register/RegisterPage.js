@@ -95,7 +95,7 @@ function RegisterPage(){
                 </div>
              </div>
              <div className="register-rightSide">
-             <form onSubmit={handleSubmit}>
+             <form onSubmit={handleSubmit} noValidate autocomplete="off">
                 <FieldValidation
                 validateAllFields={validateAllFields}
                    formData={formData} 
