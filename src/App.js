@@ -1,15 +1,15 @@
-import {Route, RouterProvider,Routes,createBrowserRouter, useLocation } from 'react-router-dom';
+import {Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import RegisterPage from './Pages/Register/RegisterPage';
 import LoginPage from './Pages/Login/LoginPage';
 import ErrorPage from './Pages/Error/ErrorPage';
 import HomePage from './Pages/Home/Home';
-import RootLayout from './Pages/Home/Root';
 import ForgotPassword from './Pages/Forgot_Password/ForgotPassword';
 import ResetPassword from './Pages/Reset_Password/ResetPassword';
 import { useState } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Video from './Pages/Video/Video';
+import { AuthProvider } from './util/AuthContext';
 
 // const router = createBrowserRouter([
 //   {
@@ -48,6 +48,7 @@ function App() {
   
   return (
     <div>
+      <AuthProvider>
       {!hideNavbar && <Navbar setSidebar={setSidebar}/>}
       <Routes>
         {/* <Route path='/' element={<RootLayout/>} /> */}
@@ -58,8 +59,9 @@ function App() {
         <Route path='/resetpassword' element={<ResetPassword />} />
         <Route path='/error' element={<ErrorPage />} />
         <Route path='/*' element={<ErrorPage />} />
-        <Route path='/video/:categoryId/:videoId' element={<Video />} />
+        <Route path='/watch/:videoId' element={<Video />} />
       </Routes>
+      </AuthProvider>
     </div>
   );
 }

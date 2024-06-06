@@ -21,7 +21,7 @@ const Navbar = ({setSidebar}) => {
     <nav className='flex-div'>
       <div className='nav-left flex-div'>
         <img className='menu-icon' onClick={toggleSidebar} src={menuIcon} alt='menu' data-testid='menu-icon'/>
-        <img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/> 
+        <Link to='/'><img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/></Link>
       </div>
 
       <div className='nav-middle flex-div'>

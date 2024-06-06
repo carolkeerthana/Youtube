@@ -57,7 +57,7 @@ function LoginPage(){
         console.log(loginData)
 
         
-        try {
+        try {   
             const response = await loginUser(formData);
             localStorage.setItem('token', response.token);
             navigate('/');

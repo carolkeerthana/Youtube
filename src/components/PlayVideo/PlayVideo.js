@@ -1,77 +1,75 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './PlayVideo.css'
-import video1 from '../../assets/video.mp4'
 import like from '../../assets/like.png'
 import dislike from '../../assets/dislike.png'
 import share from '../../assets/share.png'
 import save from '../../assets/save.png'
-import jack from '../../assets/jack.png'
 import userProfile from '../../assets/user_profile.jpg'
+import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
+import Comments from '../Comments/Comments'
 
 const PlayVideo = ({videoId}) => {
+
+    const[videoData, setVideoData] = useState(null);
+    const navigate = useNavigate();
+   
+    useEffect(() => {
+    const fetchData = async () =>{
+    const videoUrl= `https://apps.rubaktechie.me/api/v1/videos/${videoId}`
+
+    try {
+      const response = await fetch(videoUrl);
+      const json = await response.json();
+      console.log('API response:', json);
+      if((json.success || json.sucess) && json.data) {
+        setVideoData(json.data);
+      }else{
+        console.error('API response is not in the expected format:', json);
+      }   
+    } catch (error) {
+      navigate('/error');
+    }
+  };
+
+  fetchData();
+  }, [videoId, navigate]);
+
+  if (!videoData) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className='play-video'>
-      <video src={`video1`} controls autoPlay muted></video>
-      <h3>Nature</h3>
+      <video type controls autoPlay >
+        <source src={`https://apps.rubaktechie.me/uploads/videos/${videoData.url}`} type="video/mp4"/>
+    </video>
+      <h3>{videoData.title}</h3>
       <div className='play-video-info'>
-        <p>1525 Views &bull; 2 days ago</p>
+        <p>{videoData.views} Views &bull; {moment(videoData.createdAt).fromNow()}</p>
       <div>
-        <span><img src={like} alt=''/> 125</span>
-        <span><img src={dislike} alt=''/> 2</span>
+        <span><img src={like} alt=''/> {videoData.likes}</span>
+        <span><img src={dislike} alt=''/> {videoData.dislikes}</span>
         <span><img src={share} alt=''/> Share</span>
         <span><img src={save} alt=''/> Save</span>
       </div>
     </div>
     <hr />
+    {videoData.userId && (
     <div className='publisher'>
-        <img src={jack} alt=''/>
+        <img src={videoData.userId.photoUrl} alt={videoData.userId.channelName} avatar/>
         <div>
-            <p>The Earth</p>
-            <span>2M Subscribers</span>
+            <p>{videoData.userId.channelName}</p>
+            <span>{videoData.userId.subscribers} subscribers</span>
         </div>
         <button>Subscribe</button>
     </div>
+    )}
     <div className='vid-description'>
-        <p>Channel which makes you to love the nature</p>
-        <p>Subscribe The Earth to watch more videos of life of earth</p>
+        <p>{videoData.description}</p>
+        <p>Subscribe to {videoData.userId.channelName} to watch more videos like this</p>
         <hr/>
-        <h4>130  Comments</h4>
-        <div className='comment'>
-            <img src={userProfile} alt=''/>
-            <div>
-                <h3>John <span>1 day ago</span></h3>
-                <p>These Planets shows are so breathtaking and calming. The narrator does a great job!</p>
-                <div className='comment-action'>
-                    <img src={like} alt=''/>
-                    <span>24</span>
-                    <img src={dislike} alt=''/>
-                </div>
-            </div>
-        </div>
-        <div className='comment'>
-            <img src={userProfile} alt=''/>
-            <div>
-                <h3>John <span>1 day ago</span></h3>
-                <p>These Planets shows are so breathtaking and calming. The narrator does a great job!</p>
-                <div className='comment-action'>
-                    <img src={like} alt=''/>
-                    <span>24</span>
-                    <img src={dislike} alt=''/>
-                </div>
-            </div>
-        </div>
-        <div className='comment'>
-            <img src={userProfile} alt=''/>
-            <div>
-                <h3>John <span>1 day ago</span></h3>
-                <p>These Planets shows are so breathtaking and calming. The narrator does a great job!</p>
-                <div className='comment-action'>
-                    <img src={like} alt=''/>
-                    <span>24</span>
-                    <img src={dislike} alt=''/>
-                </div>
-            </div>
-        </div>
+        <Comments videoId={videoId}/>
     </div>
     </div>
   )
