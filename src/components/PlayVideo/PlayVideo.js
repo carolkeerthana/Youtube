@@ -4,7 +4,6 @@ import like from '../../assets/like.png'
 import dislike from '../../assets/dislike.png'
 import share from '../../assets/share.png'
 import save from '../../assets/save.png'
-import userProfile from '../../assets/user_profile.jpg'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import Comments from '../Comments/Comments'
@@ -33,6 +32,7 @@ const PlayVideo = ({videoId}) => {
   };
 
   fetchData();
+  console.log("rendering:" ,videoId)
   }, [videoId, navigate]);
 
   if (!videoData) {
@@ -57,7 +57,7 @@ const PlayVideo = ({videoId}) => {
     <hr />
     {videoData.userId && (
     <div className='publisher'>
-        <img src={videoData.userId.photoUrl} alt={videoData.userId.channelName} avatar/>
+        <img src={`https://apps.rubaktechie.me/uploads/avatars/${videoData.userId.photoUrl}`} alt={videoData.userId.channelName} avatar/>
         <div>
             <p>{videoData.userId.channelName}</p>
             <span>{videoData.userId.subscribers} subscribers</span>
@@ -66,7 +66,7 @@ const PlayVideo = ({videoId}) => {
     </div>
     )}
     <div className='vid-description'>
-        <p>{videoData.description}</p>
+        <p>{videoData.description}</p><br/>
         <p>Subscribe to {videoData.userId.channelName} to watch more videos like this</p>
         <hr/>
         <Comments videoId={videoId}/>

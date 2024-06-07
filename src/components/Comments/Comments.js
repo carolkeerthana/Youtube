@@ -48,7 +48,7 @@ const Comments = ({videoId}) => {
                 <p>{comment.text}</p>
                 <div className='comment-action'>
                     <img src={comment.like} alt=''/>
-                    <span>REPLY</span>
+                    <span id='reply-text'>REPLY</span>
                     <img src={comment.dislike} alt=''/>
                 </div>
             </div>

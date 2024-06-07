@@ -1,5 +1,16 @@
 .recommended{
-    flex-basis: 30%;
+    flex-basis: 31%;
+}
+.recommended hr{
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 15px 0;
+}
+.recommended .next{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
 }
 .side-video-list{
     display: flex;
@@ -9,11 +20,17 @@
 .side-video-list img{
     flex-basis: 49%;
     width: 50%;
+    margin-bottom: 10px;
 }
 .vid-info{
-    flex-basis: 49%;
+    flex-basis: 47%;
 }
 .vid-info h4{
-    font-size: 13px;
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+.vid-info p{
+    font-size: 16px;
     margin-bottom: 5px;
+    color: #5a5a5a;
 }

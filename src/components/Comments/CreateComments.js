@@ -7,6 +7,7 @@ import { commentsApi } from './CreateCommentsApi';
 
 const CreateComments = ({videoId, onCommentAdded}) => {
     const [newComment, setNewComment] = useState('');
+    const [focused, setFocused] = useState(false);
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
 
@@ -33,6 +34,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
             if ((response.success || response.sucess) && response.data) {
                 onCommentAdded(response.data);
                 setNewComment('');
+                setFocused(false);
             } else {
                 console.error('API response is not in the expected format:', response);
             }
@@ -44,6 +46,8 @@ const CreateComments = ({videoId, onCommentAdded}) => {
     const handleFocus = () => {
         if(!isAuthenticated){
             navigate('/signin');
+        }else{
+            setFocused(true);
         }
     }
 
@@ -56,9 +60,10 @@ const CreateComments = ({videoId, onCommentAdded}) => {
             value={newComment}
             onChange={handleCommentChange}
             onFocus={handleFocus}
+            onBlur={()=>!newComment && setFocused(false)}
         />
-        <div className='comment-buttons'>
-            <button onClick={()=> setNewComment('')}>CANCEL</button>
+        <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
+            <button onClick={()=> {setNewComment(''); setFocused(false); }}>CANCEL</button>
             <button onClick={handleCommentSubmit}>COMMENT</button>
         </div>
     </div>

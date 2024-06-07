@@ -59,7 +59,7 @@ function App() {
         <Route path='/resetpassword' element={<ResetPassword />} />
         <Route path='/error' element={<ErrorPage />} />
         <Route path='/*' element={<ErrorPage />} />
-        <Route path='/watch/:videoId' element={<Video />} />
+        <Route path='/watch/:videoId' element={<Video key={location.pathname}/>} />
       </Routes>
       </AuthProvider>
     </div>
