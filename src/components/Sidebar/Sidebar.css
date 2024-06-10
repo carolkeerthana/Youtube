@@ -1,6 +1,6 @@
 .sidebar{
     background: #fff;
-    width: 15%;
+    width: 18%;
     height: 100vh;
     position: fixed;
     top: 0;
@@ -27,7 +27,7 @@
     border: 0;
     height: 1px;
     background: #ccc;
-    width: 85%;
+    width: 90%;
 }
 /* .subscribed-list h3{
     font-size: 13px;

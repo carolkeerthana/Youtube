@@ -5,16 +5,22 @@ import logo from '../../assets/logo.png';
 import searchIcon from '../../assets/search.png';
 import uploadIcon from '../../assets/upload.png';
 import notificationIcon from '../../assets/notification.png';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { useAuth } from '../../util/AuthContext';
 import UserProfile from '../User/UserProfile/UserProfile';
+import { getRandomColor } from '../../util/Color';
+import { searchText } from './Search/SearchApi';
 
 const Navbar = ({setSidebar}) => {
   const location = useLocation();
-  const {isAuthenticated} = useAuth();
+  const navigate = useNavigate();
+  const {isAuthenticated, user} = useAuth();
   const [showUserProfile, setShowUserProfile] = useState(false);
+  const [userInitialColor, setUserInitialColor] = useState(getRandomColor());
+  const [searchInput, setSearchInput] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
  
   const isSignInOrSignUp = location.pathname === '/signin' || location.pathname === '/signup';
 
@@ -26,6 +32,27 @@ const Navbar = ({setSidebar}) => {
     setShowUserProfile(false); // Close user profile on navigation change
   }, [location]);
 
+  const handleSearch = async(e) => {
+    e.preventDefault();
+
+    try {
+        const results = await searchText({text : searchInput});
+        if(results && results.data){
+          
+          setSearchResults(results.data);
+          navigate('/search-results', {state: {results: results.data}});
+          console.log(results)
+          setSearchInput('');
+        }else {
+          console.error('Invalid API response:', results);
+          navigate('/error'); // Redirect to error page for invalid response
+        }
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+        navigate('/error');
+    }
+  }
+
   return (
     <nav className='flex-div'>
       <div className='nav-left flex-div'>
@@ -34,36 +61,45 @@ const Navbar = ({setSidebar}) => {
       </div>
 
       <div className='nav-middle flex-div'>
-        <div className='search-box flex-div'>
-          <input type='text' placeholder='Search'></input>
-          <img className='search-icon' src={searchIcon} alt='search' data-testid='search-icon'/>
-        </div>
+        <form className='search-box flex-div' onSubmit={handleSearch}>
+          <input 
+          type='text' 
+          placeholder='Search'
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          />
+          <button type='submit'>
+            <img className='search-icon' src={searchIcon} alt='search' data-testid='search-icon'/>
+          </button>
+          </form>
       </div>
 
-      <div className='nav-right flex-div'>
+      <div className={`nav-right flex-div ${isAuthenticated && user ? 'logged-in' : ''}`}>
         <img src={uploadIcon} alt='upload' data-testid='upload-icon'/>
         <img src={notificationIcon} alt='notify' data-testid='notify-icon'/>
+        {isAuthenticated && user ? (
+          <>
 
-        {isAuthenticated ? (
           <div className='user-icon flex-div'>
           <div className='profile-icon' onClick={() => setShowUserProfile(!showUserProfile)}>
-            {/* You can render the user's profile image or initial letter here */}
-            {/* For now, I'm using a placeholder */}
-            <FontAwesomeIcon className='signin-icon' icon={faUserCircle} style={{ color: "#2d82d2" }} data-testid="signin-icon" />
+            <div className="user-initial" style={{ backgroundColor: userInitialColor }}>
+              {user.channelName.charAt(0).toUpperCase()}
+            </div>  
           </div>
-          {showUserProfile && <UserProfile />}
+          {showUserProfile && <UserProfile userInitialColor={userInitialColor}/>}
         </div>
+        </>
         ) : (
 
-        // {!isSignInOrSignUp && (
+        !isSignInOrSignUp && (
         <Link to="/signin" className='signin-container'>
         <div>
-          <FontAwesomeIcon className='signin-icon' icon={faUserCircle} style={{color: "#2d82d2",}} 
+          <FontAwesomeIcon className='signin-icon' icon={faUserCircle} style={{color: "#2d82d2",}}
           data-testid="signin-icon"/>
           <span className='signin-text'>Sign in</span>
         </div>
         </Link>
-        // )}
+        )
         )}
 
       </div>
@@ -73,3 +109,5 @@ const Navbar = ({setSidebar}) => {
 }
 
 export default Navbar
+
+

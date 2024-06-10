@@ -3,18 +3,20 @@ import './LoginPage.css';
 import { Link, useNavigate } from "react-router-dom";
 import { FaExclamationCircle } from 'react-icons/fa';
 import { loginUser } from './LoginApi';
+import { useAuth } from '../../util/AuthContext';
 
 function LoginPage(){
     const [formData, setFormData] = useState({
         email: '',
         password: ''    
-    })
-    const [emailFocused, setEmailFocused] = useState(false);
-    const [passwordFocused, setPasswordFocused] = useState(false);
-    const [error, setError] = useState(null);
-    const [fieldErrors, setFieldErrors] = useState({});
-    const navigate = useNavigate();
-
+        })
+        const [emailFocused, setEmailFocused] = useState(false);
+        const [passwordFocused, setPasswordFocused] = useState(false);
+        const [error, setError] = useState(null);
+        const [fieldErrors, setFieldErrors] = useState({});
+        const navigate = useNavigate();
+        const {login} = useAuth();
+       
     const handleChange = (e) => {
         const {name,value} = e.target;
         setFormData({...formData, [name]: value});
@@ -56,15 +58,21 @@ function LoginPage(){
         };
         console.log(loginData)
 
-        
-        try {   
+       
+        try {  
             const response = await loginUser(formData);
-            localStorage.setItem('token', response.token);
-            navigate('/');
+            console.log(response)
+            if(response.token){
+                localStorage.setItem('token', response.token);
+                login();
+                navigate('/');
+            }else {
+                setError('Login failed. Please try again.');
+            }
             }catch{
                 navigate('/error');
             }
-        
+       
             // if(!response.ok){
             //     const errorData = await response.json();
             //     setError(errorData.message || 'An error occurred. Please try again.');
@@ -87,9 +95,9 @@ function LoginPage(){
                 <form onSubmit={handleSubmit} noValidate className='login-RightSide' autocomplete="off">
                 <div className={`input-container ${emailFocused ? 'focused' : ''}`}>
                     <label htmlFor="email" className={`floating-label ${fieldErrors.email ? 'error-border' : ''}`}>Email</label>
-                    <input 
-                    id="email" 
-                    type="email" 
+                    <input
+                    id="email"
+                    type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -100,9 +108,9 @@ function LoginPage(){
                 </div>
                 <div className={`input-container ${passwordFocused ? 'focused' : ''}`}>
                     <label htmlFor="password" className={`floating-label ${fieldErrors.password ? 'error-border' : ''}`}>Password</label>
-                    <input 
+                    <input
                     id="password"
-                    type="password" 
+                    type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
@@ -118,8 +126,8 @@ function LoginPage(){
                             <Link to="/signup">
                                 <button className="create-account" type='button'>create account</button>
                             </Link>
-                                <button className='sign-in' type='submit' name='submit' data-testid="signin-page">sign in</button> 
-                        </div> 
+                                <button className='sign-in' type='submit' name='submit' data-testid="signin-page">sign in</button>
+                        </div>
                     </form>
                     </div>
                     </div>
@@ -127,3 +135,5 @@ function LoginPage(){
 )}
 
 export default LoginPage;
+
+

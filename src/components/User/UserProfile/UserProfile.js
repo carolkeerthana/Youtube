@@ -1,52 +1,35 @@
 import './UserProfile.css';
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+// import {useNavigate } from "react-router-dom";
 import { useAuth } from '../../../util/AuthContext';
-import { fetchUserDetails } from './UserDetailsApi';
+import { getRandomColor } from '../../../util/Color';
+import { FaCog, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
-const UserProfile = () => {
-    const { logout } = useAuth();
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchAndSetUser = async () => {
-            try {
-                const storedUser = localStorage.getItem('user');
-                if (storedUser) {
-                    setUser(JSON.parse(storedUser));
-                } else {
-                    const fetchedUser = await fetchUserDetails();
-                    setUser(fetchedUser);
-                    localStorage.setItem('user', JSON.stringify(fetchedUser));
-                }
-            } catch (error) {
-                console.error('Failed to fetch user details', error);
-            }
-        };
-
-        fetchAndSetUser();
-    }, []);
-
-    const handleSignOut = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        logout();
-        navigate('/signin');
-    };
-
-    if (!user) {
-        return <p>Loading...</p>; // or render some placeholder UI
-    }
+const UserProfile = ({userInitialColor }) => {
+    const { user, logout } = useAuth();
+    // const [user, setUser] = useState(null);
+    // const navigate = useNavigate();
 
     return (
-        <div className='user-info'>
-            <img src={user.photoUrl} alt='User Avatar' />
-            <p>{user.channelName}</p>
-            <p>{user.email}</p>
-            <Link to='/channel'>Your channel</Link>
-            <Link to='/studio'>UTube Studio</Link>
-            <button onClick={handleSignOut}>Sign out</button>
+        <div className="user-profile">
+            <div className="user-info">
+                {user.photoUrl === 'no-photo.jpg' ? (
+                    <div className="user-initial" 
+                    style={{ backgroundColor: `rgba(${parseInt(userInitialColor.slice(1, 3), 16)}, ${parseInt(userInitialColor.slice(3, 5), 16)}, ${parseInt(userInitialColor.slice(5, 7), 16)}, 0.3)` }}>
+                        {user.channelName.charAt(0)}
+                    </div>
+                ) : (
+                    <img src={user.photoUrl} alt={user.channelName} className="user-photo" />
+                )}
+                <div>
+                    <p className="user-name">{user.channelName}</p>
+                    <p className="user-email">{user.email}</p>
+                </div>
+            </div>
+            <ul className="user-options">
+                <li><FaUser className="user-option-icon" /> Your Channel</li>
+                <li><FaCog className="user-option-icon" />Studio</li>
+                <li onClick={logout}><FaSignOutAlt className="user-option-icon" />Sign Out</li>
+            </ul>
         </div>
     );
 };
