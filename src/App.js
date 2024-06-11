@@ -23,16 +23,15 @@ function App() {
   return (
     <div>
       <AuthProvider>
+        {!hideNavbar && <Navbar/>}
       <Routes>
-        <Route path="/" element={<HomePage  sidebar={sidebar}/>} />
+        <Route path="/*" element={<HomePage  sidebar={sidebar}/>} />
         <Route path='/signup' element={<RegisterPage />} errorElement={<ErrorPage/>}/>
         <Route path='/signin' element={<LoginPage />} errorElement={<ErrorPage/>}/>
         <Route path='/forgotpassword' element={<ForgotPassword />} />
         <Route path='/resetpassword' element={<ResetPassword />} />
         <Route path='/error' element={<ErrorPage />} />
-        <Route path='/*' element={<ErrorPage />} />
         <Route path='/watch/:videoId' element={<Video key={location.pathname}/>} /> 
-        {/* <Route path='/search-results' element={<SearchResults />} />      */}
       </Routes>
       </AuthProvider>
     </div>

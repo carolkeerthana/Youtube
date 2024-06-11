@@ -22,6 +22,9 @@
     display: none;
     margin-left: 10px;
   }
+  .input-field.visible{
+    border-bottom: 2px solid #007BFF;
+  }
   .comment-buttons.visible{
     display: flex;
     align-items: center;

@@ -43,9 +43,14 @@ const Feed = ({category}) => {
         return(
         <Link to={`/watch/${item._id}`} className='card' key={item._id}>           
             <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${item.thumbnailUrl}`} alt={item.title}/>
+            <div className='feed-details'>
+            <img src={`https://apps.rubaktechie.me/uploads/avatars/${item.userId.photoUrl}`} alt={item.userId.channelName} avatar/>
+            <div>
             <h2>{item.title}</h2>
             <h3>{item.userId.channelName}</h3>
             <p>{item.views} views &bull; {getDaysAgo(item.createdAt)} day ago</p>
+            </div>
+            </div>
         </Link>
         )
       })}

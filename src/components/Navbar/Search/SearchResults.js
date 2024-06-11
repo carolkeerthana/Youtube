@@ -6,7 +6,7 @@ import moment from 'moment';
 const SearchResults = () => {
     const location = useLocation();
     const { results } = location.state || {};
-    console.log(results)
+    console.log("search:",results)
 
     return (
         <div className="search-results">

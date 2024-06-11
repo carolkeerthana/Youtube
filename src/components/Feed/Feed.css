@@ -24,3 +24,13 @@
 .card p{
     font-size: 14px;
 }
+.feed-details{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.feed-details img{
+    width: 15%;
+    border-radius: 50%;
+    margin-right: 15px;
+}

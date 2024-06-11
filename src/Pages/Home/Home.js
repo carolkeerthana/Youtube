@@ -11,13 +11,13 @@ const HomePage= ({sidebar}) =>{
     
 return(
     <>
-    <Navbar />
-    <div className="main-content">
+    {/* <Navbar /> */}
+    <div className="home-container">
     <Sidebar sidebar={sidebar} category={category} setCategory={setCategory}/>     
     <div className={`container ${sidebar ? "" : 'large-container'}`}>
         <Routes>
-            <Route index element={<Feed category={category}/>}/>
-            <Route path='/search-results' element={<SearchResults/>}/>
+            <Route index element={<Feed category={category}/>}/>         
+            <Route path='/search-results' element={<SearchResults />} />
         </Routes>
     </div>
     </div>

@@ -1,5 +1,4 @@
 export const searchText = async (textData) => {
-    console.log(textData)
     
     const token = localStorage.getItem('token');
     if(!token){

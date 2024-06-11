@@ -1,15 +1,32 @@
 import './CreateComments.css'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import userProfile from '../../assets/user_profile.jpg'
 import { useAuth } from '../../util/AuthContext';
 import { commentsApi } from './CreateCommentsApi';
+import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 
 const CreateComments = ({videoId, onCommentAdded}) => {
     const [newComment, setNewComment] = useState('');
     const [focused, setFocused] = useState(false);
+    const [userDetails, setUserDetails] = useState(null);
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const user = await fetchUserDetails();
+                setUserDetails(user);
+            } catch (error) {
+                console.error('Failed to fetch user details:', error);
+            }
+        };
+
+        if (isAuthenticated) {
+            fetchUserData();
+        }
+    }, [isAuthenticated]);
 
     const handleCommentChange = (e) =>{
         setNewComment(e.target.value);
@@ -23,9 +40,17 @@ const CreateComments = ({videoId, onCommentAdded}) => {
             return;
         }
 
+        if (!userDetails) {
+            console.error('User details not available');
+            // Handle error or display message to the user
+            return;
+        }
+
         const commentsData = {
             videoId: videoId,
-            text: newComment.text
+            text: newComment,
+            userId: userDetails.id,
+            channelName: userDetails.channelName
         };
         console.log(commentsData)
 
@@ -54,7 +79,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
   return (
     <div className='new-comment'>
         <img src={userProfile} alt=''/>
-        <input 
+        <input className={`input-field ${focused ? 'visible' : ''}`}
             type='text'
             placeholder='Add a public comment...'
             value={newComment}

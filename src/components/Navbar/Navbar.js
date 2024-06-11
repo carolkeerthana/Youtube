@@ -43,13 +43,9 @@ const Navbar = ({setSidebar}) => {
           navigate('/search-results', {state: {results: results.data}});
           console.log(results)
           setSearchInput('');
-        }else {
-          console.error('Invalid API response:', results);
-          navigate('/error'); // Redirect to error page for invalid response
         }
     } catch (error) {
       console.error('Error fetching search results:', error);
-        navigate('/error');
     }
   }
 

@@ -32,7 +32,7 @@ const PlayVideo = ({videoId}) => {
   };
 
   fetchData();
-  console.log("rendering:" ,videoId)
+  console.log("rendering:" ,videoId)  
   }, [videoId, navigate]);
 
   if (!videoData) {
