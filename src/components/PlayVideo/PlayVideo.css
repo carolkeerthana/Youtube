@@ -15,7 +15,7 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap:wrap ;
-    margin-top: 10px;
+    margin-top: -10px;
     font-size: 14px;
     color: #5a5a5a;
 }
@@ -27,6 +27,9 @@
     display: inline-flex;
     align-items: center;
     margin-left: 15px;
+}
+.user-actions{
+    display: flex;
 }
 .play-video hr{
     border: 0;

@@ -5,3 +5,30 @@
     justify-content: space-between;
     flex-wrap: wrap;
 }
+.video-page-container {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+  }
+  .video-page-container.dimmed .main-content {
+    opacity: 0.5; /* Dimmed effect */
+  }
+  .play-container {
+    flex-grow: 1;
+    padding-left: 20px;
+  }
+.large-container {
+    padding-left: 0;
+}
+/* .video-page-container .dimmed {
+    background: rgba(0, 0, 0, 0.5);
+} */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}

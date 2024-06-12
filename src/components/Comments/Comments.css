@@ -1,7 +1,7 @@
 .comment{
     display: flex;
     align-items: flex-start;
-    margin: 20px 0;
+    margin: 30px 0;
 }
 .comment img{
     width: 35px;
@@ -12,15 +12,14 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    margin-top: -30px;
+    margin-top: -15px;
     /* margin-bottom: 10px; */
 
 }
 .comment-header{
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-   margin-bottom: 5px;
+    align-items: center;
 }
 .comment-actions {
     position: relative;
@@ -36,9 +35,9 @@
   .icon-circle {
     display: flex;
     justify-content: center;
-    align-items: end;
-    width: 50px; /* Adjust width and height for the circular shape */
-    height: 50px; /* Adjust width and height for the circular shape */
+    align-items: center;
+    width: 40px; /* Adjust width and height for the circular shape */
+    height: 40px; /* Adjust width and height for the circular shape */
     border-radius: 50%;
     background-color: transparent;
     transition: background-color 0.3s ease; /* Smooth transition for hover effect */

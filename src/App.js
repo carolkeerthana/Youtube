@@ -10,12 +10,9 @@ import { useState } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Video from './Pages/Video/Video';
 import { AuthProvider } from './util/AuthContext';
-import SearchResults from './components/Navbar/Search/SearchResults';
-import Sidebar from './components/Sidebar/Sidebar';
 
 function App() {
   const [sidebar, setSidebar] = useState(true);
-  const [searchResults, setSearchResults] = useState(true);
   const location = useLocation();
   const hideNavbar = location.pathname === '/signin' || location.pathname === '/signup'
   || location.pathname === '/forgotpassword';
@@ -23,15 +20,15 @@ function App() {
   return (
     <div>
       <AuthProvider>
-        {!hideNavbar && <Navbar/>}
+        {!hideNavbar && location.pathname !== '/' && <Navbar setSidebar={setSidebar}/>}
       <Routes>
-        <Route path="/*" element={<HomePage  sidebar={sidebar}/>} />
+        <Route path="/*" element={<HomePage  sidebar={sidebar} setSidebar={setSidebar}/>} />
         <Route path='/signup' element={<RegisterPage />} errorElement={<ErrorPage/>}/>
         <Route path='/signin' element={<LoginPage />} errorElement={<ErrorPage/>}/>
         <Route path='/forgotpassword' element={<ForgotPassword />} />
         <Route path='/resetpassword' element={<ResetPassword />} />
         <Route path='/error' element={<ErrorPage />} />
-        <Route path='/watch/:videoId' element={<Video key={location.pathname}/>} /> 
+        <Route path='/watch/:videoId' element={<Video key={location.pathname} sidebar={sidebar} setSidebar={setSidebar}/>} /> 
       </Routes>
       </AuthProvider>
     </div>

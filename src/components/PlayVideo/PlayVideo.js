@@ -7,8 +7,10 @@ import save from '../../assets/save.png'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import Comments from '../Comments/Comments'
+import Feelings from '../Feelings/Feelings'
+import {checkFeeling} from '../Feelings/CheckFeelingApi'
 
-const PlayVideo = ({videoId}) => {
+const PlayVideo = ({videoId, navbar}) => {
 
     const[videoData, setVideoData] = useState(null);
     const navigate = useNavigate();
@@ -32,6 +34,16 @@ const PlayVideo = ({videoId}) => {
   };
 
   fetchData();
+
+  // Call the checkFeeling API when the component mounts
+//   checkFeeling(videoId).then(data => {
+//     console.log('User feelings:', data);
+//     // Handle the response data as needed
+// }).catch(error => {
+//     console.error('Error checking feelings:', error);
+//     // Handle the error if needed
+// });
+
   console.log("rendering:" ,videoId)  
   }, [videoId, navigate]);
 
@@ -47,9 +59,12 @@ const PlayVideo = ({videoId}) => {
       <h3>{videoData.title}</h3>
       <div className='play-video-info'>
         <p>{videoData.views} Views &bull; {moment(videoData.createdAt).fromNow()}</p>
-      <div>
-        <span><img src={like} alt=''/> {videoData.likes}</span>
-        <span><img src={dislike} alt=''/> {videoData.dislikes}</span>
+      <div className='user-actions'>
+        <Feelings 
+        videoId={videoId} 
+        initialLikes={videoData.likes} 
+        initialDislikes={videoData.dislikes}
+        />
         <span><img src={share} alt=''/> Share</span>
         <span><img src={save} alt=''/> Save</span>
       </div>
