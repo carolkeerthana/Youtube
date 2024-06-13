@@ -36,13 +36,13 @@ const PlayVideo = ({videoId, navbar}) => {
   fetchData();
 
   // Call the checkFeeling API when the component mounts
-//   checkFeeling(videoId).then(data => {
-//     console.log('User feelings:', data);
-//     // Handle the response data as needed
-// }).catch(error => {
-//     console.error('Error checking feelings:', error);
-//     // Handle the error if needed
-// });
+  checkFeeling(videoId).then(data => {
+    console.log('User feelings:', data);
+    // Handle the response data as needed
+}).catch(error => {
+    console.error('Error checking feelings:', error);
+    // Handle the error if needed
+});
 
   console.log("rendering:" ,videoId)  
   }, [videoId, navigate]);

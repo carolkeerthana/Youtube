@@ -44,7 +44,7 @@ const Feed = ({category}) => {
         <Link to={`/watch/${item._id}`} className='card' key={item._id}>           
             <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${item.thumbnailUrl}`} alt={item.title}/>
             <div className='feed-details'>
-            <img src={`https://apps.rubaktechie.me/uploads/avatars/${item.userId.photoUrl}`} alt={item.userId.channelName} avatar/>
+            <img src={`https://apps.rubaktechie.me/uploads/avatars/${item.userId.photoUrl}`} alt={item.userId.channelName}/>
             <div>
             <h2>{item.title}</h2>
             <h3>{item.userId.channelName}</h3>

@@ -67,6 +67,9 @@ const Navbar = ({setSidebar}) => {
           <button type='submit'>
             <img className='search-icon' src={searchIcon} alt='search' data-testid='search-icon'/>
           </button>
+
+
+          
           </form>
       </div>
 

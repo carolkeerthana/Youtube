@@ -6,8 +6,23 @@ import searchIcon from '../../../assets/search.png'
 import uploadIcon from '../../../assets/upload.png'
 import notificationIcon from '../../../assets/notification.png'
 import { MemoryRouter } from "react-router-dom";
+import { AuthProvider } from "../../../util/AuthContext"
+import { searchText } from "../Search/SearchApi"
 
 const setSidebarMock = jest.fn();
+const MockedAuthProvider = ({ children }) => (
+    <AuthProvider>
+      {children}
+    </AuthProvider>
+  );
+
+  const mockNavigate = jest.fn();
+  jest.mock('../SearchApi.js');
+  
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockNavigate ,
+  }));
 
 describe("Navbar", () => {
 
@@ -18,7 +33,9 @@ describe("Navbar", () => {
     test('Menu icon must have src={menuIcon} alt="menu"', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         const menuImg = screen.getByTestId('menu-icon');
@@ -29,7 +46,9 @@ describe("Navbar", () => {
     test('Logo must have src={logo} alt="logo"', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         const logoImg = screen.getByTestId('youtube-logo');
@@ -40,7 +59,9 @@ describe("Navbar", () => {
     test('Should have search placeholder', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         const searchInput = screen.queryByPlaceholderText('Search');
@@ -51,7 +72,9 @@ describe("Navbar", () => {
     test('Search icon must have src={searchIcon} alt="search-icon"', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         const searchImg = screen.getByTestId('search-icon');
@@ -62,7 +85,9 @@ describe("Navbar", () => {
     test('Upload icon must have src={uploadIcon} alt="upload"', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         const uploadImg = screen.getByTestId('upload-icon');
@@ -73,7 +98,9 @@ describe("Navbar", () => {
     test('Notification icon must have src={notificationIcon} alt="notify"', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         const notificationImg = screen.getByTestId('notify-icon');
@@ -84,7 +111,9 @@ describe("Navbar", () => {
     test('displays the sign-in link with icon and text when not on sign-in or sign-up page', () => {
         render(
         <MemoryRouter initialEntries={[{ pathname: '/'}]}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         )
         // Check for the link to the sign-in page
@@ -106,7 +135,9 @@ describe("Navbar", () => {
     test('does not display the sign-in link on sign-in page', () => {
         render(
         <MemoryRouter initialEntries={['/signin']}>
-        <Navbar />
+        <MockedAuthProvider>
+            <Navbar />
+            </MockedAuthProvider>
         </MemoryRouter>
         );
         
@@ -135,7 +166,9 @@ describe("Navbar", () => {
     test.skip('clicking sign-in link navigates to sign-in page without displaying navbar', () => {
         render(
           <MemoryRouter initialEntries={['/']}>
+            <MockedAuthProvider>
             <Navbar />
+            </MockedAuthProvider>
           </MemoryRouter>
         );
     
@@ -151,7 +184,9 @@ describe("Navbar", () => {
       test('toggleSidebar toggles sidebar state', () => {
         render(
             <MemoryRouter initialEntries={['/']}>
-            <Navbar setSidebar={setSidebarMock} />
+                <MockedAuthProvider>
+                <Navbar setSidebar={setSidebarMock} />
+                </MockedAuthProvider>
             </MemoryRouter>
         );
     
@@ -174,4 +209,22 @@ describe("Navbar", () => {
         fireEvent.click(toggleButton);
         expect(setSidebarMock).toHaveBeenCalledTimes(2);
         });
+
+        test('searching valid text, should give the result', async() => {
+            searchText.mockResolvedValue({token: "fake-token"});
+            render(
+                <MemoryRouter initialEntries={['/']}>
+                    <MockedAuthProvider>
+                    <Navbar />
+                    </MockedAuthProvider>
+                </MemoryRouter>
+            )
+    
+            fireEvent.change(screen.getByPlaceholderText(/Search/i), {target : {text: "sample"}});
+            fireEvent.click()
+
+            // await waitFor(() => {expect(localStorage.getItem("token")).toBe("fake-token") });
+            // await waitFor(() => {expect(mockNavigate).toHaveBeenCalledWith("/") });
+          });
+        
 });
