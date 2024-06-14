@@ -13,6 +13,7 @@ import {checkFeeling} from '../Feelings/CheckFeelingApi'
 const PlayVideo = ({videoId, navbar}) => {
 
     const[videoData, setVideoData] = useState(null);
+    const [userFeeling, setUserFeeling] = useState(null);
     const navigate = useNavigate();
    
     useEffect(() => {
@@ -33,19 +34,19 @@ const PlayVideo = ({videoId, navbar}) => {
     }
   };
 
-  fetchData();
+    fetchData();
 
-  // Call the checkFeeling API when the component mounts
-  checkFeeling(videoId).then(data => {
-    console.log('User feelings:', data);
-    // Handle the response data as needed
-}).catch(error => {
-    console.error('Error checking feelings:', error);
-    // Handle the error if needed
-});
+    // check feeling API 
+    checkFeeling({videoId : videoId}).then(response => {
+      console.log('User feelings:', response);
+      if(response.success){
+        setUserFeeling(response.data.feeling)
+        console.log(response.data.feeling)
+      }
+  });
 
-  console.log("rendering:" ,videoId)  
-  }, [videoId, navigate]);
+    console.log("rendering:" ,videoId)  
+    }, [videoId, navigate]);
 
   if (!videoData) {
     return <div>Loading...</div>;
@@ -64,6 +65,7 @@ const PlayVideo = ({videoId, navbar}) => {
         videoId={videoId} 
         initialLikes={videoData.likes} 
         initialDislikes={videoData.dislikes}
+        initialUserFeeling={userFeeling}
         />
         <span><img src={share} alt=''/> Share</span>
         <span><img src={save} alt=''/> Save</span>

@@ -3,10 +3,17 @@ import './Sidebar.css'
 import menuIcon from '../../assets/menu.png';
 import logo from '../../assets/logo.png';
 import home from '../../assets/home.png'
+import trending from '../../assets/trending-topic.png'
+import subscriptions from '../../assets/subscribe.png'
+import history from '../../assets/history.png'
+import like from '../../assets/like.png'
 import gameIcon from '../../assets/game_icon.png'
-import automobiles from '../../assets/automobiles.png'
-import tech from '../../assets/tech.png'
-import music from '../../assets/music.png'
+import live from '../../assets/live.png'
+import settings from '../../assets/settings.png'
+import report from '../../assets/report.png'
+import help from '../../assets/help.png'
+import feedback from '../../assets/feedback.png'
+import youtube from '../../assets/youtube.png'
 import jack from '../../assets/jack.png'
 import tom from '../../assets/tom.png'
 import { Link} from 'react-router-dom';
@@ -51,19 +58,19 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
                 <img src={home} alt='' /><p>Home</p>
             </div>
             <div className={`side-link ${activePage === 'trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('trending')} data-testid='trending-link'>
-                <img src={gameIcon} alt=''/><p>Trending</p>
+                <img src={trending} alt=''/><p>Trending</p>
             </div>
             <div className={`side-link ${activePage === 'subscriptions' ? 'active' : ''}`} onClick={() =>handleActivePageClick('subscriptions')} data-testid='subscriptions-link'>
-                <img src={automobiles} alt=''/><p>Subscriptions</p>
+                <img src={subscriptions} alt=''/><p>Subscriptions</p>
             </div>
             <hr/>
             <div className='shortcut-links'>
             <h3>You</h3>
             <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
-                <img src={tech} alt=''/><p>History</p>
+                <img src={history} alt=''/><p>History</p>
             </div>
             <div className={`side-link ${activePage === 'liked videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('liked videos')} data-testid='liked-videos-link'>
-                <img src={music} alt=''/><p>Liked videos</p>
+                <img src={like} alt=''/><p>Liked videos</p>
             </div>
             </div>
             <hr/>
@@ -81,28 +88,28 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         <div className='shortcut-links'>
             <h3>Explore</h3>
             <div className={`side-link ${activePage === 'uTube Premium' ? 'active' : ''}`} onClick={() =>handleActivePageClick('uTube Premium')} data-testid='uTube-Premium-link'>
-                <img src={gameIcon} alt=''/><p>UTube Premium</p>
+                <img src={youtube} alt=''/><p>UTube Premium</p>
             </div>
             <div className={`side-link ${activePage === 'gaming' ? 'active' : ''}`} onClick={() =>handleActivePageClick('gaming')} data-testid='gaming-link'>
             <img src={gameIcon} alt=''/><p>Gaming</p>
             </div>
             <div className={`side-link ${activePage === 'live' ? 'active' : ''}`} onClick={() =>handleActivePageClick('live')} data-testid='live-link'>
-            <img src={gameIcon} alt=''/><p>Live</p>
+            <img src={live} alt=''/><p>Live</p>
             </div>
         </div>
         <hr/>
         <div className='shortcut-links'>
             <div className={`side-link ${activePage === 'settings' ? 'active' : ''}`} onClick={() =>handleActivePageClick('settings')} data-testid='settings-link'>
-                <img src={gameIcon} alt=''/><p>Settings</p>
+                <img src={settings} alt=''/><p>Settings</p>
             </div>
             <div className={`side-link ${activePage === 'report history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('report history')} data-testid='report-history-link'>
-            <img src={gameIcon} alt=''/><p>Report History</p>
+            <img src={report} alt=''/><p>Report History</p>
             </div>
             <div className={`side-link ${activePage === 'help' ? 'active' : ''}`} onClick={() =>handleActivePageClick('help')} data-testid='help-link'>
-            <img src={gameIcon} alt=''/><p>Help</p>
+            <img src={help} alt=''/><p>Help</p>
             </div>
             <div className={`side-link ${activePage === 'send feedback' ? 'active' : ''}`} onClick={() =>handleActivePageClick('send feedback')} data-testid='send-feedback-link'>
-            <img src={gameIcon} alt=''/><p>Send feedback</p>
+            <img src={feedback} alt=''/><p>Send feedback</p>
             </div>
         </div>
     </div>
@@ -115,19 +122,19 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
                 <img src={home} alt='' /><p>Home</p>
             </div>
             <div className={`side-link ${activePage === 'trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('trending')} data-testid='trending-link'>
-                <img src={gameIcon} alt=''/><p>Trending</p>
+                <img src={trending} alt=''/><p>Trending</p>
             </div>
             <div className={`side-link ${activePage === 'subscriptions' ? 'active' : ''}`} onClick={() =>handleActivePageClick('subscriptions')} data-testid='subscriptions-link'>
-                <img src={automobiles} alt=''/><p>Subscriptions</p>
+                <img src={subscriptions} alt=''/><p>Subscriptions</p>
             </div>
             <hr/>
             <div className='shortcut-links'>
             <h3>You</h3>
             <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
-                <img src={tech} alt=''/><p>History</p>
+                <img src={history} alt=''/><p>History</p>
             </div>
             <div className={`side-link ${activePage === 'liked videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('liked videos')} data-testid='liked-videos-link'>
-                <img src={music} alt=''/><p>Liked videos</p>
+                <img src={like} alt=''/><p>Liked videos</p>
             </div>
             </div>
             <hr/>
@@ -145,28 +152,28 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         <div className='shortcut-links'>
             <h3>Explore</h3>
             <div className={`side-link ${activePage === 'uTube Premium' ? 'active' : ''}`} onClick={() =>handleActivePageClick('uTube Premium')} data-testid='uTube-Premium-link'>
-                <img src={gameIcon} alt=''/><p>UTube Premium</p>
+                <img src={youtube} alt=''/><p>UTube Premium</p>
             </div>
             <div className={`side-link ${activePage === 'gaming' ? 'active' : ''}`} onClick={() =>handleActivePageClick('gaming')} data-testid='gaming-link'>
             <img src={gameIcon} alt=''/><p>Gaming</p>
             </div>
             <div className={`side-link ${activePage === 'live' ? 'active' : ''}`} onClick={() =>handleActivePageClick('live')} data-testid='live-link'>
-            <img src={gameIcon} alt=''/><p>Live</p>
+            <img src={live} alt=''/><p>Live</p>
             </div>
         </div>
         <hr/>
         <div className='shortcut-links'>
             <div className={`side-link ${activePage === 'settings' ? 'active' : ''}`} onClick={() =>handleActivePageClick('settings')} data-testid='settings-link'>
-                <img src={gameIcon} alt=''/><p>Settings</p>
+                <img src={settings} alt=''/><p>Settings</p>
             </div>
             <div className={`side-link ${activePage === 'report history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('report history')} data-testid='report-history-link'>
-            <img src={gameIcon} alt=''/><p>Report History</p>
+            <img src={report} alt=''/><p>Report History</p>
             </div>
             <div className={`side-link ${activePage === 'help' ? 'active' : ''}`} onClick={() =>handleActivePageClick('help')} data-testid='help-link'>
-            <img src={gameIcon} alt=''/><p>Help</p>
+            <img src={help} alt=''/><p>Help</p>
             </div>
             <div className={`side-link ${activePage === 'send feedback' ? 'active' : ''}`} onClick={() =>handleActivePageClick('send feedback')} data-testid='send-feedback-link'>
-            <img src={gameIcon} alt=''/><p>Send feedback</p>
+            <img src={feedback} alt=''/><p>Send feedback</p>
             </div>
         </div>
     </div>

@@ -26,7 +26,7 @@ function App() {
         <Route path='/signup' element={<RegisterPage />} errorElement={<ErrorPage/>}/>
         <Route path='/signin' element={<LoginPage />} errorElement={<ErrorPage/>}/>
         <Route path='/forgotpassword' element={<ForgotPassword />} />
-        <Route path='/resetpassword' element={<ResetPassword />} />
+        {/* <Route path='/resetpassword' element={<ResetPassword />} /> */}
         <Route path='/error' element={<ErrorPage />} />
         <Route path='/watch/:videoId' element={<Video key={location.pathname} sidebar={sidebar} setSidebar={setSidebar}/>} /> 
       </Routes>

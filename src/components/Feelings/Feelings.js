@@ -15,7 +15,7 @@ const Feelings = ({videoId, initialLikes, initialDislikes, initialUserFeeling}) 
     const [action, setAction] = useState(null);
 
     useEffect(() => {
-        setUserFeeling(initialUserFeeling); // Set the initial user feeling when the component mounts
+        setUserFeeling(initialUserFeeling); // initial user feeling 
     }, [initialUserFeeling]);
 
     const handleLike = async() =>{
@@ -53,16 +53,16 @@ const Feelings = ({videoId, initialLikes, initialDislikes, initialUserFeeling}) 
     }
 
   return (
-    <div>
+    <div className='feeling-icons'>
          {showSignIn && (
                 <div className='overlay' onClick={() => setShowSignIn(false)}>
                     <SignInPopup action={action}/>
                 </div>
             )}
-        <span onClick={handleLike} style={{ color: userFeeling === 'like' ? 'black' : 'inherit', cursor: userFeeling === 'like' ? 'default' : 'pointer' }}>
+        <span onClick={handleLike} className={`icons ${userFeeling === 'like' ? 'active' : ''}`}>
             <img src={like} alt='like'/> {likes}
         </span>
-        <span onClick={handleDislike} style={{ color: userFeeling === 'dislike' ? 'black' : 'inherit', cursor: userFeeling === 'dislike' ? 'default' : 'pointer' }}>
+        <span onClick={handleDislike} className={`icons ${userFeeling === 'dislike' ? 'active' : ''}`}>
             <img src={dislike} alt='dislike'/>{dislikes}
         </span>
     </div>
