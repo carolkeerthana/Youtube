@@ -10,6 +10,7 @@ import { useState } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Video from './Pages/Video/Video';
 import { AuthProvider } from './util/AuthContext';
+import Trending from './components/Trending/Trending';
 
 function App() {
   const [sidebar, setSidebar] = useState(true);
@@ -20,7 +21,7 @@ function App() {
   return (
     <div>
       <AuthProvider>
-        {!hideNavbar && location.pathname !== '/' && <Navbar setSidebar={setSidebar}/>}
+        {!hideNavbar && <Navbar setSidebar={setSidebar}/>}
       <Routes>
         <Route path="/*" element={<HomePage  sidebar={sidebar} setSidebar={setSidebar}/>} />
         <Route path='/signup' element={<RegisterPage />} errorElement={<ErrorPage/>}/>
@@ -29,6 +30,7 @@ function App() {
         {/* <Route path='/resetpassword' element={<ResetPassword />} /> */}
         <Route path='/error' element={<ErrorPage />} />
         <Route path='/watch/:videoId' element={<Video key={location.pathname} sidebar={sidebar} setSidebar={setSidebar}/>} /> 
+
       </Routes>
       </AuthProvider>
     </div>

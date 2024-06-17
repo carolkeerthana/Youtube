@@ -1,0 +1,19 @@
+.trending-page {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+}
+.trending-result-item {
+    display: flex;
+    margin-bottom: 50px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.trending-result-item img{
+    width: 300px;
+    height: auto;
+    border-radius: 5px;
+    margin-right: 20px;
+}

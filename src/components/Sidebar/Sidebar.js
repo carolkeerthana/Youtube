@@ -23,7 +23,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
     const [activePage, setActivePage] = useState('home');
 
     const handleActivePageClick = (item) => {
-        if(item !== activePage){
+                if(item !== activePage){
             setActivePage(item);
         }
     }
@@ -53,24 +53,24 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             data-testid='menu-icon'/>
             <Link to='/'><img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/></Link>
         </div>
-        <div className='shortcut-links'>
-            <div className={`side-link ${activePage === 'home' ? 'active' : ''}`} onClick={() =>handleActivePageClick('home')} data-testid='home-link'>
-                <img src={home} alt='' /><p>Home</p>
+        <div className='icon-links'>
+            <div className={`side-link ${activePage === 'home' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
+                <Link to='/' className='linked-icons specific-link'><img src={home} alt='' /><p>Home</p></Link>
             </div>
             <div className={`side-link ${activePage === 'trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('trending')} data-testid='trending-link'>
-                <img src={trending} alt=''/><p>Trending</p>
+                <Link to='/trending' className='linked-icons specific-link'><img src={trending} alt=''/><p>Trending</p></Link>
             </div>
             <div className={`side-link ${activePage === 'subscriptions' ? 'active' : ''}`} onClick={() =>handleActivePageClick('subscriptions')} data-testid='subscriptions-link'>
-                <img src={subscriptions} alt=''/><p>Subscriptions</p>
+                <Link to='/subscriptions' className='linked-icons specific-link'><img src={subscriptions} alt=''/><p>Subscriptions</p></Link>
             </div>
             <hr/>
-            <div className='shortcut-links'>
+            <div className='icon-links'>
             <h3>You</h3>
             <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
-                <img src={history} alt=''/><p>History</p>
+                <Link className='linked-icons specific-link'><img src={history} className='linked-icons' alt=''/><p>History</p></Link>
             </div>
             <div className={`side-link ${activePage === 'liked videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('liked videos')} data-testid='liked-videos-link'>
-                <img src={like} alt=''/><p>Liked videos</p>
+                <Link className='linked-icons specific-link'><img src={like} alt=''/><p>Liked videos</p></Link>
             </div>
             </div>
             <hr/>
@@ -119,22 +119,22 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
                 <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`} data-testid="sidebar">
                     <div className='shortcut-links'>
                     <div className={`side-link ${activePage === 'home' ? 'active' : ''}`} onClick={() =>handleActivePageClick('home')} data-testid='home-link'>
-                <img src={home} alt='' /><p>Home</p>
+                <Link to={'/'}><img src={home} alt='' /><p>Home</p></Link>
             </div>
             <div className={`side-link ${activePage === 'trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('trending')} data-testid='trending-link'>
-                <img src={trending} alt=''/><p>Trending</p>
+            <Link to={'/trending'}><img src={trending} alt=''/><p>Trending</p></Link>
             </div>
             <div className={`side-link ${activePage === 'subscriptions' ? 'active' : ''}`} onClick={() =>handleActivePageClick('subscriptions')} data-testid='subscriptions-link'>
-                <img src={subscriptions} alt=''/><p>Subscriptions</p>
+            <Link to='/subscriptions'><img src={subscriptions} alt=''/><p>Subscriptions</p></Link>
             </div>
             <hr/>
             <div className='shortcut-links'>
             <h3>You</h3>
             <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
-                <img src={history} alt=''/><p>History</p>
+            <Link><img src={history} alt=''/><p>History</p></Link>
             </div>
             <div className={`side-link ${activePage === 'liked videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('liked videos')} data-testid='liked-videos-link'>
-                <img src={like} alt=''/><p>Liked videos</p>
+            <Link><img src={like} alt=''/><p>Liked videos</p></Link>
             </div>
             </div>
             <hr/>

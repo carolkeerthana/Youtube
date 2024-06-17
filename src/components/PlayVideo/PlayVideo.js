@@ -9,6 +9,7 @@ import moment from 'moment'
 import Comments from '../Comments/Comments'
 import Feelings from '../Feelings/Feelings'
 import {checkFeeling} from '../Feelings/CheckFeelingApi'
+import CreateSubscriber from '../Subscriptions/CreateSubscriber/CreateSubscriber'
 
 const PlayVideo = ({videoId, navbar}) => {
 
@@ -79,7 +80,11 @@ const PlayVideo = ({videoId, navbar}) => {
             <p>{videoData.userId.channelName}</p>
             <span>{videoData.userId.subscribers} subscribers</span>
         </div>
-        <button>Subscribe</button>
+        <button>
+          <CreateSubscriber
+          channelId={videoData.userId.id}
+          />
+        </button>
     </div>
     )}
     <div className='vid-description'>

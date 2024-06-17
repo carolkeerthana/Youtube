@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import './Feed.css'
 import { Link, useNavigate } from 'react-router-dom'
+import { fetchVideos } from './GetVideosApi';
 
 const Feed = ({category}) => {
   const[data, setData] = useState([]);
   const navigate = useNavigate();
 
   const fetchData = async () =>{
-    const videoUrl= 'https://apps.rubaktechie.me/api/v1/videos/public'
 
     try {
-      const response = await fetch(videoUrl);
-      const json = await response.json();
-      console.log('API response:', json);
-      if(json.success && Array.isArray(json.data)){
-        setData(json.data);
+      const response = await fetchVideos();
+      console.log('API response:', response);
+      if(response.success && Array.isArray(response.data)){
+        setData(response.data);
       }else{
-        console.error('API response is not in the expected format:', json);
+        console.error('API response is not in the expected format:', response);
         setData([]);
       }   
     } catch (error) {

@@ -55,7 +55,7 @@ const Feelings = ({videoId, initialLikes, initialDislikes, initialUserFeeling}) 
   return (
     <div className='feeling-icons'>
          {showSignIn && (
-                <div className='overlay' onClick={() => setShowSignIn(false)}>
+                <div className='feelings-overlay' onClick={() => setShowSignIn(false)}>
                     <SignInPopup action={action}/>
                 </div>
             )}

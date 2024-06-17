@@ -10,9 +10,9 @@
     position: relative;
     flex-direction: column;
   }
-  .video-page-container.dimmed .main-content {
+  /* .video-page-container.dimmed .main-content {
     opacity: 0.5; 
-  }
+  } */
   .play-container {
     flex-grow: 1;
     padding-left: 20px;
