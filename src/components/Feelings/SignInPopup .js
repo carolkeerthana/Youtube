@@ -1,4 +1,5 @@
 import React from 'react'
+import'./SignInPopup.css'
 import { useNavigate } from 'react-router-dom'
 
 const SignInPopup  = ({action}) => {
@@ -7,10 +8,21 @@ const SignInPopup  = ({action}) => {
     const handleSignIn = () => {
         navigate('/signin');
     }
+
+    const getActionText = () => {
+      switch (action) {
+        case 'like':
+          return 'Like this video?';
+        case 'subscribe':
+          return 'Want to subscribe to this channel?';
+        default:
+          return "Don't like this video?";
+      }
+    };
   return (
     <div className='sign-in-popup'>
-      <p id='p-one'>{action === "like" ? "Like this video?" : "Don't like this video?"}</p>
-      <p id='p-two'>Sign in to make your opinion count.</p>
+      <p id='p-one'>{getActionText()}</p>
+      <p id='p-two'>{action === 'subscribe' ? 'Sign in to subscribe to this channel.' : 'Sign in to make your opinion count'}</p>
       <button onClick={handleSignIn}>Sign in</button>
     </div>
   )

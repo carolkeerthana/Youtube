@@ -2,52 +2,46 @@ import React, { useEffect, useState } from 'react'
 import './CreateSubscriber.css'
 import SignInPopup from '../../Feelings/SignInPopup ';
 import { useAuth } from '../../../util/AuthContext';
+import { CreateSubscriberApi } from './CreateSubscriberApi';
 
-const CreateSubscriber = ({channelId}) => {
+const CreateSubscriber = ({channelId, isSubscribed, setIsSubscribed }) => {
   const {isAuthenticated} = useAuth();
-  const [subscribers, setSubscribers] =  useState(null);
   const [error, setError] = useState('')
-  const [userAction, setUserAction] = useState(null);
   const [showSignIn, setShowSignIn] = useState(false);
   const [action, setAction] = useState(null);
 
-    const handleSubscribe = async() => {
-      try {
-          const response = await CreateSubscriber({channelId: channelId});
-          console.log('API response:', response);
-          if(response.success && Array.isArray(response.data)){
-            setSubscribers(response.data);
-          }else{
-            setError(response.error);
-            setSubscribers([]);
-          }   
-        } catch (error) {
-          setError('Error fetching data');
-          setSubscribers([]);
-        }
-  } 
-  useEffect(() => {
-    handleSubscribe();         
-}, []);
-    
+  const handleSubscribeToggle = async() => {
 
-  const handleSubscribed = () => {
-    
+    if(!isAuthenticated){
+      setShowSignIn(true);
+      setAction('subscribe');
+      return;
+    }
+    try {
+      const response = await CreateSubscriberApi({channelId});
+      console.log('API response:', response);
+      if(response.success){
+        setIsSubscribed(!isSubscribed);
+      }else{
+        setError(response.error || 'Subscription failed');
+      }
+    } catch (error) {
+      setError('Error processing subscription');
+    }
   }
 
+  console.log(isSubscribed)
   return (
-    <div>
+    <div className='subscribe-button'>
       {showSignIn && (
                 <div className='feelings-overlay' onClick={() => setShowSignIn(false)}>
                     <SignInPopup action={action}/>
                 </div>
             )}
-        <button onClick={handleSubscribe} className={`icons ${userAction === 'Subscribe' ? 'active' : ''}`}>
-        Subscribe
+        <button onClick={handleSubscribeToggle} className={`button ${isSubscribed ? 'active' : ''}`}>
+        {isSubscribed ? 'SUBSCRIBED' : 'SUBSCRIBE'}
         </button>
-        <button onClick={handleSubscribed} className={`icons ${userAction === 'Subscribed' ? 'active' : ''}`}>
-        Subscribed
-        </button>
+        {error && <p className='error-message'>{error}</p>}
     </div>
   )
 }

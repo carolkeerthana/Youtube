@@ -10,27 +10,43 @@ import Comments from '../Comments/Comments'
 import Feelings from '../Feelings/Feelings'
 import {checkFeeling} from '../Feelings/CheckFeelingApi'
 import CreateSubscriber from '../Subscriptions/CreateSubscriber/CreateSubscriber'
+import { checkSubscription } from '../Subscriptions/CheckSubscriptionApi'
+import { fetchVideosById } from './GetVideoApi'
 
 const PlayVideo = ({videoId, navbar}) => {
-
     const[videoData, setVideoData] = useState(null);
     const [userFeeling, setUserFeeling] = useState(null);
+    const [isSubscribed, setIsSubscribed] = useState(false); //initial state of subscription
     const navigate = useNavigate();
    
     useEffect(() => {
     const fetchData = async () =>{
-    const videoUrl= `https://apps.rubaktechie.me/api/v1/videos/${videoId}`
 
     try {
-      const response = await fetch(videoUrl);
-      const json = await response.json();
-      console.log('API response:', json);
-      if((json.success || json.sucess) && json.data) {
-        setVideoData(json.data);
-      }else{
-        console.error('API response is not in the expected format:', json);
-      }   
-    } catch (error) {
+      const response = await fetchVideosById(videoId);
+      console.log('API response:', response);
+      if((response.success || response.sucess) && response.data) {
+        setVideoData(response.data);
+
+      // check subscription API 
+      const channelId = {
+        channelId: response.data.userId.id
+      };
+      const subscriptionResponse = await checkSubscription(channelId);
+          console.log(subscriptionResponse);
+          if (subscriptionResponse.success) {
+            if (subscriptionResponse.data && subscriptionResponse.data._id) {
+              setIsSubscribed(true);
+            } else {
+              setIsSubscribed(false);
+            }
+          } else {
+            console.error('Failed to fetch subscription status:', subscriptionResponse);
+          }
+        } else {
+          console.error('API response is not in the expected format:', response);
+        } 
+      }catch (error) {
       navigate('/error');
     }
   };
@@ -80,11 +96,11 @@ const PlayVideo = ({videoId, navbar}) => {
             <p>{videoData.userId.channelName}</p>
             <span>{videoData.userId.subscribers} subscribers</span>
         </div>
-        <button>
-          <CreateSubscriber
-          channelId={videoData.userId.id}
-          />
-        </button>
+        {/* <button> */}
+          <CreateSubscriber channelId={videoData.userId.id} 
+          isSubscribed={isSubscribed}
+          setIsSubscribed={setIsSubscribed}/>
+        {/* </button> */}
     </div>
     )}
     <div className='vid-description'>

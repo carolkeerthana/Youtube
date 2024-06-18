@@ -27,16 +27,16 @@ const Subscriptions = () => {
         fetchSubscriptionVideos();         
 }, [])
   return (
-      <div className='subscriptions-page'>
+      <div className='subscriptions'>
         {error ? (
                 <p>{error}</p>
             ) : ( 
                 subscriptions && subscriptions.length > 0 ? (
                 subscriptions.map((subscription) => {
                     return(
-                    <Link to={`/watch/${subscription._id}`} className='card' key={subscription._id}>           
+                    <Link to={`/watch/${subscription._id}`} className='subscriptions-card' key={subscription._id}>           
                         <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${subscription.thumbnailUrl}`} alt={subscription.title}/>
-                        <div className='feed-details'>
+                        <div className='subscriptions-details'>
                         <img src={`https://apps.rubaktechie.me/uploads/avatars/${subscription.userId.photoUrl}`} alt={subscription.userId.channelName}/>
                         <div>
                         <h2>{subscription.title}</h2>

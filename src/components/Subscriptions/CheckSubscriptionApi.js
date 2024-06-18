@@ -1,10 +1,10 @@
-export const CreateSubscriberApi = async (channelId) => {
+export const checkSubscription = async (channelId) => {
 
     const token = localStorage.getItem('token');
     if(!token){
         return { success: false, message: 'No token found' };
     }
-    const response = await fetch('https://apps.rubaktechie.me/api/v1/subscriptions',{
+    const response = await fetch('https://apps.rubaktechie.me/api/v1/subscriptions/check',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

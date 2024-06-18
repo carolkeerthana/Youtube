@@ -60,15 +60,7 @@
     font-size: 13px;
     color: #5a5a5a;
 }
-.publisher button{
-    background: red;
-    color: #fff;
-    padding: 8px 30px;
-    border: 0;
-    outline: 0;
-    border-radius: 4px;
-    cursor: pointer;
-}
+
 .vid-description{
     padding-left: 55px;
     margin: 15px 0;

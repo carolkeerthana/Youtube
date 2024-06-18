@@ -1,0 +1,26 @@
+.button {
+    background: rgb(223, 11, 11);
+    color: #fff;
+    padding: 12px 30px;
+    border: 0;
+    outline: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.1rem;
+  }
+.subscribe-button{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+  
+  .button.active{
+    background-color: rgb(219, 208, 208); /* Color when subscribed */
+    color: black;  
+}
+  
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  
