@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import SearchResults from '../../components/Navbar/Search/SearchResults';
 import Trending from '../../components/Trending/Trending';
 import Subscriptions from '../../components/Subscriptions/Subscriptions';
+import LikedVideos from '../../components/LikedVideos/LikedVideos';
 
 const HomePage= ({sidebar,setSidebar}) =>{
 
@@ -20,6 +21,7 @@ return(
             <Route path='/search-results' element={<SearchResults />} />
             <Route path='/trending' element={<Trending />} />
             <Route path='/subscriptions' element={<Subscriptions />} />
+            <Route path='/liked-videos' element={<LikedVideos />} />
         </Routes>
     </div>
     </div>

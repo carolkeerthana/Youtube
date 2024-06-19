@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './Sidebar.css'
 import menuIcon from '../../assets/menu.png';
 import logo from '../../assets/logo.png';
@@ -16,12 +16,19 @@ import feedback from '../../assets/feedback.png'
 import youtube from '../../assets/youtube.png'
 import jack from '../../assets/jack.png'
 import tom from '../../assets/tom.png'
+import {useAuth} from '../../util/AuthContext'
 import { Link, useLocation} from 'react-router-dom';
 
 const Sidebar = ({sidebar, setSidebar, page}) => { 
     const location = useLocation();
     const isVideoPage = page === 'video';
+    const {isAuthenticated} = useAuth();
     const [activePage, setActivePage] = useState(location.pathname);
+
+    useEffect(()=>{
+        setActivePage(location.pathname);
+        console.log('Active page:', location.pathname);
+    }, [location]);
 
     const handleActivePageClick = (path) => {
             setActivePage(path);
@@ -32,16 +39,22 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
       };
 
       useEffect(() => {
-        setActivePage(location.pathname);
-      }, [location]);
-
-      useEffect(() => {
         if (isVideoPage && sidebar) {
             document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open on video page
         } else {
             document.body.style.overflow = 'auto'; // Enable scrolling when sidebar is closed
         }
     }, [isVideoPage, sidebar]);
+
+    const handleProtectedLinkClick = (e, path) => {
+        if (!isAuthenticated) {
+            e.preventDefault();
+            // alert('You must be signed in to access this page.');
+        } else {
+            console.log('Clicked path:', path);
+            setActivePage(path);
+        }
+    };
 
   return (
     <>
@@ -57,9 +70,9 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             <Link to='/'><img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/></Link>
         </div>
         <div className='icon-links'>
-            <div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
-                <Link to='/' className='linked-icons specific-link'><img src={home} alt='' /><p>Home</p></Link>
-            </div>
+            <Link to='/' className='linked-icons specific-link'><div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
+                <img src={home} alt='' /><p>Home</p>
+            </div></Link>
             <div className={`side-link ${activePage === '/trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/trending')} data-testid='trending-link'>
                 <Link to='/trending' className='linked-icons specific-link'><img src={trending} alt=''/><p>Trending</p></Link>
             </div>
@@ -72,9 +85,11 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
                 <Link className='linked-icons specific-link'><img src={history} className='linked-icons' alt=''/><p>History</p></Link>
             </div>
-            <div className={`side-link ${activePage === 'liked videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('liked videos')} data-testid='liked-videos-link'>
-                <Link className='linked-icons specific-link'><img src={like} alt=''/><p>Liked videos</p></Link>
+            <Link className='linked-icons specific-link'>
+            <div className={`side-link ${activePage === '/liked-videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/liked-videos')} data-testid='liked-videos-link'>
+                <img src={like} alt=''/><p>Liked videos</p>
             </div>
+            </Link>
             </div>
             <hr/>
         </div> 
@@ -121,24 +136,34 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             {!isVideoPage && (
             <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`} data-testid="sidebar">
             <div className='shortcut-links'>
-            <div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
-                <Link to={'/'} className='linked-icons specific-link'><img src={home} alt='' /><p>Home</p></Link>
-            </div>
-            <div className={`side-link ${activePage === '/trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/trending')} data-testid='trending-link'>
-            <Link to={'/trending'} className='linked-icons specific-link'><img src={trending} alt=''/><p>Trending</p></Link>
-            </div>
-            <div className={`side-link ${activePage === '/subscriptions' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/subscriptions')} data-testid='subscriptions-link'>
-            <Link to='/subscriptions' className='linked-icons specific-link'><img src={subscriptions} alt=''/><p>Subscriptions</p></Link>
-            </div>
+            <Link to={'/'} className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
+                    <img src={home} alt='' /><p>Home</p>
+                </div>
+            </Link>
+            <Link to={'/trending'} className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === '/trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/trending')} data-testid='trending-link'>
+                <img src={trending} alt=''/><p>Trending</p>
+                </div>
+            </Link>
+            <Link to='/subscriptions' className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === '/subscriptions' ? 'active' : ''}`} onClick={(e) =>handleProtectedLinkClick(e,'/subscriptions') } data-testid='subscriptions-link'>
+                <img src={subscriptions} alt=''/><p>Subscriptions</p>
+                </div>
+            </Link>
             <hr/>
             <div className='shortcut-links'>
             <h3>You</h3>
-            <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
-            <Link className='linked-icons specific-link'><img src={history} alt=''/><p>History</p></Link>
-            </div>
-            <div className={`side-link ${activePage === 'liked videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('liked videos')} data-testid='liked-videos-link'>
-            <Link className='linked-icons specific-link'><img src={like} alt=''/><p>Liked videos</p></Link>
-            </div>
+            <Link className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === 'history' ? 'active' : ''}`}  data-testid='history-link'>
+                <img src={history} alt=''/><p>History</p>
+                </div>
+            </Link>
+            <Link to='/liked-videos' className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === '/liked-videos' ? 'active' : ''}`} onClick={(e) =>handleProtectedLinkClick(e, '/liked-videos')} data-testid='liked-videos-link'>
+                <img src={like} alt=''/><p>Liked videos</p>
+                </div>
+            </Link>
             </div>
             <hr/>
         </div> 

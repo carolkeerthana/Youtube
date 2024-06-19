@@ -23,10 +23,10 @@ const CreateSubscriber = ({channelId, isSubscribed, setIsSubscribed }) => {
       if(response.success){
         setIsSubscribed(!isSubscribed);
       }else{
-        setError(response.error || 'Subscription failed');
+        console.error(response.error || 'Subscription failed');
       }
     } catch (error) {
-      setError('Error processing subscription');
+      console.error('Error processing subscription');
     }
   }
 
