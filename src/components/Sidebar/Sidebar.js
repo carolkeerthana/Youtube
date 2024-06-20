@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Sidebar.css'
 import menuIcon from '../../assets/menu.png';
 import logo from '../../assets/logo.png';
@@ -154,8 +154,8 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             <hr/>
             <div className='shortcut-links'>
             <h3>You</h3>
-            <Link className='linked-icons specific-link'>
-                <div className={`side-link ${activePage === 'history' ? 'active' : ''}`}  data-testid='history-link'>
+            <Link to='/history' className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === '/history' ? 'active' : ''}`}  onClick={(e) =>handleProtectedLinkClick(e, '/history')} data-testid='history-link'>
                 <img src={history} alt=''/><p>History</p>
                 </div>
             </Link>

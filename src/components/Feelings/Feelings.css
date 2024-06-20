@@ -8,8 +8,6 @@
     z-index: 1000; /* Ensure the overlay is on top of other elements */
     display: flex; /* Initially hidden */
 }
-
-
 .feeling-icons{
     display: flex;
     align-items: center;

@@ -7,6 +7,7 @@ import SearchResults from '../../components/Navbar/Search/SearchResults';
 import Trending from '../../components/Trending/Trending';
 import Subscriptions from '../../components/Subscriptions/Subscriptions';
 import LikedVideos from '../../components/LikedVideos/LikedVideos';
+import History from '../../components/History/History';
 
 const HomePage= ({sidebar,setSidebar}) =>{
 
@@ -18,10 +19,11 @@ return(
     <div className={`container ${sidebar ? "" : 'large-container'}`}>
         <Routes>
             <Route index element={<Feed />}/>         
-            <Route path='/search-results' element={<SearchResults />} />
-            <Route path='/trending' element={<Trending />} />
-            <Route path='/subscriptions' element={<Subscriptions />} />
-            <Route path='/liked-videos' element={<LikedVideos />} />
+            <Route path='/search-results' element={<SearchResults/>} />
+            <Route path='/trending' element={<Trending/>} />
+            <Route path='/subscriptions' element={<Subscriptions/>} />
+            <Route path='/liked-videos' element={<LikedVideos/>} />
+            <Route path='/history' element={<History/>}/>
         </Routes>
     </div>
     </div>

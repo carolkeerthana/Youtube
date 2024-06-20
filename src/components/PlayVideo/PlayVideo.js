@@ -12,6 +12,7 @@ import {checkFeeling} from '../Feelings/CheckFeelingApi'
 import CreateSubscriber from '../Subscriptions/CreateSubscriber/CreateSubscriber'
 import { checkSubscription } from '../Subscriptions/CheckSubscriptionApi'
 import { fetchVideosById } from './GetVideoApi'
+import { CreateHistory } from '../History/HistoryApi/CreateHistoryApi'
 
 const PlayVideo = ({videoId, navbar}) => {
     const[videoData, setVideoData] = useState(null);
@@ -20,54 +21,60 @@ const PlayVideo = ({videoId, navbar}) => {
     const navigate = useNavigate();
    
     useEffect(() => {
-    const fetchData = async () =>{
-
-    try {
-      const response = await fetchVideosById(videoId);
-      console.log('API response:', response);
-      if((response.success || response.sucess) && response.data) {
-        setVideoData(response.data);
-
-      // check subscription API 
-      const channelId = {
-        channelId: response.data.userId.id
-      };
-      const subscriptionResponse = await checkSubscription(channelId);
-          console.log(subscriptionResponse);
-          if (subscriptionResponse.success) {
-            if (subscriptionResponse.data && subscriptionResponse.data._id) {
+      const fetchData = async () => {
+        try {
+          const response = await fetchVideosById(videoId);
+          console.log('API response:', response);
+  
+          if ((response.success || response.sucess) && response.data) {
+            setVideoData(response.data);
+  
+            // Check subscription status
+            const channelId = { channelId: response.data.userId.id };
+            const subscriptionResponse = await checkSubscription(channelId);
+            console.log('Subscription response:', subscriptionResponse);
+            if ((subscriptionResponse.success || subscriptionResponse.sucess) && subscriptionResponse.data && subscriptionResponse.data._id) {
               setIsSubscribed(true);
             } else {
               setIsSubscribed(false);
             }
+  
+            // Create history   
+            const historiesData = {
+              type: 'watch',
+              videoId: videoId
+            };
+            const historyResponse = await CreateHistory(historiesData);
+            console.log('History response:', historyResponse);
+            if (!(historyResponse.success || historyResponse.sucess)) {
+              console.error('Failed to create history:', historyResponse);
+            }
           } else {
-            console.error('Failed to fetch subscription status:', subscriptionResponse);
+            console.error('API response is not in the expected format:', response);
           }
-        } else {
-          console.error('API response is not in the expected format:', response);
-        } 
-      }catch (error) {
-      navigate('/error');
-    }
-  };
-
-    fetchData();
-
-    // check feeling API 
-    checkFeeling({videoId : videoId}).then(response => {
-      console.log('User feelings:', response);
-      if(response.success){
-        setUserFeeling(response.data.feeling)
-        console.log(response.data.feeling)
-      }
-  });
-
-    console.log("rendering:" ,videoId)  
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          navigate('/error');
+        }
+      };
+  
+      fetchData();
+  
+      // Check user feelings
+      checkFeeling({ videoId: videoId }).then(response => {
+        console.log('User feelings:', response);
+        if (response.success || response.sucess) {
+          setUserFeeling(response.data.feeling);
+        }
+      });
+  
+      console.log("rendering:", videoId);
     }, [videoId, navigate]);
-
-  if (!videoData) {
-    return <div>Loading...</div>;
-  }
+  
+    if (!videoData) {
+      return <div>Loading...</div>;
+    }
+  
 
   return (
     <div className='play-video'>
