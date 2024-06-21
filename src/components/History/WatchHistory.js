@@ -1,15 +1,14 @@
-import { Link } from 'react-router-dom';
 import './WatchHistory.css'
 import { fetchHistories } from './HistoryApi/GetHistoryApi';
 import './History.css'
 import React, { useEffect, useState } from 'react'
-import moment from 'moment';
-import Pagination from './Pagination';
 import closeIcon from '../../assets/close.png';
+import xMark from '../../assets/x-mark.png';
 import { deleteHistory } from './HistoryApi/DeleteHistoryApi';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const WatchHistory = () => {
-    const [histories, setHistories] = useState([]);
+const WatchHistory = ({ history, setHistory }) => {
+    // const [histories, setHistories] = useState([]);
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -20,15 +19,15 @@ const WatchHistory = () => {
             const response = await fetchHistories(page, 'watch');
             console.log('API response:', response);
             if(response.success && Array.isArray(response.data)){
-                setHistories(response.data);
+                setHistory(response.data);
                 setTotalPages(response.totalPages);
             }else{
               setError(response.error);
-              setHistories([]);
+              setHistory([]);
             }  
           } catch (error) {
             setError('Error fetching data');
-            setHistories([]);
+            setHistory([]);
           }
     } 
     useEffect(() => {
@@ -43,7 +42,7 @@ const WatchHistory = () => {
         try {
             const response = await deleteHistory(historyId);
             if(response.success){
-                setHistories((prevHistories) => prevHistories.filter((history) => history._id !== historyId));
+                setHistory((prevHistories) => prevHistories.filter((history) => history._id !== historyId));
                 setNotification('History deleted successfully');
                 setTimeout(() => setNotification(''), 3000); // Hide notification after 3 seconds
             }else {
@@ -60,33 +59,34 @@ const WatchHistory = () => {
         {error ? (
                 <p>{error}</p>
             ) : ( 
-                histories && histories.length > 0 ? (
+                history && history.length > 0 ? (
                     <>
-                   {histories.map((history) => (
+                   {history.map((history) => (
                        <div className='history-card' key={history._id}>           
                         <div className='history-image'>
                         <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${history.videoId.thumbnailUrl}`} alt={history.videoId.title}/>
                         </div>
-                        <div className='history-details'> 
+                        <div className='history-details'>
                             <div className='title-header'>
-                                <h2>{history.videoId.title}</h2>
+                                <p className='history-title'>{history.videoId.title}</p>
                                 <button className='delete-button' onClick={()=>handleDeleteHistory(history._id)}><img src={closeIcon} alt=''/></button>
                             </div>  
-                        <p>{history.userId.channelName} &bull; {history.videoId.views} views</p>
-                        <p>{history.videoId.description}</p>
+                        <p className='title-p'>{history.userId.channelName} &nbsp; &bull; &nbsp; {history.videoId.views} views</p>
+                        <p className='title-p'>{history.videoId.description}</p>
                         </div>
                     </div>
                     ))}
-                  <Pagination
+                  {/* <Pagination
                   currentPage = {currentPage}
                   totalPages = {totalPages}
-                  onPageChange={handlePageChange}/>    
+                  onPageChange={handlePageChange}/>     */}
                   </>          
             ) : (
-                <p>No results found.</p>
+                <p>No watch history yet.</p>
             )
         )}
-        {notification && <div className='notification'>{notification}</div>}
+        {notification && <div className='notification'>{notification}
+        <FontAwesomeIcon icon="fa-regular fa-circle-xmark" style={{color: "#000000",}} className='notification-icon'/></div>}
         </div>
   )
 }

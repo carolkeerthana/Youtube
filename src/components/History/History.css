@@ -4,7 +4,7 @@
     margin: 15px;
 }
 .left-side-history{
-    width: 60%;
+    width: 70%;
     height: 100vh;
     flex-direction: column;
 }
@@ -13,12 +13,23 @@
     flex-direction: column;
     align-items: flex-start;
     justify-self: start;
-    width: 100%;
+    width: 400px;
     height: 100%;
 }
 h2{
-    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-bottom: 20px;
     color: black;
+}
+.title-header .history-title{
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+.history-details .title-p{
+    margin-bottom: 10px;
+    color: #5a5a5a;
+    font-size: 18px;
 }
 .history-card{
     display: flex;
@@ -27,7 +38,7 @@ h2{
     align-items: flex-start;
     position: relative;
 }
-.history-card img{
+.history-image img{
     width: 300px;
     height: auto;
     border-radius: 5px;
@@ -42,27 +53,139 @@ h2{
 }
 .title-header{
     display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
 }
-.delete-button  img{
-    width: 20px;
-    
+.title-header .delete-button  img{
+    width: 17px; 
 }
-.delete-button {
+.title-header .delete-button {
     position: absolute;
+    width: 60px;
+    height: 35px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
     top: 0;
-    right: -50%;
+    right: -30%;
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 3rem;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
-.delete-button:hover{
-    background-color: grey;
+.title-header .delete-button:hover{
+    background-color: rgb(231, 229, 229);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 0;
 }
 .right-side-history{
-    width: 40%;
-    height: 100vh;
-    background-color: rgb(240, 240, 238);
+    width: 45%;
+    padding: 20px;
+    padding-left: 35px;
+    background-color: #f3f0f0;
+}
+.right-side-history h2{
+    margin: 20px;
+    margin-top: 50px;
+    color: #333;
+}
+.right-side-history hr{
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    width: 100%;
+}
+.right-side-history input[type="radio"] {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+    transform: scale(1.5); 
+}
+.right-side-history label {
+    font-size: 20px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+}
+.right-side-history div{
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 30px;
+}
+.right-side-history div:hover{
+    background-color: rgb(231, 229, 229);
+}
+.right-side-history span {
+    display: block;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding-left: 30px;
+    cursor: pointer;
+    color: #333;
+}
+.search-h2{
+    padding-bottom: 30px;
+}
+.search-text .delete-button  img{
+    width: 17px;   
+}
+.search-text .delete-button {
+    width: 50px;
+    height: 50px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    background: none;
+    border: none;
+    /* font-size: 1.5rem; */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.search-text .delete-button:hover{
+    background-color:rgb(231, 229, 229);
+    border-radius: 50%;
+}
+.search-text{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 700px;
+    color: #333;
+}
+.search-text p{
+    font-size: 20px;
+    font-weight: 700;
+    /* margin-bottom: 15px; */
+}
+.search-history{
+    padding-bottom: 20px;
+}
+.search-subtext p{
+    margin-bottom: 10px;
+    color: #5a5a5a;
+    font-size: 18px;
+}
+.notification {
+    position: absolute;
+    bottom: 10px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    padding-right: 10%;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 1000;
+}
+.notification-icon{
+    /* width: 20px; */
 }

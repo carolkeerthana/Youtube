@@ -2,33 +2,61 @@ import './History.css'
 import React, { useState } from 'react'
 import WatchHistory from './WatchHistory';
 import SearchHistory from './SearchHistory';
+import { deleteAllHistory } from './HistoryApi/DeleteHistoriesApi';
 
 const History = () => {
     const [historyType, setHistoryType] = useState('watch');
+    const [watchHistory, setWatchHistory] = useState([]);
+    const [searchHistory, setSearchHistory] = useState([]);
+    const [notification, setNotification] = useState('');
 
     const handleHistoryTypeChange = (event) => {
         setHistoryType(event.target.value);
     }
 
+    const handleClearHistories = async() => {
+        try {    
+            const response = await deleteAllHistory(historyType);
+            if(response.success){
+                setNotification(`${historyType} Histories deleted successfully`);
+                if (historyType === 'watch') {
+                    setWatchHistory([]);
+                } else {
+                    setSearchHistory([]);
+                }
+                setTimeout(() => setNotification(''), 3000); // Hide notification after 3 seconds
+            }else {
+                console.error('Failed to delete histories:', response);
+            }
+        } catch (error) {
+            console.error('Error deleting histories:', error);
+        }
+    }
+
   return (
       <div className='history'>
         <div className='left-side-history'>
-            {historyType === 'watch' ? <WatchHistory/> : <SearchHistory/>}
+            {historyType === 'watch' ? 
+            <WatchHistory history={watchHistory} setHistory={setWatchHistory}/> : 
+            <SearchHistory history={searchHistory} setHistory={setSearchHistory}/>}
         </div>
         <div className='right-side-history'>
             <h2>History Type</h2>
-            <div>
+            <hr/>
+            <div className='watch-div'>
+            <label htmlFor="watch"> Watch History</label><br/>
             <input type='radio' id='watch' value='watch' checked={historyType === 'watch'}
             onChange={handleHistoryTypeChange}/>
-            <label htmlFor="watch"> Watch History</label><br/>
             </div>
-            <div>
+            <hr/>
+            <div className='search-div'>
+            <label htmlFor="search"> Search History</label><br/>
             <input type='radio' id='search' value='search' checked={historyType === 'search'}
             onChange={handleHistoryTypeChange}/>
-            <label htmlFor="search"> Search History</label><br/>
             </div>
-            <span>CLEAR ALL WATCH HISTORY</span>
+            <span onClick={handleClearHistories}>CLEAR ALL {historyType.toUpperCase()} HISTORY</span>
         </div>
+        {notification && <div className='notification'>{notification}</div>}
     </div>
   )
 }

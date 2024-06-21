@@ -1,9 +1,8 @@
 import Feed from '../../components/Feed/Feed';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import './Home.css';
-import Navbar from '../../components/Navbar/Navbar';
 import { Route, Routes } from 'react-router-dom';
-import SearchResults from '../../components/Navbar/Search/SearchResults';
+import SearchResults from '../../components/Search/SearchResults';
 import Trending from '../../components/Trending/Trending';
 import Subscriptions from '../../components/Subscriptions/Subscriptions';
 import LikedVideos from '../../components/LikedVideos/LikedVideos';

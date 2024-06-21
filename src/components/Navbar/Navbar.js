@@ -11,7 +11,8 @@ import { faUserCircle } from '@fortawesome/free-regular-svg-icons';
 import { useAuth } from '../../util/AuthContext';
 import UserProfile from '../User/UserProfile/UserProfile';
 import { getRandomColor } from '../../util/Color';
-import { searchText } from './Search/SearchApi';
+import { searchText } from '../Search/SearchApi';
+import { CreateHistory } from '../History/HistoryApi/CreateHistoryApi';
 
 const Navbar = ({setSidebar}) => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const Navbar = ({setSidebar}) => {
   const [userInitialColor, setUserInitialColor] = useState(getRandomColor());
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [searchHistory, setSearchHistory] = useState([]);
  
   const isSignInOrSignUp = location.pathname === '/signin' || location.pathname === '/signup';
 
@@ -30,18 +32,45 @@ const Navbar = ({setSidebar}) => {
 
   useEffect(() => {
     setShowUserProfile(false); // Close user profile on navigation change
+
+    // search history is created
+
+    // Fetch search history from API
+    // const createSearchHistory = async () => {
+    //   try {
+    //     const historyData = {
+    //       searchText : searchInput,
+    //       type: 'watch', 
+    //     }
+    //     const historyResponse = await CreateHistory(historyData);
+    //     console.log('History response:', historyResponse);
+    //         if (!(historyResponse.success || historyResponse.sucess)) {
+    //           console.error('Failed to create history:', historyResponse);
+    //       } else {
+    //         console.error('API response is not in the expected format:', historyResponse);
+    //       }
+    //     } catch (error) {
+    //       console.error('Error fetching data:', error);
+    //       navigate('/error');
+    //     }
+    // };
+    // createSearchHistory();
   }, [location]);
 
   const handleSearch = async(e) => {
     e.preventDefault();
-
     try {
         const results = await searchText({text : searchInput});
         if(results && results.data){
-          
           setSearchResults(results.data);
           navigate('/search-results', {state: {results: results.data}});
-          console.log(results)
+          console.log(results);
+          const historyData = {
+          searchText : searchInput,
+          type: 'search', 
+        }
+        const historyResponse = await CreateHistory(historyData);
+        console.log(historyResponse)
           setSearchInput('');
         }
     } catch (error) {

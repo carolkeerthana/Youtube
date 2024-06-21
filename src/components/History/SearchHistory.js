@@ -1,30 +1,31 @@
-import { Link } from 'react-router-dom';
 import { fetchHistories } from './HistoryApi/GetHistoryApi';
 import './History.css'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';
-import Pagination from './Pagination';
+import closeIcon from '../../assets/close.png';
+import { deleteHistory } from './HistoryApi/DeleteHistoryApi';
 
-const SearchHistory = () => {
-    const [histories, setHistories] = useState([]);
+const SearchHistory = ({ history, setHistory }) => {
+    // const [histories, setHistories] = useState([]);
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [notification, setNotification] = useState('');
 
     const fetchHistoryVideos = async(page) => {
         try {
             const response = await fetchHistories(page, 'search');
             console.log('API response:', response);
             if(response.success && Array.isArray(response.data)){
-                setHistories(response.data);
+                setHistory(response.data);
                 setTotalPages(response.totalPages);
             }else{
               setError(response.error);
-              setHistories([]);
+              setHistory([]);
             }   
           } catch (error) {
             setError('Error fetching data');
-            setHistories([]);
+            setHistory([]);
           }
     } 
     useEffect(() => {
@@ -35,36 +36,50 @@ const SearchHistory = () => {
         setCurrentPage(page)
     }
 
+    const handleDeleteHistory = async(historyId) => {
+        try {
+            const response = await deleteHistory(historyId);
+            if(response.success){
+                setHistory((prevHistories) => prevHistories.filter((history) => history._id !== historyId));
+                setNotification('History deleted successfully');
+                setTimeout(() => setNotification(''), 3000); // Hide notification after 3 seconds
+            }else {
+                console.error('Failed to delete history:', response);
+            }
+        } catch (error) {
+            console.error('Error deleting history:', error);
+        }
+    }
+
   return (
         <div className='left-side-history'>
-        <h2>Search History</h2>
+        <h2 className='search-h2'>Search History</h2>
         {error ? (
                 <p>{error}</p>
             ) : ( 
-                histories && histories.length > 0 ? (
+                history && history.length > 0 ? (
                     <>
-                   {histories.map((history) => (
-                    <Link to={`/watch/${history._id}`} className='history-card' key={history._id}>           
-                        <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${history.thumbnailUrl}`} alt={history.title}/>
-                        <div className='history-details'>
-                        <img src={`https://apps.rubaktechie.me/uploads/avatars/${history.userId.photoUrl}`} alt={history.userId.channelName}/>
-                        <div>
-                        <h2>{history.searchText}</h2>
-                        <h3>{history.userId.channelName}</h3>
-                        <p>{history.views} views &bull; {moment(history.createdAt).fromNow()}</p>
+                   {history.map((history) => (
+                    <div className='search-history' key={history._id}>   
+                        <div className='search-text'>        
+                            <p>{history.searchText}</p>
+                            <button className='delete-button' onClick={()=>handleDeleteHistory(history._id)}><img src={closeIcon} alt=''/></button>
                         </div>
+                        <div className='search-subtext'>
+                            <p className='search'>{moment(history.createdAt).fromNow()}</p>
                         </div>
-                    </Link>
+                    </div>
                     ))}
-                  <Pagination
+                  {/* <Pagination
                   currentPage = {currentPage}
                   totalPages = {totalPages}
-                  onPageChange={handlePageChange}/>    
+                  onPageChange={handlePageChange}/>     */}
                   </>          
             ) : (
-                <p>No results found.</p>
+                <p>No search history yet.</p>
             )
         )}
+        {notification && <div className='notification'>{notification}</div>}
         </div>
   )
 }
