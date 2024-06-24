@@ -43,7 +43,7 @@ const WatchHistory = ({ history, setHistory }) => {
             const response = await deleteHistory(historyId);
             if(response.success){
                 setHistory((prevHistories) => prevHistories.filter((history) => history._id !== historyId));
-                setNotification('History deleted successfully');
+                setNotification('History Deleted Successfully');
                 setTimeout(() => setNotification(''), 3000); // Hide notification after 3 seconds
             }else {
                 console.error('Failed to delete history:', response);
@@ -85,8 +85,7 @@ const WatchHistory = ({ history, setHistory }) => {
                 <p>No watch history yet.</p>
             )
         )}
-        {notification && <div className='notification'>{notification}
-        <FontAwesomeIcon icon="fa-regular fa-circle-xmark" style={{color: "#000000",}} className='notification-icon'/></div>}
+        {notification && <div className='notification'>{notification}</div>}
         </div>
   )
 }

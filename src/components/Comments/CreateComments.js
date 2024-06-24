@@ -7,8 +7,8 @@ import { commentsApi } from './CreateCommentsApi';
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 
 const CreateComments = ({videoId, onCommentAdded}) => {
-    const [newComment, setNewComment] = useState('');
     const [focused, setFocused] = useState(false);
+    const [newComment, setNewComment] = useState('');
     const [userDetails, setUserDetails] = useState(null);
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();

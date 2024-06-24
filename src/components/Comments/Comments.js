@@ -11,15 +11,19 @@ import {deleteCommentApi}  from './DeleteCommentApi'
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 import { fetchComments } from './GetCommentsApi';
 import UpdateComment from './Update/UpdateComment';
+import { getReplies } from '../Replies/Api/GetRepliesApi';
+import Reply from '../Replies/CreateReply';
+import CreateReply from '../Replies/CreateReply';
 
 const Comments = ({videoId}) => {
     const [comments, setComments] = useState([]);
+    const [replies, setReplies] = useState([]);
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
     const [dropdownIndex, setDropdownIndex] = useState(null);
     const [editCommentIndex, setEditCommentIndex] = useState(null);
     const [userDetails, setUserDetails] = useState(null);
-    const dropdownRefs = useRef([]);
+    const dropdownRefs = useRef();  
 
     useEffect(() => {
       
@@ -38,35 +42,24 @@ const Comments = ({videoId}) => {
         }
       };
 
-
-    // const fetchUserData = async () => {
-    //   if (isAuthenticated) {
-    //     try {
-    //       const user = await fetchUserDetails();
-    //       setUserDetails(user);
-    //     } catch (error) {
-    //       console.error('Failed to fetch user details:', error);
-    //     }
-    //   }
-    // };
+      const fetchRepliesData = async() => {
+        try {
+          const response = await getReplies();
+          if(response.success){
+            setReplies(response.data);
+          }else {
+            console.error('API response is not in the expected format:', response);
+        }
+        } catch (error) {
+          console.error('Failed to fetch replies:', error);
+          return [];
+        }
+      }
 
     fetchCommentsData();
-    // fetchUserData();
+    fetchRepliesData();
     }, [videoId, navigate, isAuthenticated]);
 
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-          if (dropdownIndex !== null &&
-            dropdownRefs.current[dropdownIndex] && !dropdownRefs.current[dropdownIndex].contains(event.target)) {
-              setDropdownIndex(null);
-          }
-      };
-
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-          document.removeEventListener('mousedown', handleClickOutside);
-      };
-  }, [dropdownIndex]);
 
     const handleCommentAdded = (newComment) => {
       console.log('New comment added:', newComment);
@@ -110,7 +103,20 @@ const Comments = ({videoId}) => {
       setEditCommentIndex(index);
       setDropdownIndex(null);
     }
+    
+    const handleDeleteReply = (replyId) => {
+      setReplies((prevReplies) => prevReplies.filter((reply) => reply.id !== replyId));
+  };
 
+  const handleUpdateReply = (updatedReply) => {
+      setReplies((prevReplies) =>
+          prevReplies.map((reply) => (reply.id === updatedReply.id ? updatedReply : reply))
+      );
+  };
+
+  const handleReplyAdded = (newReply) => {
+      setReplies((prevReplies) => [newReply, ...prevReplies]);
+  };
   return (
     <div>
       <h4>{comments.length} Comments</h4>
@@ -135,16 +141,27 @@ const Comments = ({videoId}) => {
             </div> 
             {editCommentIndex === index ? (
               <UpdateComment 
-              videoId={videoId} 
+              id={comment.id} 
               comment={comment} 
               updateCommentAdded={handleUpdateCommentAdded}/>
             ) : (
                 <p>{comment.text}</p>
             )}
                 <div className='comment-action'>
-                    <img src={comment.like} alt=''/>
-                    <span id='reply-text'>REPLY</span>
-                    <img src={comment.dislike} alt=''/>
+                    {replies.filter((reply)=> reply.commentId === comment.id)
+                    .map((reply) => (
+                      <Reply
+                      key={reply.id}
+                      reply={reply}
+                      onUpdateReply={handleUpdateReply}
+                      onDeleteReply={handleDeleteReply}/>
+                    ))}
+                    <CreateReply
+                    commentId={comment.id}
+                    onReplyAdded={handleReplyAdded}
+                    isAuthenticated={isAuthenticated}
+                    />
+                    {/* <span id='reply-text'  >REPLY</span> */}
                 </div>
             </div>  
         </div>   

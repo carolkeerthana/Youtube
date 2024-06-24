@@ -18,7 +18,8 @@ const History = () => {
         try {    
             const response = await deleteAllHistory(historyType);
             if(response.success){
-                setNotification(`${historyType} Histories deleted successfully`);
+                const historyTypeInUppercase = historyType.charAt(0).toUpperCase() +  historyType.substring(1);
+                setNotification(`${historyTypeInUppercase} Histories Deleted Successfully`);
                 if (historyType === 'watch') {
                     setWatchHistory([]);
                 } else {
@@ -43,13 +44,13 @@ const History = () => {
         <div className='right-side-history'>
             <h2>History Type</h2>
             <hr/>
-            <div className='watch-div'>
+            <div className={`watch-div ${historyType === 'watch' ? 'active' : ''}`}  onClick={() => document.getElementById('watch').click()}>
             <label htmlFor="watch"> Watch History</label><br/>
             <input type='radio' id='watch' value='watch' checked={historyType === 'watch'}
             onChange={handleHistoryTypeChange}/>
             </div>
             <hr/>
-            <div className='search-div'>
+            <div className={`search-div ${historyType === 'search' ? 'active' : ''}`}  onClick={() => document.getElementById('search').click()}>
             <label htmlFor="search"> Search History</label><br/>
             <input type='radio' id='search' value='search' checked={historyType === 'search'}
             onChange={handleHistoryTypeChange}/>

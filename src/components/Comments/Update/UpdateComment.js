@@ -6,7 +6,7 @@ import { useAuth } from '../../../util/AuthContext';
 import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
 import { updateComment } from './UpdateCommentApi';
 
-const UpdateComment = ({videoId, comment, updateCommentAdded}) => {
+const UpdateComment = ({id, comment, updateCommentAdded}) => {
     const [editComment, setEditComment] = useState(comment.text || '');
     const [focused, setFocused] = useState(false);
     const [userDetails, setUserDetails] = useState(null);
@@ -46,7 +46,10 @@ const UpdateComment = ({videoId, comment, updateCommentAdded}) => {
         }
 
         try {
-            const response = await updateComment({text: editComment}, videoId);
+            console.log({text: editComment})
+            console.log(id)
+            const response = await updateComment({text: editComment}, id);
+            console.log(response)
             if ((response.success || response.sucess) && response.data) {
                 updateCommentAdded(response.data);
                 setFocused(false);
