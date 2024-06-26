@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import './CreateReply.css'
 import userProfile from '../../assets/user_profile.jpg';
 import moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,15 +7,32 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons/faEllipsis
 import { useAuth } from '../../util/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { createReply } from './Api/CreateReplyApi';
+import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 
-const CreateReply = ({commentId, onReplyAdded, isAuthenticated}) => {
+const CreateReply = ({commentId, onReplyAdded, cancelEdit}) => {
     const [newReply, setNewReply] = useState('');
+    const {isAuthenticated} = useAuth();
+    const [userDetails, setUserDetails] = useState(null);
+    
     const [focused, setFocused] = useState(false);
     const [dropdownOpen, setDropdownOpen] = React.useState(false);
-    // const [isEditing, setIsEditing] = React.useState(false);
-    // const [editText, setEditText] = React.useState(reply.text);
+    const inputRef = useRef(null);
     const navigate = useNavigate();
-    // const {isAuthenticated} = useAuth();
+
+     useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = await fetchUserDetails();  
+        setUserDetails(user);
+      } catch (error) {
+        console.error('Failed to fetch user details:', error);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchUserData();
+    }
+  }, [isAuthenticated]);
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -26,20 +44,26 @@ const CreateReply = ({commentId, onReplyAdded, isAuthenticated}) => {
 
     const handleReplySubmit = async(e) => {
             e.preventDefault();
-    
+   
             if(!isAuthenticated){
                 navigate('/signin');
                 return;
             }
-    
-            const commentsData = {
+
+            if (!userDetails) {
+                console.error('User details not available');
+                // Handle error or display message to the user
+                return;
+              }
+   
+            const replyData = {
                 commentId: commentId,
                 text: newReply,
             };
-            console.log(commentsData)
-    
+            console.log(replyData)
+   
             try {
-                const response = await createReply(commentsData);
+                const response = await createReply(replyData);
                 if ((response.success || response.sucess) && response.data) {
                     onReplyAdded(response.data);
                     setNewReply('');
@@ -60,6 +84,13 @@ const CreateReply = ({commentId, onReplyAdded, isAuthenticated}) => {
         }
     }
 
+     // to handle canceling edit
+     const handleCancel = () => {
+        cancelEdit(); // Call cancelEdit function passed from Comments component
+        setFocused(false); // Hide input on cancel
+        setNewReply(''); 
+    };
+
     // const handleEdit = () => {
     //     setIsEditing(true);
     //     setDropdownOpen(false);
@@ -75,20 +106,25 @@ const CreateReply = ({commentId, onReplyAdded, isAuthenticated}) => {
     // };
 
   return (
-    <div className='reply'>
-            <img src={userProfile} alt='' />
+    <div className={`reply ${focused ? 'focused' : ''}`}>
+            <img src={userProfile} alt='' className={`reply-img ${focused ? 'visible' : 'hidden'}`} 
+             onClick={() => {
+                inputRef.current.focus();
+              }}/>
             <div className='reply-detail'>
                 <div className='reply-header'>
                     <input className={`input-field ${focused ? 'visible' : ''}`}
+                    autoFocus
                     type='text'
-                    placeholder='Add a public comment...'
-                    value={newReply}
+                    placeholder='Add a reply...'
+                    value={newReply}    
                     onChange={handleReplyChange}    
                     onFocus={handleFocus}
                     onBlur={()=>!newReply && setFocused(false)}
+                    // ref={inputRef}
                 />
                 <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
-                    <button onClick={()=> {setNewReply(''); setFocused(false); }}>CANCEL</button>
+                    <button onClick={handleCancel}>CANCEL</button>
                     <button onClick={handleReplySubmit}>REPLY</button>
                  </div>
                 </div>
@@ -98,3 +134,4 @@ const CreateReply = ({commentId, onReplyAdded, isAuthenticated}) => {
 }
 
 export default CreateReply
+

@@ -6,13 +6,14 @@ import { useAuth } from '../../../util/AuthContext';
 import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
 import { updateComment } from './UpdateCommentApi';
 
-const UpdateComment = ({id, comment, updateCommentAdded}) => {
+const UpdateComment = ({id, comment, updateCommentAdded, cancelEdit }) => {
     const [editComment, setEditComment] = useState(comment.text || '');
-    const [focused, setFocused] = useState(false);
+    const [focused, setFocused] = useState(false); // Focus input on edit
     const [userDetails, setUserDetails] = useState(null);
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
 
+     // fetch user details when authenticated
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -28,10 +29,12 @@ const UpdateComment = ({id, comment, updateCommentAdded}) => {
         }
     }, [isAuthenticated]);
 
+    // to handle comment text change
     const handleCommentChange = (e) =>{
         setEditComment(e.target.value);
     }
 
+    // to submit updated comment
     const handleCommentSubmit = async(e) => {
         e.preventDefault();
 
@@ -69,6 +72,11 @@ const UpdateComment = ({id, comment, updateCommentAdded}) => {
         }
     }
 
+     // to handle canceling edit
+        const handleCancel = () => {
+            cancelEdit(); // Call cancelEdit function passed from Comments component
+        };
+
   return (
     <div className='new-comment'>
         <img src={userProfile} alt=''/>
@@ -81,7 +89,7 @@ const UpdateComment = ({id, comment, updateCommentAdded}) => {
             onBlur={()=>!editComment && setFocused(false)}
         />
         <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
-            <button onClick={()=> {setEditComment(comment.text); setFocused(false); }}>Cancel</button>
+            <button onClick={handleCancel}>Cancel</button>
             <button onClick={handleCommentSubmit}>Save</button>
         </div>
     </div>

@@ -1,97 +1,132 @@
 .comment{
-    display: flex;
-    align-items: flex-start;
-    margin: 30px 0;
+  display: flex;
+  align-items: flex-start;
+  margin: 30px 0;
+  margin-bottom: 20px;
 }
 .comment img{
-    width: 35px;
-    border-radius: 50%;
-    margin-right: 15px;
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
 }
 .comments-detail{
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    margin-top: -15px;
-    /* margin-bottom: 10px; */
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: -15px;
+  /* margin-bottom: 10px; */
 
 }
-.comment-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.comment-header, .reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.comment-actions, .reply-actions {
+display: flex;
+}
+.comment-header span {
+font-size: 14px;
+color: #888;
+margin-left: 10px;
 }
 .comment-actions {
-    position: relative;
-    cursor: pointer;
-  }
-  /* .icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* height: 100vh; Adjust height as needed */
-  /* }  */
-  
-  .icon-circle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px; /* Adjust width and height for the circular shape */
-    height: 40px; /* Adjust width and height for the circular shape */
-    border-radius: 50%;
-    background-color: transparent;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    cursor: pointer;
-  }
-  
-  .icon-circle:hover {
-    background-color: #f0f0f0; /* Background color on hover */
-  }
-  
+  position: relative;
+  cursor: pointer;
+}
+/* .icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; Adjust height as needed */
+/* }  */
+
+.icon-circle {
+  /* display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px; /* Adjust width and height for the circular shape */
+  /* height: 40px; /* Adjust width and height for the circular shape */
+  /* border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.3s ease; Smooth transition for hover effect  */
+  display: inline-block;
+padding: 8px;
+border-radius: 50%;
+  cursor: pointer;
+}
+
+.icon-circle:hover {
+  background-color: #f0f0f0; /* Background color on hover */
+}
+
 .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: white;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    z-index: 10;
-  }
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  border-radius: 4px;
+  overflow: hidden;
+}
 .dropdown-menu button {
-    display: block;
-    padding: 10px 25px;
-    font-size: 16px;
-    width: 100%;
-    border: none;
-    background: none;
-    cursor: pointer;
-    text-align: left;
-  }
+  display: block;
+  padding: 10px 25px;
+  font-size: 16px;
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+}
 .dropdown-menu button:hover {
-    background-color: #f0f0f0;
-  }
+  background-color: #f0f0f0;
+}
 .comment h3{
-    font-size: 15px;
-    margin-bottom: 2px;
+  font-size: 15px;
+  margin-bottom: 2px;
 }
 .comment h3 span{
-    font-size: 15px;
-    color: #5a5a5a;
-    font-weight: 500;
-    margin-left: 8px;
+  font-size: 15px;
+  color: #5a5a5a;
+  font-weight: 500;
+  margin-left: 8px;
 }
-.comment-action{
-    display: flex;
-    align-items: center;
-    margin: 8px 0;
-    font-size: 15px;
+.reply-detail{
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  margin: 10px 0;
+  font-size: 15px;
+}
+.reply-detail > div {
+  margin-bottom: 12px;
+}
+#reply-text{
+  padding-bottom: 10px;
 }
 .comment-action img{
-    border-radius: 0;
-    width: 20px;
-    margin-right: 5px;
+  border-radius: 0;
+  width: 20px;
+  margin-right: 5px;
 }
-.comment-action #reply-text{
-    /* margin-left: -25px; */
-    font-weight: 600;
-    color: #242323;
+.reply-section {
+display: flex;
+margin-left: 30px; /* Adjust this value to control indentation */
+margin-bottom: 10px;
+margin-top: 20px;
 }
+.reply-toggle{
+  top: -10%;
+padding: 10px 0;
+color:#1481f6 ;
+cursor: pointer;
+}
+.reply img {
+margin-right: 10px;
+}
+/* .reply-div{
+  display: flex;
+  flex-direction: row;
+} */
