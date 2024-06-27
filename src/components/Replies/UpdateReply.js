@@ -1,13 +1,12 @@
-import './UpdateComment.css'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import userProfile from '../../../assets/user_profile.jpg'
-import { useAuth } from '../../../util/AuthContext';
-import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
-import { updateComment } from './UpdateCommentApi';
+import userProfile from '../../assets/user_profile.jpg'
+import { useAuth } from '../../util/AuthContext';
+import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
+import { updateReply } from './Api/UpdateReplyApi';
 
-const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) => {
-    const [editComment, setEditComment] = useState(comment.text || '');
+const UpdateReply = ({replyId, reply, onUpdateReply, cancelEdit }) => {
+    const [editReply, setEditReply] = useState(reply.text || '');
     const [focused, setFocused] = useState(false); // Focus input on edit
     const [userDetails, setUserDetails] = useState(null);
     const navigate = useNavigate();
@@ -30,12 +29,12 @@ const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) =>
     }, [isAuthenticated]);
 
     // to handle comment text change
-    const handleCommentChange = (e) =>{
-        setEditComment(e.target.value);
+    const handleReplyChange = (e) =>{
+        setEditReply(e.target.value);
     }
 
     // to submit updated comment
-    const handleCommentSubmit = async(e) => {
+    const handleReplySubmit = async(e) => {
         e.preventDefault();
 
         if(!isAuthenticated){
@@ -49,12 +48,12 @@ const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) =>
         }
 
         try {
-            console.log({text: editComment})
-            console.log(commentId)
-            const response = await updateComment({text: editComment}, commentId);
+            console.log({text: editReply})
+            console.log(replyId)
+            const response = await updateReply({text: editReply}, replyId);
             console.log(response)
             if ((response.success || response.sucess) && response.data) {
-                updateCommentAdded(response.data);
+                onUpdateReply(response.data);
                 setFocused(false);
             } else {
                 console.error('API response is not in the expected format:', response);
@@ -82,19 +81,18 @@ const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) =>
         <img src={userProfile} alt=''/>
         <input className={`input-field ${focused ? 'visible' : ''}`}
             type='text'
-            autoFocus
-            placeholder={editComment}
-            value={editComment}
-            onChange={handleCommentChange}
+            placeholder={editReply}
+            value={editReply}
+            onChange={handleReplyChange}
             onFocus={handleFocus}
-            onBlur={()=>!editComment && setFocused(false)}
+            onBlur={()=>!editReply && setFocused(false)}
         />
         <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
             <button onClick={handleCancel}>Cancel</button>
-            <button onClick={handleCommentSubmit}>Save</button>
+            <button onClick={handleReplySubmit}>Save</button>
         </div>
     </div>
   )
 }
 
-export default UpdateComment
+export default UpdateReply

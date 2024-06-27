@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { BrowserRouter } from "react-router-dom"
 import Sidebar from "../../Sidebar/Sidebar"
 import { AuthProvider } from "../../../util/AuthContext"
-import { getLikedVideos } from "../GetLikedVideos";
+import { getLikedVideos } from "../GetLikedVideosApi";
 import LikedVideos from "../LikedVideos";
 
 jest.mock('../GetLikedVideos.js');

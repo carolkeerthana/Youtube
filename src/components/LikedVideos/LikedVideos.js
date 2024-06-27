@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { getLikedVideos } from './GetLikedVideos';
+import { getLikedVideos } from './GetLikedVideosApi';
 import './LikedVideos.css';
 import React, { useEffect, useState } from 'react'
 import moment from 'moment';

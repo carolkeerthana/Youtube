@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import Trending from "../Trending";
 import Sidebar from "../../Sidebar/Sidebar";
 import { fetchVideos } from "../../Feed/GetVideosApi";
+import { AuthProvider } from "../../../util/AuthContext";
 
 jest.mock('../../Feed/GetVideosApi.js');
 describe("Trending", () => {
@@ -30,9 +31,11 @@ describe("Trending", () => {
 
     test('should have active class on trending in sidebar', () => {
         render(
-        <BrowserRouter>
-            <Sidebar />
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Sidebar />
+            </BrowserRouter>
+        </AuthProvider>
         )
         const trendingLink = screen.getByTestId('trending-link');
         fireEvent.click(trendingLink);

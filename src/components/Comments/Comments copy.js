@@ -15,12 +15,11 @@ import { getReplies } from '../Replies/Api/GetRepliesApi';
 import Reply from '../Replies/CreateReply';
 import CreateReply from '../Replies/CreateReply';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import UpdateReply from '../Replies/UpdateReply';
 
 const Comments = ({videoId}) => {
     const [comments, setComments] = useState([]);
     const [replies, setReplies] = useState(comments.replies || []);
-    const [showReplyInput, setShowReplyInput] = useState(false); //visibility of reply input
+    const [showReplyInput, setShowReplyInput] = useState(false);
     const [focusedReplyIndex, setFocusedReplyIndex] = useState(null);
     const [visibleReplies, setVisibleReplies] = useState([]);
     const navigate = useNavigate();
@@ -89,35 +88,27 @@ const Comments = ({videoId}) => {
       }
   }
 
-  const toggleReplyDropdown = (replyIndex) => {
-    console.log(replyIndex)
+  const toggleReplyDropdown = (index) => {
       if (editReplyIndex === null) {
-          setReplyDropdownIndex(replyDropdownIndex === replyIndex ? null : replyIndex);
+          setReplyDropdownIndex(replyDropdownIndex === index ? null : index);
       }
   }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-        // Check if there is a dropdown currently open
-        if (commentDropdownIndex !== null) {
-            // Check if the click occurred outside the dropdown menu or inside
-            if (!dropdownRefs.current[commentDropdownIndex].contains(event.target)) {
-                // Close the dropdown if clicked outside or inside
-                setCommentDropdownIndex(null);
-            }
+        if (dropdownRefs.current && 
+          commentDropdownIndex !== null && 
+          dropdownRefs.current[commentDropdownIndex] && 
+          !dropdownRefs.current[commentDropdownIndex].contains(event.target)) {
+            setCommentDropdownIndex(null);
         }
     };
 
-    // Event listener setup on component mount
     document.addEventListener('mousedown', handleClickOutside);
-
     return () => {
-        // Cleanup: remove event listener on component unmount
         document.removeEventListener('mousedown', handleClickOutside);
     };
-}, [commentDropdownIndex]); // Dependency ensures effect runs on dropdown changes
-
-
+}, [commentDropdownIndex]);
 
    // to handle delete comment Api
     const handleDeleteComment = async(commentId) => {  
@@ -146,7 +137,6 @@ const Comments = ({videoId}) => {
     );
     // Exit edit mode after updating comment
     setEditCommentIndex(null);
-    setEditCommentText('');
     }
 
      // to handle initiating edit mode for a comment
@@ -189,7 +179,6 @@ const Comments = ({videoId}) => {
         prevReplies.map((reply) => (reply.id === updatedReply.id ? updatedReply : reply))
     );
     setEditReplyIndex(null);
-    setEditReplyText('');
 }
 
     const handleEditReply = (index, text) => {
@@ -219,122 +208,100 @@ const Comments = ({videoId}) => {
     );
   };
 
-  const handleReplyInputToggle = (commentId) => {
-    setShowReplyInput((prevShowReplyInput) => ({
-        ...prevShowReplyInput,
-        [commentId]: !prevShowReplyInput[commentId],
-    }));
-};
-
-
-console.log("auth:",isAuthenticated)
-console.log("replyDropdownIndex:", replyDropdownIndex)
-console.log("replyIndex:", replies)
-return (
-        <div>
-            <h4>{comments.length} Comments</h4>
-            <CreateComments videoId={videoId} onCommentAdded={handleCommentAdded} isAuthenticated={isAuthenticated} />
-            {comments.map((comment, index) => {
-                const commentReplies = replies.filter((reply) => reply.commentId === comment.id);
-                const hasReplies = commentReplies.length > 0;
-                const isVisible = visibleReplies.includes(comment.id);
-                return (
-                    <div key={comment.id} className='comment'>
-                        <img src={userProfile} alt='' />
-                        <div className='comments-detail'>
-                            <div className='comment-header'>
-                                <h3>{comment.userId.channelName} <span>{moment(comment.createdAt).fromNow()}</span></h3>
-                                <div className='comment-actions'>
-                                    <div className="icon-circle">
-                                        <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleCommentDropdown(index)} /></span>
-                                    </div>
-                                    {isAuthenticated && commentDropdownIndex === index && (
-                                <div ref={(el) => el ? dropdownRefs.current[index] = el : null} className='dropdown-menu'>
+  return (
+    <div>
+    <h4>{comments.length} Comments</h4>
+    <CreateComments videoId={videoId} onCommentAdded={handleCommentAdded} isAuthenticated={isAuthenticated} />
+    {comments.map((comment, index) => {
+        const commentReplies = replies.filter((reply) => reply.commentId === comment.id);
+        const hasReplies = commentReplies.length > 0;
+        const isVisible = visibleReplies.includes(comment.id);
+        return (
+            <div key={comment.id} className='comment'>
+                <img src={userProfile} alt='' />
+                <div className='comments-detail'>
+                    <div className='comment-header'>
+                        <h3>{comment.userId.channelName} <span>{moment(comment.createdAt).fromNow()}</span></h3>
+                        <div className='comment-actions'>
+                            <div className="icon-circle">
+                                <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleCommentDropdown(index)} /></span>
+                            </div>
+                            {isAuthenticated && commentDropdownIndex === index && (
+                                <div className='dropdown-menu'>
                                     <button onClick={() => handleEditComment(index, comment.text)}>Edit</button>
                                     <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
                                 </div>
                             )}
-                                </div>
-                            </div>
-                            {editCommentIndex === index ? (
-                                <div className="comment-edit">
-                                <input 
-                                  className="edit-input"
-                                  type="text" 
-                                  value={editCommentText} 
-                                  onChange={(e) => setEditCommentText(e.target.value)} 
-                                />
-                                <div className="edit-buttons">
-                                <button onClick={() => handleUpdateCommentAdded({ id: comment.id, text: editCommentText })}>SAVE</button>
-                                <button onClick={handleCancelEditComment}>CANCEL</button>
-                                </div>
-                              </div>
-                            ) : (
-                                <p>{comment.text}</p>
-                            )}
-                            <div className="reply-section">
-                                <button onClick={() => {
+                        </div>
+                    </div>
+                    {editCommentIndex === index ? (
+                        <UpdateComment
+                            commentId={comment.id}
+                            comment={comment}
+                            onUpdateComment={handleUpdateCommentAdded}
+                            onCancelEdit={handleCancelEditComment}
+                            initialText={editCommentText}
+                        />
+                    ) : (
+                        <p>{comment.text}</p>
+                    )}
+                    <div className='reply-detail'>
+                    <button onClick={() => {
                                     handleReplyFocus(index);
                                     setShowReplyInput(true);
                                 }}>Reply</button>
-                                
-                            <div>
+                        {/* {focusedReplyIndex === index && (
+                            <CreateReply
+                                commentId={comment.id}
+                                onReplyAdded={handleReplyAdded}
+                            />
+                        )} */}
+                        <div>
                             {hasReplies && (
-                              <span className='reply-toggle' onClick={() => toggleRepliesVisibility(comment.id)}>
-                                <FontAwesomeIcon icon={isVisible ? faChevronUp : faChevronDown} /> {commentReplies.length} {commentReplies.length === 1 ? 'reply' : 'replies'}
-                              </span>
-                            )}
-                            </div>
-                            </div>
-                            {showReplyInput && focusedReplyIndex === index && (
-                                <CreateReply
-                                    commentId={comment.id}
-                                    onReplyAdded={handleReplyAdded}
-                                    onCancelReply={() => setShowReplyInput(false)}
-                                />
-                            )}
-                            {isVisible && (
-                                <div className="replies">
-                                    {commentReplies.map((reply, replyIndex) => (
-                                        <div key={reply.id} className='reply'>
-                                            <img src={userProfile} alt='' />
-                                            <div className='reply-detail'>
-                                                <div className='reply-header'>
-                                                    <h3>{reply.userId.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
-                                                    <div className='reply-actions'>
-                                                        <div className="icon-circle">
-                                                            <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(replyIndex)} /></span>
-                                                        </div>
-                                                        {isAuthenticated && replyDropdownIndex === replyIndex && (
-                                                            <div className='dropdown-menu'>
-                                                                <button onClick={() => handleEditReply(replyIndex, reply.text)}>Edit</button>
-                                                                <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                {editReplyIndex === replyIndex ? (
-                                                    <UpdateReply
-                                                        replyId={reply.id}
-                                                        reply={reply}
-                                                        onUpdateReply={handleUpdateReplyAdded}
-                                                        cancelEdit={handleCancelEditReply}
-                                                        // initialText={editReplyText}
-                                                    />
-                                                ) : (
-                                                    <p>{reply.text}</p>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <span className='reply-toggle' onClick={() => toggleRepliesVisibility(comment.id)}>
+                                    <FontAwesomeIcon icon={isVisible ? faChevronUp : faChevronDown} /> {commentReplies.length} {commentReplies.length === 1 ? 'reply' : 'replies'}
+                                </span>
                             )}
                         </div>
+                        {isVisible && commentReplies.map((reply, index) => (
+                            <div key={reply.id} className='reply-section'>
+                                <img src={userProfile} alt='' />
+                                <div className='comments-detail'>
+                                  <div className='reply-header'>
+                                    <h3>{reply.userId.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
+                                    <div className='reply-actions'>
+                                            <div className="icon-circle">
+                                                <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(index)} /></span>
+                                            </div>
+                                            {isAuthenticated && replyDropdownIndex === index && (
+                                                <div className='dropdown-menu'>
+                                                    <button onClick={() => handleEditReply(index, reply.text)}>Edit</button>
+                                                    <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {editReplyIndex === index ? (
+                                        <UpdateComment
+                                            id={reply.id}
+                                            comment={reply}
+                                            updateCommentAdded={handleUpdateReplyAdded}
+                                            cancelEdit={handleCancelEditReply}
+                                        />
+                                    ) : (
+                                        <p>{reply.text}</p>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                );
-            })}
-        </div>
-    );
-};
+                </div>
+            </div>
+        )
+    })}
+</div>
+)
+}
 
 export default Comments;
+

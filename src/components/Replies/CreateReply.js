@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { createReply } from './Api/CreateReplyApi';
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 
-const CreateReply = ({commentId, onReplyAdded, cancelEdit}) => {
+const CreateReply = ({commentId, onReplyAdded, onCancelReply}) => {
     const [newReply, setNewReply] = useState('');
     const {isAuthenticated} = useAuth();
     const [userDetails, setUserDetails] = useState(null);
@@ -86,7 +86,7 @@ const CreateReply = ({commentId, onReplyAdded, cancelEdit}) => {
 
      // to handle canceling edit
      const handleCancel = () => {
-        cancelEdit(); // Call cancelEdit function passed from Comments component
+        onCancelReply(); // Call onCancelReply function passed from Comments component
         setFocused(false); // Hide input on cancel
         setNewReply(''); 
     };

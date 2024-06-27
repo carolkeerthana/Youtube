@@ -24,7 +24,7 @@
   display: none;
   margin-left: 10px;
 }
-.reply-header .input-field.visible{
+.reply-header .reply-input-field.visible{
   border-bottom: 2px solid #007BFF;
 }
 .reply-buttons.visible{
