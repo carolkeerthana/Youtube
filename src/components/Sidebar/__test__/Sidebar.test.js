@@ -1,6 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import Sidebar from "../Sidebar";
 import { BrowserRouter } from "react-router-dom";
+import { useAuth } from "../../../util/AuthContext";
+
+jest.mock("../../../util/AuthContext.js", () => ({
+  useAuth: jest.fn(),
+}));
 
 describe("Sidebar", () => {
   const setup = (page = '', sidebar = false) => {
@@ -13,8 +18,16 @@ describe("Sidebar", () => {
     return setSidebar;
   };
 
+    beforeEach(() => {
+      useAuth.mockReturnValue({ isAuthenticated: true });
+    });
+
     test('renders correctly with sidebar prop set to true', () => {
-      render(<Sidebar sidebar={true} />);
+      render(
+        <BrowserRouter>
+          <Sidebar sidebar={true} setSidebar={jest.fn()} page="" />
+        </BrowserRouter>
+      );
   
       const sidebarElement = screen.getByTestId('sidebar');
       expect(sidebarElement).toBeInTheDocument();
@@ -22,7 +35,11 @@ describe("Sidebar", () => {
     });
 
     test('renders correctly with sidebar prop set to false', () => {
-        render(<Sidebar sidebar={false} />);
+        render(
+          <BrowserRouter>
+            <Sidebar sidebar={false} setSidebar={jest.fn()} page="" />
+          </BrowserRouter>
+        );
     
         const sidebarElement = screen.getByTestId('sidebar');
         expect(sidebarElement).toBeInTheDocument();
@@ -30,7 +47,11 @@ describe("Sidebar", () => {
       });
 
       test('contains all shortcut links', () => {
-        render(<Sidebar sidebar={true} />);
+        render(
+          <BrowserRouter>
+            <Sidebar sidebar={true} setSidebar={jest.fn()} page="" />
+          </BrowserRouter>
+        );
 
         expect(screen.getByText('Home')).toBeInTheDocument();
         expect(screen.getByText('Trending')).toBeInTheDocument();
@@ -50,7 +71,11 @@ describe("Sidebar", () => {
     });
 
     test('contains subscribed list', () => {
-        render(<Sidebar sidebar={true} />);
+        render(
+          <BrowserRouter>
+            <Sidebar sidebar={true} setSidebar={jest.fn()} page="" />
+          </BrowserRouter>
+        );
     
         expect(screen.getByText('Subscribed')).toBeInTheDocument();
         expect(screen.getByText('MrBeast')).toBeInTheDocument();

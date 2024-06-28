@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import Navbar from "../Navbar"
 import menuIcon from '../../../assets/menu.png'
 import logo from '../../../assets/logo.png'
@@ -7,7 +7,7 @@ import uploadIcon from '../../../assets/upload.png'
 import notificationIcon from '../../../assets/notification.png'
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../../../util/AuthContext"
-import { searchText } from "../Search/SearchApi"
+import { searchText } from "../../Search/SearchApi"
 
 const setSidebarMock = jest.fn();
 const MockedAuthProvider = ({ children }) => (
@@ -17,7 +17,7 @@ const MockedAuthProvider = ({ children }) => (
   );
 
   const mockNavigate = jest.fn();
-  jest.mock('../SearchApi.js');
+  jest.mock('../../Search/SearchApi.js');
   
   jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -210,21 +210,96 @@ describe("Navbar", () => {
         expect(setSidebarMock).toHaveBeenCalledTimes(2);
         });
 
+        test('clicking profile icon toggles user profile display', async () => {
+            render(
+              <MemoryRouter initialEntries={['/']}>
+                <MockedAuthProvider>
+                  <Navbar />
+                </MockedAuthProvider>
+              </MemoryRouter>
+            );
+        
+            // Find profile icon and click it
+            const profileIcon = screen.getByTestId('profile-icon');
+            fireEvent.click(profileIcon);
+        
+            // Use waitFor to wait for the user profile to be visible
+            await waitFor(() => {
+              const userProfile = screen.getByText('User Profile');
+              expect(userProfile).toBeInTheDocument();
+            });
+        
+            // Verify that user profile is visible
+            const userProfile = screen.getByText('User Profile');
+            expect(userProfile).toBeInTheDocument();
+        
+            // Click profile icon again to hide user profile
+            fireEvent.click(profileIcon);
+        
+            // Use waitFor to wait for the user profile to be hidden
+            await waitFor(() => {
+              const userProfile = screen.queryByText('User Profile');
+              expect(userProfile).not.toBeInTheDocument();
+            });
+        
+            // Verify that user profile is hidden
+            const hiddenUserProfile = screen.queryByText('User Profile');
+            expect(hiddenUserProfile).not.toBeInTheDocument();
+          });
+          
         test('searching valid text, should give the result', async() => {
-            searchText.mockResolvedValue({token: "fake-token"});
+            searchText.mockResolvedValue({ data: [{ id: 1, name: 'test result' }] });
             render(
                 <MemoryRouter initialEntries={['/']}>
                     <MockedAuthProvider>
-                    <Navbar />
+                    <Navbar setSidebar={setSidebarMock}/>
                     </MockedAuthProvider>
                 </MemoryRouter>
             )
     
-            fireEvent.change(screen.getByPlaceholderText(/Search/i), {target : {text: "sample"}});
-            fireEvent.click()
+            const searchInput = screen.getByPlaceholderText(/Search/i);
+            fireEvent.change(searchInput, { target: { value: 'sample' } });
+            fireEvent.click(screen.getByTestId('search-icon'));
 
-            // await waitFor(() => {expect(localStorage.getItem("token")).toBe("fake-token") });
-            // await waitFor(() => {expect(mockNavigate).toHaveBeenCalledWith("/") });
+            await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/search-results', { state: { results: [{ id: 1, name: 'test result' }] } }));
+          });
+
+          test('searching invalid text should not navigate', async () => {
+            searchText.mockResolvedValue({ data: [] });
+            render(
+              <MemoryRouter initialEntries={['/']}>
+                <MockedAuthProvider>
+                  <Navbar setSidebar={setSidebarMock} />
+                </MockedAuthProvider>
+              </MemoryRouter>
+            );
+        
+            const searchInput = screen.getByPlaceholderText(/Search/i);
+            fireEvent.change(searchInput, { target: { value: 'invalid' } });
+            fireEvent.click(screen.getByTestId('search-icon'));
+        
+            await waitFor(() => expect(mockNavigate).not.toHaveBeenCalled());
+          });
+
+          test('displays error when search fails', async () => {
+            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+            searchText.mockRejectedValue(new Error('Network Error'));
+        
+            render(
+              <MemoryRouter initialEntries={['/']}>
+                <MockedAuthProvider>
+                  <Navbar setSidebar={setSidebarMock} />
+                </MockedAuthProvider>
+              </MemoryRouter>
+            );
+        
+            const searchInput = screen.getByPlaceholderText(/Search/i);
+            fireEvent.change(searchInput, { target: { value: 'error' } });
+            fireEvent.click(screen.getByTestId('search-icon'));
+        
+            await waitFor(() => expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching search results:', expect.any(Error)));
+        
+            consoleErrorSpy.mockRestore();
           });
         
 });

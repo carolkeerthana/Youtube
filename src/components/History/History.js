@@ -57,7 +57,7 @@ const History = () => {
             </div>
             <span onClick={handleClearHistories}>CLEAR ALL {historyType.toUpperCase()} HISTORY</span>
         </div>
-        {notification && <div className='notification'>{notification}</div>}
+        {notification && <div className='notification' data-testid='notify-delete'>{notification}</div>}
     </div>
   )
 }

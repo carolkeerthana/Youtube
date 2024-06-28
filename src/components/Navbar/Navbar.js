@@ -109,7 +109,7 @@ const Navbar = ({setSidebar}) => {
           <>
 
           <div className='user-icon flex-div'>
-          <div className='profile-icon' onClick={() => setShowUserProfile(!showUserProfile)}>
+          <div className='profile-icon' onClick={() => setShowUserProfile(!showUserProfile)} data-testid="profile-icon">
             <div className="user-initial" style={{ backgroundColor: userInitialColor }}>
               {user.channelName.charAt(0).toUpperCase()}
             </div>  

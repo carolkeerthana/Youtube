@@ -19,10 +19,7 @@ const SearchHistory = ({ history, setHistory }) => {
             if(response.success && Array.isArray(response.data)){
                 setHistory(response.data);
                 setTotalPages(response.totalPages);
-            }else{
-              setError(response.error);
-              setHistory([]);
-            }   
+            }  
           } catch (error) {
             setError('Error fetching data');
             setHistory([]);
@@ -32,9 +29,9 @@ const SearchHistory = ({ history, setHistory }) => {
         fetchHistoryVideos(currentPage);         
 }, [currentPage]);
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page)
-    }
+    // const handlePageChange = (page) => {
+    //     setCurrentPage(page)
+    // }
 
     const handleDeleteHistory = async(historyId) => {
         try {
@@ -43,8 +40,6 @@ const SearchHistory = ({ history, setHistory }) => {
                 setHistory((prevHistories) => prevHistories.filter((history) => history._id !== historyId));
                 setNotification('History deleted successfully');
                 setTimeout(() => setNotification(''), 3000); // Hide notification after 3 seconds
-            }else {
-                console.error('Failed to delete history:', response);
             }
         } catch (error) {
             console.error('Error deleting history:', error);
