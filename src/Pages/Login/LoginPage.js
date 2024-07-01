@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './LoginPage.css';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaExclamationCircle } from 'react-icons/fa';
 import { loginUser } from './LoginApi';
 import { useAuth } from '../../util/AuthContext';
+import CustomNotification from '../Register/CustomNotification';
 
 function LoginPage(){
     const [formData, setFormData] = useState({
@@ -16,6 +17,26 @@ function LoginPage(){
         const [fieldErrors, setFieldErrors] = useState({});
         const navigate = useNavigate();
         const {login} = useAuth();
+        const location = useLocation();
+        const [showNotification, setShowNotification] = useState(false);
+        const [notificationMessage, setNotificationMessage] = useState('');
+      
+        useEffect(() => {
+            const queryParams = new URLSearchParams(location.search);
+            const resetSuccess = queryParams.get('resetSuccess');
+        
+            if (resetSuccess === 'true') {
+              setNotificationMessage('Your password has been reset successfully. Please sign in with your new password.');
+              setShowNotification(true);
+        
+              // Clear notification after 5 seconds
+              const timer = setTimeout(() => {
+                setShowNotification(false);
+              }, 3000); // Adjust the timer duration (in milliseconds) as needed
+        
+              return () => clearTimeout(timer);
+            }
+          }, [location.search]);
        
     const handleChange = (e) => {
         const {name,value} = e.target;
@@ -83,6 +104,7 @@ function LoginPage(){
     return(
         <div className='login'>
         <div className='login-container'>
+        {showNotification && <CustomNotification message={notificationMessage} onClose={() => setShowNotification(false)}/>}
              <div className='login-LeftSide'>
                 <h1 data-testid='utube-text'>UTube</h1>
                 <div className='signin-text'>

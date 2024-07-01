@@ -1,11 +1,14 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { BrowserRouter } from "react-router-dom"
 import Sidebar from "../../Sidebar/Sidebar"
-import { AuthProvider } from "../../../util/AuthContext"
+import { AuthProvider, useAuth } from "../../../util/AuthContext"
 import { getLikedVideos } from "../GetLikedVideosApi";
 import LikedVideos from "../LikedVideos";
 
-jest.mock('../GetLikedVideos.js');
+jest.mock('../GetLikedVideosApi.js');
+jest.mock("../../../util/AuthContext.js", () => ({
+  useAuth: jest.fn(),
+}));
 describe('Liked-videos', () => {
 
   const mockData =[
@@ -35,20 +38,19 @@ describe('Liked-videos', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
+      useAuth.mockReturnValue({ isAuthenticated: true });
     });
 
     const mockSetSidebar = jest.fn();
-    const renderSidebar = (isAuthenticated) => {
+    const renderSidebar = () => {
         render(
-          <AuthProvider value={{ isAuthenticated }}>
             <BrowserRouter>
               <Sidebar sidebar={true} setSidebar={mockSetSidebar} page="" />
             </BrowserRouter>
-          </AuthProvider>
         );
       };
-    test.skip('should have active class on liked-videos in sidebar', async() => {
-        renderSidebar(true);
+    test('should have active class on liked-videos in sidebar', async() => {
+        renderSidebar();
 
         const likedVideosLink = screen.getByTestId('liked-videos-link');
         fireEvent.click(likedVideosLink);

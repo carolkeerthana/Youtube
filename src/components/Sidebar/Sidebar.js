@@ -47,6 +47,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
     }, [isVideoPage, sidebar]);
 
     const handleProtectedLinkClick = (e, path) => {
+        console.log("iiiiiiiiiiiiiii",isAuthenticated)
         if (!isAuthenticated) {
             e.preventDefault();
             // alert('You must be signed in to access this page.');

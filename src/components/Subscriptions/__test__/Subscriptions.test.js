@@ -3,9 +3,12 @@ import { BrowserRouter } from "react-router-dom";
 import Sidebar from "../../Sidebar/Sidebar";
 import Subscriptions from "../Subscriptions";
 import { fetchSubscriptions } from "../SubscriptionApi";
-import { AuthProvider } from "../../../util/AuthContext";
+import { AuthProvider, useAuth } from "../../../util/AuthContext";
 
 jest.mock('../../Subscriptions/SubscriptionApi.js');
+jest.mock("../../../util/AuthContext.js", () => ({
+    useAuth: jest.fn(),
+  }));
 describe("Subscriptions", () => {
 
     const mockVideoData =[
@@ -35,15 +38,14 @@ describe("Subscriptions", () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        useAuth.mockReturnValue({ isAuthenticated: true });
       });
 
-    test.skip('should have active class on Subscriptions in sidebar', () => {
+    test('should have active class on Subscriptions in sidebar', () => {
         render(
-        <AuthProvider>
             <BrowserRouter>
                 <Sidebar />
             </BrowserRouter>
-        </AuthProvider>
         )
         const subscriptionsLink = screen.getByTestId('subscriptions-link');
         fireEvent.click(subscriptionsLink);

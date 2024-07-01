@@ -33,6 +33,7 @@ const PlayVideo = ({videoId, navbar}) => {
             const channelId = { channelId: response.data.userId.id };
             const subscriptionResponse = await checkSubscription(channelId);
             console.log('Subscription response:', subscriptionResponse);
+    
             if ((subscriptionResponse.success || subscriptionResponse.sucess) && subscriptionResponse.data && subscriptionResponse.data._id) {
               setIsSubscribed(true);
             } else {
