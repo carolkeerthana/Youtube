@@ -77,64 +77,48 @@ describe('CreateSubscriber', () => {
         expect(updatedSubscribeBtn).toBeInTheDocument();
         });
 
-        test('displays error message on subscription failure', async () => {
-            // Mock API response to simulate subscription failure
-            CreateSubscriberApi.mockResolvedValue({ success: false, error: 'Subscription failed' });
-        
-            render(
-              <BrowserRouter>
-                <CreateSubscriber channelId="123" isSubscribed={false} setIsSubscribed={setIsSubscribed} />
-              </BrowserRouter>
-            );
-        
-            const subscribeBtn = screen.getByRole('button', { name: /subscribe/i });
-            fireEvent.click(subscribeBtn);
-        
-            // Wait for the error message to appear
-            await waitFor(() => {
-              expect(screen.getByText(/subscription failed/i)).toBeInTheDocument();
-            });
-          });
+        test('handles API errors', async () => {
+          CreateSubscriberApi.mockResolvedValueOnce({ success: false, error: 'Subscription failed' });
+          render(
+            <BrowserRouter>
+          <CreateSubscriber channelId="1" isSubscribed={false} setIsSubscribed={setIsSubscribed} />
+          </BrowserRouter>);
+      
+          fireEvent.click(screen.getByText('SUBSCRIBE'));
+          expect(CreateSubscriberApi).toHaveBeenCalledWith({ channelId: '1' });
+      
+          // Wait for state updates and re-renders
+          await screen.findByText('SUBSCRIBE'); // remains as 'SUBSCRIBE'
+          expect(screen.getByText('SUBSCRIBE')).toBeInTheDocument();
+        });
 
-    test.skip('if it is authenticated calls CreateSubscriberApi and toggles the subscription state', async() => {
-        const {setIsSubscribed} = renderComponent({isAuthenticated:true});
-        CreateSubscriberApi.mockResolvedValue({success:true});
+        test('shows error message when subscription fails', async () => {
+          useAuth.mockReturnValue({ isAuthenticated: true });
+          CreateSubscriberApi.mockRejectedValue(new Error('Network error'));
+          render(<CreateSubscriber channelId="1" isSubscribed={false} setIsSubscribed={setIsSubscribed} />);
+      
+          fireEvent.click(screen.getByText('SUBSCRIBE'));
+      
+          expect(screen.getByText('Error processing subscription')).toBeInTheDocument();
+        });
 
-        const subscribeBtn = screen.getByRole('button', {name: /subscribe/i});
-        fireEvent.click(subscribeBtn);
+        test('shows error message on API error', async () => {
+          CreateSubscriberApi.mockResolvedValue({ success: false, error: 'Failed to subscribe' });
+          render(
+          <BrowserRouter>
+          <CreateSubscriber channelId="1" isSubscribed={false} setIsSubscribed={setIsSubscribed} />
+          </BrowserRouter>);
+          fireEvent.click(screen.getByText('SUBSCRIBE'));
+          expect(await screen.findByText('Failed to subscribe')).toBeInTheDocument();
+        });
 
-        await waitFor(() => {expect(CreateSubscriberApi).toHaveBeenCalledWith({channelId: 'test-channelId'}) });
-        await waitFor(() => {expect(setIsSubscribed).toHaveBeenCalledWith(true)});
-    });
-
-    test.skip('handles Api error and displays error message', async() => {
-        renderComponent({isAuthenticated:true})
-        CreateSubscriberApi.mockResolvedValue({success: false, error: 'Subscription failed'});
-
-        const subscribeBtn = screen.getByRole('button', {name: /subscribe/i});
-        fireEvent.click(subscribeBtn);
-
-        // await waitFor(()=>{
-        //     expect(screen.getByText(/Subscription failed/i)).toBeInTheDocument();
-        // })
-        const errorMessage = await screen.findByText('Subscription failed')
-        expect(errorMessage).toBeInTheDocument(); 
-    });
-
-    test.skip('handles network error', async () => {
-        renderComponent({isAuthenticated:true, })
-        CreateSubscriberApi.mockRejectedValueOnce(new Error('Network error'));
-
-        console.error = jest.fn();
-        const subscribeBtn = screen.getByRole('button', {name: /subscribe/i});
-        fireEvent.click(subscribeBtn);
-
-        const errorMessage = await screen.findByText('Error processing subscription');
-        expect(errorMessage).toBeInTheDocument();
-        // await waitFor(()=>{
-        //     expect(console.error).toHaveBeenCalledWith('Error processing subscription');
-        //   })
-        //   console.error.mockRestore();
-    });
-
+        test('shows generic error message on API exception', async () => {
+          CreateSubscriberApi.mockRejectedValue(new Error('Network error'));
+          render(
+            <BrowserRouter>
+            <CreateSubscriber channelId="1" isSubscribed={false} setIsSubscribed={setIsSubscribed} />
+            </BrowserRouter>);
+          fireEvent.click(screen.getByText('SUBSCRIBE'));
+          expect(await screen.findByText('Error processing subscription')).toBeInTheDocument();
+        });
 })

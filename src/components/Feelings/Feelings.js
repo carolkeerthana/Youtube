@@ -25,12 +25,18 @@ const Feelings = ({videoId, initialLikes, initialDislikes, initialUserFeeling}) 
             return;
         }
 
-        if(userFeeling !== 'like'){
-            const response = await updateFeelings({videoId, type: 'like'});
-            if(response.success){
-                setLikes(likes+1);
-                if (userFeeling === 'dislike') setDislikes(dislikes - 1);
-                setUserFeeling('like');
+        if (userFeeling !== 'like') {
+            try {
+                const response = await updateFeelings({ videoId, type: 'like' });
+                if (response && response.success) {
+                    setLikes(likes + 1);
+                    if (userFeeling === 'dislike') setDislikes(dislikes - 1);
+                    setUserFeeling('like');
+                } else {
+                    console.error('Failed to update feelings:', response); // Log the actual response for debugging
+                }
+            } catch (error) {
+                console.error('Error updating feelings:', error);
             }
         }
     }
@@ -43,19 +49,25 @@ const Feelings = ({videoId, initialLikes, initialDislikes, initialUserFeeling}) 
         }
 
         if(userFeeling !== 'dislike'){
-            const response = await updateFeelings({videoId, type: 'dislike'});
-            if(response.success){
-            setDislikes(dislikes+1);
-            if (userFeeling === 'like') setLikes(likes - 1);
-            setUserFeeling('dislike');
-        }
+            try{
+                const response = await updateFeelings({videoId, type: 'dislike'});
+                if(response.success){
+                setDislikes(dislikes+1);
+                if (userFeeling === 'like') setLikes(likes - 1);
+                setUserFeeling('dislike');
+            } else {
+                console.error('Failed to update feelings:', response); // Log the actual response for debugging
+            }
+            }catch (error) {
+                console.error('Error updating feelings:', error);
+            }
         }
     }
 
   return (
     <div className='feeling-icons'>
          {showSignIn && (
-                <div className='feelings-overlay' onClick={() => setShowSignIn(false)}>
+                <div className='feelings-overlay' data-testid='feelings-overlay' onClick={() => setShowSignIn(false)}>
                     <SignInPopup action={action}/>
                 </div>
             )}

@@ -23,7 +23,7 @@ const SignInPopup  = ({action}) => {
     <div className='sign-in-popup'>
       <p id='p-one'>{getActionText()}</p>
       <p id='p-two'>{action === 'subscribe' ? 'Sign in to subscribe to this channel.' : 'Sign in to make your opinion count'}</p>
-      <button onClick={handleSignIn}>Sign in</button>
+      <button onClick={handleSignIn} data-testid='sign-in-button'>Sign in</button>
     </div>
   )
 }

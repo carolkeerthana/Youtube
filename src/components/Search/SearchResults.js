@@ -14,12 +14,12 @@ const SearchResults = () => {
                 results.map((result) => (
                   result &&
                     <div key={result.id} className="search-result-item flex-div">
-                        <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${result.thumbnailUrl}`} alt={result.title}/>
+                        <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${result.thumbnailUrl}`} alt={result.title || 'No title'}/>
                         <div className="result-details">
-                            <h3>{result.title}</h3>
-                            <p className="channel-name">{result.userId.channelName}</p>
+                            <h3>{result.title || 'No title'}</h3>
+                            <p className="channel-name">{result.userId?.channelName || 'No channel name'}</p>
                             <p className="views-time">{result.views} views &bull; {moment(result.createdAt).fromNow()}</p>
-                            <p className="description">{result.description}</p>
+                            <p className="description">{result.description || 'No description'}</p>
                         </div>
                     </div>
                 ))

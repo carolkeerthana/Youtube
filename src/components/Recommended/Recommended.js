@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import './Recommended.css'
-import thumbnail1 from '../../assets/thumbnail5.png'
-import thumbnail2 from '../../assets/thumbnail6.png'
-import thumbnail3 from '../../assets/thumbnail7.png'
-import thumbnail4 from '../../assets/thumbnail8.png'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
+import { fetchVideos } from '../Feed/GetVideosApi'
 
 const Recommended = ({videoId}) => {
     const [data, setData] = useState([]);  
     const navigate = useNavigate(); 
 
     const fetchData = async () => {
-        const videoUrl = `https://apps.rubaktechie.me/api/v1/videos/public`
-
         try {
-            const response = await fetch(videoUrl);
+            const response = await fetchVideos();
             const json = await response.json();
             console.log('API response:', json);
             if(json.success && Array.isArray(json.data)) {
@@ -44,7 +39,7 @@ const Recommended = ({videoId}) => {
         {data.map((item) => {
         return(
         <div key={item._id} className='side-video-list' onClick={()=>handleVideoClick(item._id)}>
-            <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${item.thumbnailUrl}`} alt=''/>
+            <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${item.thumbnailUrl}`} alt={`Thumbnail for ${item.title}`}/>
             <div className='vid-info'>
                 <h4>{item.title}</h4>
                 <p>{item.userId.channelName}</p>
