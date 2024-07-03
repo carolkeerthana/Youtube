@@ -4,7 +4,7 @@ export const commentsApi = async (commentsData) => {
     if(!token){
         return null;
     }
-    const response = await fetch('https://apps.rubaktechie.me/api/v1/comments',{
+    const response = await fetch('https://apps.rubaktechie.me/api/v1/comments/',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

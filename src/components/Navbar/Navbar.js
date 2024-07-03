@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Navbar.css';
 import menuIcon from '../../assets/menu.png';
 import logo from '../../assets/logo.png';
@@ -23,6 +23,7 @@ const Navbar = ({setSidebar}) => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
+  const profileRef = useRef(null);
  
   const isSignInOrSignUp = location.pathname === '/signin' || location.pathname === '/signup';
 
@@ -32,30 +33,20 @@ const Navbar = ({setSidebar}) => {
 
   useEffect(() => {
     setShowUserProfile(false); // Close user profile on navigation change
-
-    // search history is created
-
-    // Fetch search history from API
-    // const createSearchHistory = async () => {
-    //   try {
-    //     const historyData = {
-    //       searchText : searchInput,
-    //       type: 'watch', 
-    //     }
-    //     const historyResponse = await CreateHistory(historyData);
-    //     console.log('History response:', historyResponse);
-    //         if (!(historyResponse.success || historyResponse.sucess)) {
-    //           console.error('Failed to create history:', historyResponse);
-    //       } else {
-    //         console.error('API response is not in the expected format:', historyResponse);
-    //       }
-    //     } catch (error) {
-    //       console.error('Error fetching data:', error);
-    //       navigate('/error');
-    //     }
-    // };
-    // createSearchHistory();
   }, [location]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setShowUserProfile(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSearch = async(e) => {
     e.preventDefault();
@@ -63,7 +54,7 @@ const Navbar = ({setSidebar}) => {
         const results = await searchText({text : searchInput});
         if(results && results.data){
           setSearchResults(results.data);
-          navigate('/search-results', {state: {results: results.data}});
+          navigate('/search-results', {state: {results: results.data}}); //passed in the state
           console.log(results);
           const historyData = {
           searchText : searchInput,
@@ -106,17 +97,14 @@ const Navbar = ({setSidebar}) => {
         <img src={uploadIcon} alt='upload' data-testid='upload-icon'/>
         <img src={notificationIcon} alt='notify' data-testid='notify-icon'/>
         {isAuthenticated && user ? (
-          <>
-
           <div className='user-icon flex-div'>
           <div className='profile-icon' onClick={() => setShowUserProfile(!showUserProfile)} data-testid="profile-icon">
             <div className="user-initial" style={{ backgroundColor: userInitialColor }}>
               {user.channelName.charAt(0).toUpperCase()}
             </div>  
           </div>
-          {showUserProfile && <UserProfile userInitialColor={userInitialColor}/>}
+          {showUserProfile && <div ref={profileRef}><UserProfile userInitialColor={userInitialColor}/></div>}
         </div>
-        </>
         ) : (
 
         !isSignInOrSignUp && (

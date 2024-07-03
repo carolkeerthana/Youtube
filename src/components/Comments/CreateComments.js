@@ -48,22 +48,22 @@ const CreateComments = ({videoId, onCommentAdded}) => {
 
         const commentsData = {
             videoId: videoId,
-            text: newComment,
-            userId: userDetails.id,
-            channelName: userDetails.channelName
+            text: newComment
         };
         console.log(commentsData)
 
         try {
             const response = await commentsApi(commentsData);
+            console.log("create comments",response)
             if ((response.success || response.sucess) && response.data) {
                 onCommentAdded(response.data);
                 setNewComment('');
                 setFocused(false);
-            } else {
+            }else {
                 console.error('API response is not in the expected format:', response);
             }
-        } catch{
+        } catch(error){
+            console.error('Error in creating comment:', error);
             navigate('/error');
         }
     }

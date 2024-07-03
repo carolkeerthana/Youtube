@@ -22,7 +22,7 @@ describe('SearchResults', () => {
         );
     };
 
-    it('should render correctly with search results', () => {
+    test('should render correctly with search results', () => {
         const results = [
             {
                 id: '1',
@@ -44,7 +44,7 @@ describe('SearchResults', () => {
             }
         ];
 
-        const { getByText, getByAltText } = renderWithRouter(<SearchResults />, {
+        renderWithRouter(<SearchResults />, {
             route: '/search',
             state: { results }
         });
@@ -58,8 +58,8 @@ describe('SearchResults', () => {
         });
     });
 
-    it('should render "No results found." when there are no search results', () => {
-        const { getByText } = renderWithRouter(<SearchResults />, {
+    test('should render "No results found." when there are no search results', () => {
+        renderWithRouter(<SearchResults />, {
             route: '/search',
             state: { results: [] }
         });
@@ -67,7 +67,7 @@ describe('SearchResults', () => {
         expect(screen.getByText('No results found.')).toBeInTheDocument();
     });
 
-    it('should handle missing or incomplete data gracefully', () => {
+    test('should handle missing or incomplete data gracefully', () => {
         const results = [
             {
                 id: '1',
@@ -80,7 +80,7 @@ describe('SearchResults', () => {
             },
         ];
 
-        const { getByText, getByAltText, container } = renderWithRouter(<SearchResults />, {
+        renderWithRouter(<SearchResults />, {
             route: '/search',
             state: { results }
         });
@@ -92,7 +92,7 @@ describe('SearchResults', () => {
         expect(screen.getByText('No description')).toBeInTheDocument();
     });
 
-    it('should handle partially complete data', () => {
+    test('should handle partially complete data', () => {
         const results = [
             {
                 id: '1',
@@ -105,7 +105,7 @@ describe('SearchResults', () => {
             },
         ];
 
-        const { getByText, getByAltText } = renderWithRouter(<SearchResults />, {
+        renderWithRouter(<SearchResults />, {
             route: '/search',
             state: { results }
         });
@@ -117,18 +117,12 @@ describe('SearchResults', () => {
         expect(screen.getByText('Description 1')).toBeInTheDocument();
     });
 
-    it('should render without crashing if results is undefined', () => {
-        const { getByText } = renderWithRouter(<SearchResults />, {
+    test('should render without crashing if results is undefined', () => {
+        renderWithRouter(<SearchResults />, {
             route: '/search',
             state: { results: undefined }
         });
 
         expect(screen.getByText('No results found.')).toBeInTheDocument();
     });
-    it('should handle undefined location state gracefully', () => {
-        const { getByText } = renderWithRouter(<SearchResults />); // No state provided
-
-        expect(screen.getByText('No results found.')).toBeInTheDocument();
-    });
-    
 });

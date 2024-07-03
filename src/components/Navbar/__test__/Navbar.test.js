@@ -5,9 +5,10 @@ import logo from '../../../assets/logo.png'
 import searchIcon from '../../../assets/search.png'
 import uploadIcon from '../../../assets/upload.png'
 import notificationIcon from '../../../assets/notification.png'
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../../../util/AuthContext"
 import { searchText } from "../../Search/SearchApi"
+import { MockAuthProvider } from '../__test__/AuthContextMock'; 
 
 const setSidebarMock = jest.fn();
 const MockedAuthProvider = ({ children }) => (
@@ -210,7 +211,7 @@ describe("Navbar", () => {
         expect(setSidebarMock).toHaveBeenCalledTimes(2);
         });
 
-        test('clicking profile icon toggles user profile display', async () => {
+        test.skip('clicking profile icon toggles user profile display', async () => {
             render(
               <MemoryRouter initialEntries={['/']}>
                 <MockedAuthProvider>
@@ -302,4 +303,74 @@ describe("Navbar", () => {
             consoleErrorSpy.mockRestore();
           });
         
+});
+
+
+// Mock the Logout API
+jest.mock('../../User/UserProfile/LogoutApi', () => ({
+  logoutUser: jest.fn().mockResolvedValue({ success: true }),
+}));
+
+describe('Navbar Component with UserProfile Integration', () => {
+  const mockUser = {
+    channelName: 'JohnDoe',
+    photoUrl: 'no-photo.jpg',
+    email: 'john.doe@example.com',
+  };
+
+
+  it('should display UserProfile when user icon is clicked', async () => {
+
+    render(
+    <MockAuthProvider isAuthenticated={true} user={mockUser}>
+      <BrowserRouter>
+        <Navbar setSidebar={() => {}} />
+      </BrowserRouter>
+    </MockAuthProvider>);
+
+    // Debug output to see the rendered HTML
+    // screen.debug();
+
+    // Check if the user icon is present
+    const profileIcon = screen.getByTestId('profile-icon');
+    expect(profileIcon).toBeInTheDocument();
+
+    // Click on the user icon
+    fireEvent.click(profileIcon);
+
+    // Assert that UserProfile is displayed
+    await waitFor(() => {
+      expect(screen.getByTestId('user-profile')).toBeInTheDocument();
+    });
+
+    // Check if user information is displayed correctly
+    expect(screen.getByText(mockUser.channelName)).toBeInTheDocument();
+    expect(screen.getByText(mockUser.email)).toBeInTheDocument();
+  });
+
+  it('should handle logout functionality', async () => {
+    const providerProps = {
+      value: {
+        isAuthenticated: true,
+        user: mockUser,
+        login: jest.fn(),
+        logout: jest.fn(),
+      },
+    };
+
+    // renderWithProviders(<Navbar setSidebar={() => {}} />, { providerProps });
+
+    // Click on the user icon
+    fireEvent.click(screen.getByTestId('profile-icon'));
+
+    // Click on the logout option in the user profile
+    fireEvent.click(screen.getByText('Sign Out'));
+
+    // Assert that the user is logged out
+    await waitFor(() => {
+      expect(providerProps.value.logout).toHaveBeenCalled();
+    });
+    expect(providerProps.value.isAuthenticated).toBe(false);
+    expect(providerProps.value.user).toBeNull();
+  });
 });

@@ -27,6 +27,7 @@ const PlayVideo = ({videoId, navbar}) => {
           console.log('API response:', response);
   
           if ((response.success || response.sucess) && response.data) {
+            console.log("response.data",response.data)
             setVideoData(response.data);
   
             // Check subscription status
@@ -75,11 +76,9 @@ const PlayVideo = ({videoId, navbar}) => {
     if (!videoData) {
       return <div>Loading...</div>;
     }
-  
-
   return (
     <div className='play-video'>
-      <video type controls autoPlay >
+      <video controls autoPlay >
         <source src={`https://apps.rubaktechie.me/uploads/videos/${videoData.url}`} type="video/mp4"/>
     </video>
       <h3>{videoData.title}</h3>
@@ -99,7 +98,7 @@ const PlayVideo = ({videoId, navbar}) => {
     <hr />
     {videoData.userId && (
     <div className='publisher'>
-        <img src={`https://apps.rubaktechie.me/uploads/avatars/${videoData.userId.photoUrl}`} alt={videoData.userId.channelName} avatar/>
+        <img src={`https://apps.rubaktechie.me/uploads/avatars/${videoData.userId.photoUrl}`} alt={videoData.userId.channelName}/>
         <div>
             <p>{videoData.userId.channelName}</p>
             <span>{videoData.userId.subscribers} subscribers</span>

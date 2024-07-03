@@ -24,7 +24,7 @@ const Comments = ({videoId}) => {
     const [focusedReplyIndex, setFocusedReplyIndex] = useState(null);
     const [visibleReplies, setVisibleReplies] = useState([]);
     const navigate = useNavigate();
-    const {isAuthenticated} = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const [commentDropdownIndex, setCommentDropdownIndex] = useState(null);
     const [dropdownIndex, setDropdownIndex] = useState(null);
     const [editCommentIndex, setEditCommentIndex] = useState(null);
@@ -89,17 +89,20 @@ const Comments = ({videoId}) => {
       }
   }
 
-  const toggleReplyDropdown = (replyIndex) => {
-    console.log(replyIndex)
-      if (editReplyIndex === null) {
-          setReplyDropdownIndex(replyDropdownIndex === replyIndex ? null : replyIndex);
-      }
-  }
+  const toggleReplyDropdown = (commentId, replyId) => {
+    const updatedReplies = replies.map((reply) =>
+        reply.commentId === commentId && reply.id === replyId
+            ? { ...reply, dropdownOpen: !reply.dropdownOpen }
+            : { ...reply, dropdownOpen: false } // Close all other dropdowns
+    );
+    setReplies(updatedReplies);
+};
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
         // Check if there is a dropdown currently open
-        if (commentDropdownIndex !== null) {
+        if (commentDropdownIndex !== null && dropdownRefs.current[commentDropdownIndex]) {
             // Check if the click occurred outside the dropdown menu or inside
             if (!dropdownRefs.current[commentDropdownIndex].contains(event.target)) {
                 // Close the dropdown if clicked outside or inside
@@ -117,6 +120,29 @@ const Comments = ({videoId}) => {
     };
 }, [commentDropdownIndex]); // Dependency ensures effect runs on dropdown changes
 
+useEffect(() => {
+  const handleClickOutside = (event) => {
+      // Check if there is any reply dropdown currently open
+      const isOutsideAnyDropdown = replies.some((reply) =>
+          reply.dropdownOpen && dropdownRefs.current[reply.id] && !dropdownRefs.current[reply.id].contains(event.target)
+      );
+      
+      if (isOutsideAnyDropdown) {
+          const updatedReplies = replies.map((reply) =>
+              reply.dropdownOpen ? { ...reply, dropdownOpen: false } : reply
+          );
+          setReplies(updatedReplies);
+      }
+  };
+
+  // Event listener setup on component mount
+  document.addEventListener('mousedown', handleClickOutside);
+
+  return () => {
+      // Cleanup: remove event listener on component unmount
+      document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, [replies]);
 
 
    // to handle delete comment Api
@@ -142,7 +168,8 @@ const Comments = ({videoId}) => {
     const handleUpdateCommentAdded = (updateComment) => {
        // Update the comment in state
       setComments((prevComments)=>
-      prevComments.map((comment) => (comment.id === updateComment.id ? updateComment : comment))
+      prevComments.map((comment) => 
+        (comment.id === updateComment.id ? { ...comment, text: updateComment.text } : comment))
     );
     // Exit edit mode after updating comment
     setEditCommentIndex(null);
@@ -228,8 +255,12 @@ const Comments = ({videoId}) => {
 
 
 console.log("auth:",isAuthenticated)
+console.log("user:",user)
+console.log("comment.userId", comments.userId)
+console.log("user.id", user.id._id)
 console.log("replyDropdownIndex:", replyDropdownIndex)
 console.log("replyIndex:", replies)
+console.log("comments", comments)
 return (
         <div>
             <h4>{comments.length} Comments</h4>
@@ -238,6 +269,7 @@ return (
                 const commentReplies = replies.filter((reply) => reply.commentId === comment.id);
                 const hasReplies = commentReplies.length > 0;
                 const isVisible = visibleReplies.includes(comment.id);
+                const isOwner = isAuthenticated && comment.userId._id === user.id;
                 return (
                     <div key={comment.id} className='comment'>
                         <img src={userProfile} alt='' />
@@ -248,7 +280,7 @@ return (
                                     <div className="icon-circle">
                                         <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleCommentDropdown(index)} /></span>
                                     </div>
-                                    {isAuthenticated && commentDropdownIndex === index && (
+                                    {isOwner && commentDropdownIndex === index && (
                                 <div ref={(el) => el ? dropdownRefs.current[index] = el : null} className='dropdown-menu'>
                                     <button onClick={() => handleEditComment(index, comment.text)}>Edit</button>
                                     <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
@@ -257,18 +289,13 @@ return (
                                 </div>
                             </div>
                             {editCommentIndex === index ? (
-                                <div className="comment-edit">
-                                <input 
-                                  className="edit-input"
-                                  type="text" 
-                                  value={editCommentText} 
-                                  onChange={(e) => setEditCommentText(e.target.value)} 
-                                />
-                                <div className="edit-buttons">
-                                <button onClick={() => handleUpdateCommentAdded({ id: comment.id, text: editCommentText })}>SAVE</button>
-                                <button onClick={handleCancelEditComment}>CANCEL</button>
-                                </div>
-                              </div>
+                              <UpdateComment
+                              commentId={comment.id}
+                              comment={comment}
+                              updateCommentAdded={handleUpdateCommentAdded}
+                              cancelEdit={handleCancelEditComment}
+                              initialText={editCommentText}
+                              />
                             ) : (
                                 <p>{comment.text}</p>
                             )}
@@ -303,9 +330,9 @@ return (
                                                     <h3>{reply.userId.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
                                                     <div className='reply-actions'>
                                                         <div className="icon-circle">
-                                                            <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(replyIndex)} /></span>
+                                                            <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(comment.id, reply.id)} /></span>
                                                         </div>
-                                                        {isAuthenticated && replyDropdownIndex === replyIndex && (
+                                                        {isAuthenticated && reply.dropdownOpen && (
                                                             <div className='dropdown-menu'>
                                                                 <button onClick={() => handleEditReply(replyIndex, reply.text)}>Edit</button>
                                                                 <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>

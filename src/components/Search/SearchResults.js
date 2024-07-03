@@ -5,7 +5,8 @@ import moment from 'moment';
 
 const SearchResults = () => {
     const location = useLocation();
-    const { results } = location.state || {};
+    const { results } = location.state || {}; //from navbar
+    console.log("loc",location.state)
     console.log("search:",results)
 
     return (

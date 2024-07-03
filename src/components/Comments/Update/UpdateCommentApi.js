@@ -12,6 +12,5 @@ export const updateComment = async (updateData, videoId) => {
                     },
                     body: JSON.stringify(updateData)
                 });
-                const result = await response.json();
-                return result;
+                return await response.json();
 }

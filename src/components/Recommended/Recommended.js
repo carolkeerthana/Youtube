@@ -11,14 +11,14 @@ const Recommended = ({videoId}) => {
     const fetchData = async () => {
         try {
             const response = await fetchVideos();
-            const json = await response.json();
-            console.log('API response:', json);
-            if(json.success && Array.isArray(json.data)) {
-                setData(json.data);
+            console.log('recommended API response:', response);
+            if(response.success && Array.isArray(response.data)) {
+                setData(response.data);
             }else{
-              console.error('API response is not in the expected format:', json);
+              console.error('API response is not in the expected format:', response);
             }   
           } catch (error) {
+            // console.error('Error fetching data:', error);
             navigate('/error');
           }
     }

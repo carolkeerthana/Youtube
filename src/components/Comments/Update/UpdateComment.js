@@ -52,14 +52,15 @@ const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) =>
             console.log({text: editComment})
             console.log(commentId)
             const response = await updateComment({text: editComment}, commentId);
-            console.log(response)
             if ((response.success || response.sucess) && response.data) {
+                console.log("update comment:",response.data)
                 updateCommentAdded(response.data);
                 setFocused(false);
             } else {
                 console.error('API response is not in the expected format:', response);
             }
-        } catch{
+        } catch(error){
+            console.error('Error in updating comment:',error);
             navigate('/error');
         }
     }
