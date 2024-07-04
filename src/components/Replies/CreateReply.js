@@ -65,7 +65,11 @@ const CreateReply = ({commentId, onReplyAdded, onCancelReply}) => {
             try {
                 const response = await createReply(replyData);
                 if ((response.success || response.sucess) && response.data) {
-                    onReplyAdded(response.data);
+                  const replyWithChannel = {
+                    ...response.data,
+                    channelName: userDetails.channelName,
+                };
+                    onReplyAdded(replyWithChannel);
                     setNewReply('');
                     setFocused(false);
                 } else {

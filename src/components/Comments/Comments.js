@@ -7,9 +7,9 @@ import CreateComments from './CreateComments';
 import { useAuth } from '../../util/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons/faEllipsisVertical';
-import {deleteCommentApi}  from './DeleteCommentApi'
+import {deleteCommentApi}  from './Apis/DeleteCommentApi'
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
-import { fetchComments } from './GetCommentsApi';
+import { fetchComments } from './Apis/GetCommentsApi';
 import UpdateComment from './Update/UpdateComment';
 import { getReplies } from '../Replies/Api/GetRepliesApi';
 import Reply from '../Replies/CreateReply';
@@ -35,6 +35,7 @@ const Comments = ({videoId}) => {
     const [userDetails, setUserDetails] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRefs = useRef([]);  
+    const replyDropdownRefs = useRef([]);
     const [focusInput, setFocusInput] = useState(false);
 
     useEffect(() => {
@@ -45,22 +46,31 @@ const Comments = ({videoId}) => {
           const response = await fetchComments(videoId);
           console.log('API response:', response);
           if((response.success || response.sucess) && response.data) {
-            setComments(response.data);
+            const commentsWithChannel = response.data.map((comment) => ({
+              ...comment,
+              channelName: comment.userId.channelName, // Adjust as per your API response structure
+          }));
+          setComments(commentsWithChannel);
           }else{
             console.error('API response is not in the expected format:', response);
-          }  
+          }
         } catch (error) {
+          console.error('Error fetching data:', error);
           navigate('/error');
         }
-      };
+      };  
 
       // fetch replies fom GET Api
       const fetchRepliesData = async() => {
         try {
           const response = await getReplies();
-          console.log(response)
+          console.log("reply :",response)
           if(response.success){
-            setReplies(response.data);
+            const repliesWithChannel = response.data.map((reply) => ({
+              ...reply,
+              channelName: reply.userId.channelName, // Adjust as per your API response structure
+            }));
+            setReplies(repliesWithChannel);
           }else {
             console.error('API response is not in the expected format:', response);
         }
@@ -73,8 +83,7 @@ const Comments = ({videoId}) => {
     // Fetch comments and replies when component mounts or dependencies change
     fetchCommentsData();
     fetchRepliesData();
-    }, [videoId, navigate, isAuthenticated]);
-
+    }, [videoId, navigate]);
 
     // to add a new comment
     const handleCommentAdded = (newComment) => {
@@ -90,48 +99,35 @@ const Comments = ({videoId}) => {
   }
 
   const toggleReplyDropdown = (commentId, replyId) => {
-    const updatedReplies = replies.map((reply) =>
-        reply.commentId === commentId && reply.id === replyId
-            ? { ...reply, dropdownOpen: !reply.dropdownOpen }
-            : { ...reply, dropdownOpen: false } // Close all other dropdowns
+    setReplies((prevReplies) =>
+        prevReplies.map((reply) =>
+            reply.commentId === commentId && reply.id === replyId
+                ? { ...reply, dropdownOpen: !reply.dropdownOpen }
+                : { ...reply, dropdownOpen: false } // Close all other dropdowns
+        )
     );
-    setReplies(updatedReplies);
 };
-
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-        // Check if there is a dropdown currently open
-        if (commentDropdownIndex !== null && dropdownRefs.current[commentDropdownIndex]) {
-            // Check if the click occurred outside the dropdown menu or inside
-            if (!dropdownRefs.current[commentDropdownIndex].contains(event.target)) {
-                // Close the dropdown if clicked outside or inside
-                setCommentDropdownIndex(null);
-            }
-        }
-    };
-
-    // Event listener setup on component mount
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-        // Cleanup: remove event listener on component unmount
-        document.removeEventListener('mousedown', handleClickOutside);
-    };
-}, [commentDropdownIndex]); // Dependency ensures effect runs on dropdown changes
 
 useEffect(() => {
   const handleClickOutside = (event) => {
-      // Check if there is any reply dropdown currently open
-      const isOutsideAnyDropdown = replies.some((reply) =>
-          reply.dropdownOpen && dropdownRefs.current[reply.id] && !dropdownRefs.current[reply.id].contains(event.target)
+      // Close comment dropdown if clicked outside
+      if (commentDropdownIndex !== null && dropdownRefs.current[commentDropdownIndex]) {
+          if (!dropdownRefs.current[commentDropdownIndex].contains(event.target)) {
+              setCommentDropdownIndex(null);
+          }
+      }
+
+      // Close reply dropdown if clicked outside
+      const isOutsideAnyReplyDropdown = replies.some((reply) =>
+          reply.dropdownOpen && replyDropdownRefs.current[reply.id] && !replyDropdownRefs.current[reply.id].contains(event.target)
       );
-      
-      if (isOutsideAnyDropdown) {
-          const updatedReplies = replies.map((reply) =>
-              reply.dropdownOpen ? { ...reply, dropdownOpen: false } : reply
+
+      if (isOutsideAnyReplyDropdown) {
+          setReplies((prevReplies) =>
+              prevReplies.map((reply) =>
+                  reply.dropdownOpen ? { ...reply, dropdownOpen: false } : reply
+              )
           );
-          setReplies(updatedReplies);
       }
   };
 
@@ -142,7 +138,7 @@ useEffect(() => {
       // Cleanup: remove event listener on component unmount
       document.removeEventListener('mousedown', handleClickOutside);
   };
-}, [replies]);
+}, [commentDropdownIndex, replies]);
 
 
    // to handle delete comment Api
@@ -213,7 +209,8 @@ useEffect(() => {
 
   const handleUpdateReplyAdded = (updatedReply) => {
     setReplies((prevReplies) =>
-        prevReplies.map((reply) => (reply.id === updatedReply.id ? updatedReply : reply))
+        prevReplies.map((reply) => 
+          (reply.id === updatedReply.id ? { ...reply, text: updatedReply.text, channelName: updatedReply.channelName } : reply))
     );
     setEditReplyIndex(null);
     setEditReplyText('');
@@ -257,7 +254,6 @@ useEffect(() => {
 console.log("auth:",isAuthenticated)
 console.log("user:",user)
 console.log("comment.userId", comments.userId)
-console.log("user.id", user.id._id)
 console.log("replyDropdownIndex:", replyDropdownIndex)
 console.log("replyIndex:", replies)
 console.log("comments", comments)
@@ -266,24 +262,32 @@ return (
             <h4>{comments.length} Comments</h4>
             <CreateComments videoId={videoId} onCommentAdded={handleCommentAdded} isAuthenticated={isAuthenticated} />
             {comments.map((comment, index) => {
+               // Get the channelName of the commenter from userDetails
+                // Get the channelName of the commenter from userDetails
+                // const channelName = userDetails[comment.userId]?.channelName || 'Unknown User';
+                // const channelName = userDetails.channelName;
                 const commentReplies = replies.filter((reply) => reply.commentId === comment.id);
                 const hasReplies = commentReplies.length > 0;
                 const isVisible = visibleReplies.includes(comment.id);
-                const isOwner = isAuthenticated && comment.userId._id === user.id;
+                const isOwner = isAuthenticated && comment.userId?._id === user?.id;
                 return (
                     <div key={comment.id} className='comment'>
                         <img src={userProfile} alt='' />
                         <div className='comments-detail'>
                             <div className='comment-header'>
-                                <h3>{comment.userId.channelName} <span>{moment(comment.createdAt).fromNow()}</span></h3>
+                                <h3>{comment.channelName} <span>{moment(comment.createdAt).fromNow()}</span></h3>
                                 <div className='comment-actions'>
                                     <div className="icon-circle">
-                                        <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleCommentDropdown(index)} /></span>
+                                        <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleCommentDropdown(index)} data-testid={`dropdown-icon-${comment.id}`}/></span>
                                     </div>
+                                    {console.log('isOwner:', isOwner)}
+                                    {console.log('commentDropdownIndex:', commentDropdownIndex)}
+                                    {console.log('index:', index)}
+
                                     {isOwner && commentDropdownIndex === index && (
-                                <div ref={(el) => el ? dropdownRefs.current[index] = el : null} className='dropdown-menu'>
-                                    <button onClick={() => handleEditComment(index, comment.text)}>Edit</button>
-                                    <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+                                <div ref={(el) => el ? dropdownRefs.current[index] = el : null} className='dropdown-menu' >
+                                    <button onClick={() => handleEditComment(index, comment.text)} data-testid='dropdown-edit'>Edit</button>
+                                    <button onClick={() => handleDeleteComment(comment.id)} data-testid='dropdown-delete'>Delete</button>
                                 </div>
                             )}
                                 </div>
@@ -308,7 +312,8 @@ return (
                             <div>
                             {hasReplies && (
                               <span className='reply-toggle' onClick={() => toggleRepliesVisibility(comment.id)}>
-                                <FontAwesomeIcon icon={isVisible ? faChevronUp : faChevronDown} /> {commentReplies.length} {commentReplies.length === 1 ? 'reply' : 'replies'}
+                                <FontAwesomeIcon data-testid={`reply-toggle-comment-${comment.id}`} icon={isVisible ? faChevronUp : faChevronDown} /> 
+                                {commentReplies.length} {commentReplies.length === 1 ? 'reply' : 'replies'}
                               </span>
                             )}
                             </div>
@@ -322,18 +327,20 @@ return (
                             )}
                             {isVisible && (
                                 <div className="replies">
-                                    {commentReplies.map((reply, replyIndex) => (
+                                    {commentReplies.map((reply, replyIndex) => {
+                                      const isReplyOwner = isAuthenticated && reply.userId?._id === user?.id;
+                                      return (
                                         <div key={reply.id} className='reply'>
                                             <img src={userProfile} alt='' />
                                             <div className='reply-detail'>
                                                 <div className='reply-header'>
-                                                    <h3>{reply.userId.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
+                                                    <h3>{reply.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
                                                     <div className='reply-actions'>
                                                         <div className="icon-circle">
                                                             <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(comment.id, reply.id)} /></span>
                                                         </div>
-                                                        {isAuthenticated && reply.dropdownOpen && (
-                                                            <div className='dropdown-menu'>
+                                                        {isReplyOwner && reply.dropdownOpen && (
+                                                            <div className='dropdown-menu' ref={(el) => el ? replyDropdownRefs.current[reply.id] = el : null}>
                                                                 <button onClick={() => handleEditReply(replyIndex, reply.text)}>Edit</button>
                                                                 <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
                                                             </div>
@@ -346,6 +353,7 @@ return (
                                                         reply={reply}
                                                         onUpdateReply={handleUpdateReplyAdded}
                                                         cancelEdit={handleCancelEditReply}
+                                                        channelName={reply.channelName}
                                                         // initialText={editReplyText}
                                                     />
                                                 ) : (
@@ -353,7 +361,7 @@ return (
                                                 )}
                                             </div>
                                         </div>
-                                    ))}
+            )})}
                                 </div>
                             )}
                         </div>

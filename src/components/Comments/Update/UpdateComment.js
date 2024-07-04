@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import userProfile from '../../../assets/user_profile.jpg'
 import { useAuth } from '../../../util/AuthContext';
 import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
-import { updateComment } from './UpdateCommentApi';
+import { updateComment } from '../Apis/UpdateCommentApi';
 
 const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) => {
     const [editComment, setEditComment] = useState(comment.text || '');

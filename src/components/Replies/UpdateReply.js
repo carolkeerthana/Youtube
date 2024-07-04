@@ -5,7 +5,7 @@ import { useAuth } from '../../util/AuthContext';
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 import { updateReply } from './Api/UpdateReplyApi';
 
-const UpdateReply = ({replyId, reply, onUpdateReply, cancelEdit }) => {
+const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) => {
     const [editReply, setEditReply] = useState(reply.text || '');
     const [focused, setFocused] = useState(false); // Focus input on edit
     const [userDetails, setUserDetails] = useState(null);
@@ -53,12 +53,14 @@ const UpdateReply = ({replyId, reply, onUpdateReply, cancelEdit }) => {
             const response = await updateReply({text: editReply}, replyId);
             console.log(response)
             if ((response.success || response.sucess) && response.data) {
-                onUpdateReply(response.data);
+                const updatedReply = { ...response.data, channelName: reply.channelName };
+                onUpdateReply(updatedReply);
                 setFocused(false);
             } else {
                 console.error('API response is not in the expected format:', response);
             }
-        } catch{
+        } catch(error){
+            console.error('Failed to update reply:', error);
             navigate('/error');
         }
     }
