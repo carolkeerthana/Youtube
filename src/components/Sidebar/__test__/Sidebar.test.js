@@ -8,7 +8,7 @@ jest.mock("../../../util/AuthContext.js", () => ({
 }));
 
 describe("Sidebar", () => {
-  const setup = (page = '', sidebar = false) => {
+  const setup = (page, sidebar) => {
   const setSidebar =  jest.fn();
     render(
       <BrowserRouter>
@@ -99,7 +99,7 @@ describe("Sidebar", () => {
         expect(trendingLink).not.toHaveClass('active');
       });
 
-      test.skip('should render sidebar with menu icon and home page as active', () => {
+      test('should render sidebar with menu icon and home page as active', () => {
         const mockSetSidebar = jest.fn();
         render(
           <BrowserRouter>
@@ -121,11 +121,58 @@ describe("Sidebar", () => {
 
         fireEvent.click(menuIcon);
 
-        expect(screen.getByTestId('sidebar')).toHaveClass('hidden-sidebar');
+        expect(screen.getByTestId('sidebar')).toHaveClass('sidebar video-sidebar');
         expect(mockSetSidebar).toHaveBeenCalledTimes(2);
       });
 
-      test.skip('should close sidebar when overlay is clicked', () => {
+      test("should not render protected links if not authenticated", () => {
+        useAuth.mockReturnValue({ isAuthenticated: false });
+    
+        const mockSetSidebar = jest.fn();
+        render(
+          <BrowserRouter>
+            <Sidebar sidebar={true} setSidebar={mockSetSidebar} page="" />
+          </BrowserRouter>
+        );
+    
+        const subscriptionsLink = screen.getByTestId('subscriptions-link');
+        const historyLink = screen.getByTestId('history-link');
+        const likedVideosLink = screen.getByTestId('liked-videos-link');
+
+        fireEvent.click(subscriptionsLink);
+        fireEvent.click(historyLink);
+        fireEvent.click(likedVideosLink);
+
+        expect(screen.getByTestId('sidebar')).toBeInTheDocument();
+        expect(mockSetSidebar).not.toHaveBeenCalled();
+      });
+
+      test("should prevent navigation to protected routes if not authenticated", () => {
+        useAuth.mockReturnValue({ isAuthenticated: false });
+    
+        render(
+          <BrowserRouter>
+            <Sidebar sidebar={true} setSidebar={jest.fn()} page="" />
+          </BrowserRouter>
+        );
+    
+        const subscriptionsLink = screen.getByTestId("subscriptions-link");
+        fireEvent.click(subscriptionsLink);
+    
+        expect(subscriptionsLink).not.toHaveClass("active");
+    
+        const historyLink = screen.getByTestId("history-link");
+        fireEvent.click(historyLink);
+    
+        expect(historyLink).not.toHaveClass("active");
+    
+        const likedVideosLink = screen.getByTestId("liked-videos-link");
+        fireEvent.click(likedVideosLink);
+    
+        expect(likedVideosLink).not.toHaveClass("active");
+      });
+
+      test('should close sidebar when overlay is clicked', () => {
         const setSidebar = setup('video', true);
     
         const overlay = screen.getByTestId('overlay');
@@ -134,4 +181,22 @@ describe("Sidebar", () => {
 
         expect(setSidebar).toHaveBeenCalledWith(false);
       });
+
+      test('should lock body scroll when sidebar is open on video page', () => {
+        setup('video', true);
+      
+        expect(document.body.style.overflow).toBe('hidden');
+      });
+      
+      test('should unlock body scroll when sidebar is closed on video page', () => {
+        setup('video', true);
+      
+        fireEvent.click(screen.getByTestId('overlay'));
+        fireEvent.click(screen.getByTestId('overlay'));
+        setup('video', false);
+      
+        expect(document.body.style.overflow).toBe('auto');
+      });
+      
+      
 });

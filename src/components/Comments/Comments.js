@@ -303,8 +303,8 @@ return (
                             ) : (
                                 <p>{comment.text}</p>
                             )}
-                            <div className="reply-section">
-                                <button onClick={() => {
+                            <div className="reply-section" >
+                                <button data-testid='reply-button' onClick={() => {
                                     handleReplyFocus(index);
                                     setShowReplyInput(true);
                                 }}>Reply</button>

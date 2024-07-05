@@ -47,7 +47,6 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
     }, [isVideoPage, sidebar]);
 
     const handleProtectedLinkClick = (e, path) => {
-        console.log("iiiiiiiiiiiiiii",isAuthenticated)
         if (!isAuthenticated) {
             e.preventDefault();
             // alert('You must be signed in to access this page.');
@@ -59,7 +58,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
 
   return (
     <>
-        {isVideoPage && sidebar &&(
+        {isVideoPage  &&(
         <div className={`sidebar video-sidebar ${sidebar ? '' : 'hidden-sidebar'}`} data-testid="sidebar">
         <div className='video-icons' >
             <img 
@@ -70,24 +69,32 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             data-testid='menu-icon'/>
             <Link to='/'><img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/></Link>
         </div>
-        <div className='icon-links'>
-            <Link to='/' className='linked-icons specific-link'><div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
+        <div className='shortcut-links'>
+            <Link to={'/'} className='linked-icons specific-link'>
+            <div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
                 <img src={home} alt='' /><p>Home</p>
-            </div></Link>
+            </div>
+            </Link>
+            <Link to={'/trending'} className='linked-icons specific-link'>
             <div className={`side-link ${activePage === '/trending' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/trending')} data-testid='trending-link'>
-                <Link to='/trending' className='linked-icons specific-link'><img src={trending} alt=''/><p>Trending</p></Link>
+                <img src={trending} alt=''/><p>Trending</p>
             </div>
-            <div className={`side-link ${activePage === '/subscriptions' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/subscriptions')} data-testid='subscriptions-link'>
-                <Link to='/subscriptions' className='linked-icons specific-link'><img src={subscriptions} alt=''/><p>Subscriptions</p></Link>
+            </Link>
+            <Link to='/subscriptions' className='linked-icons specific-link'>
+            <div className={`side-link ${activePage === '/subscriptions' ? 'active' : ''}`} onClick={(e) =>handleProtectedLinkClick(e,'/subscriptions') } data-testid='subscriptions-link'>
+                <img src={subscriptions} alt=''/><p>Subscriptions</p>
             </div>
+            </Link>
             <hr/>
-            <div className='icon-links'>
+            <div className='shortcut-links'>
             <h3>You</h3>
-            <div className={`side-link ${activePage === 'history' ? 'active' : ''}`} onClick={() =>handleActivePageClick('history')} data-testid='history-link'>
-                <Link className='linked-icons specific-link'><img src={history} className='linked-icons' alt=''/><p>History</p></Link>
-            </div>
-            <Link className='linked-icons specific-link'>
-            <div className={`side-link ${activePage === '/liked-videos' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/liked-videos')} data-testid='liked-videos-link'>
+            <Link to='/history' className='linked-icons specific-link'>
+                <div className={`side-link ${activePage === '/history' ? 'active' : ''}`}  onClick={(e) =>handleProtectedLinkClick(e, '/history')} data-testid='history-link'>
+                <img src={history} alt=''/><p>History</p>
+                </div>
+            </Link>
+            <Link to='/liked-videos' className='linked-icons specific-link'>
+            <div className={`side-link ${activePage === '/liked-videos' ? 'active' : ''}`} onClick={(e) =>handleProtectedLinkClick(e,'/liked-videos')} data-testid='liked-videos-link'>
                 <img src={like} alt=''/><p>Liked videos</p>
             </div>
             </Link>
@@ -133,7 +140,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         </div>
     </div>
     )}
-    {isVideoPage && sidebar && <div className="overlay" data-testid="overlay" onClick={handleVideoSidebarToggle}></div>}
+    {isVideoPage && sidebar && <div className="overlay" data-testid="overlay" onClick={() => setSidebar(false)}></div>}
             {!isVideoPage && (
             <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`} data-testid="sidebar">
             <div className='shortcut-links'>

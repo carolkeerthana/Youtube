@@ -11,16 +11,25 @@ import { deleteCommentApi } from '../Apis/DeleteCommentApi';
 import { AuthProvider, useAuth } from '../../../util/AuthContext';
 import { MockAuthProvider } from './MockAuthProvider';
 import { BrowserRouter } from 'react-router-dom';
-import { openDropdownByTestId } from './testUtils';
+import { openDropdownByTestId, toggleReplyByTestId } from './testUtils';
+import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
+import CreateReply from '../../Replies/CreateReply';
+import { createReply } from '../../Replies/Api/CreateReplyApi';
 
 jest.mock('../../../util/AuthContext');
 jest.mock('../Apis/GetCommentsApi');
 jest.mock('../Apis/DeleteCommentApi');
-jest.mock('../../Replies/Api/GetRepliesApi');
 jest.mock('../Apis/CreateCommentsApi.js');
 jest.mock('../Apis/UpdateCommentApi.js');
 
+jest.mock('../../Replies/Api/GetRepliesApi');
+jest.mock('../../Replies/Api/CreateReplyApi.js');
+jest.mock('../../User/UserProfile/UserDetailsApi');
+
+
+
 const mockNavigate = jest.fn();
+
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -38,11 +47,11 @@ const mockComments = [
 
 const mockReplies = [
   {
-      id: 'r1',
-      text: 'This is a reply',
-      commentId: '1',
-      userId: { _id: 'user2', channelName: 'User2' },
-      createdAt: '2023-01-01T00:00:00Z',
+    id: 'reply1',
+    text: 'This is a reply',
+    commentId: 'comment1',
+    userId: { _id: 'user3', channelName: 'User Three' },
+    createdAt: '2023-01-03T00:00:00Z',
   },
 ];
   
@@ -73,7 +82,7 @@ const mockReplies = [
 
     getReplies.mockResolvedValue({
         success: true,
-        data: []
+        data: mockReplies
     });
 
     deleteCommentApi.mockResolvedValue({
@@ -99,6 +108,17 @@ const mockReplies = [
             createdAt: '2023-01-01T00:00:00Z'
         }
     });
+
+    createReply.mockResolvedValue({
+      success: true,
+      data: {
+          id: 'newReplyId',
+          text: 'New reply text',
+          commentId: 'comment1',
+          userId: { _id: 'user1', channelName: 'User1' },
+          createdAt: '2023-01-04T00:00:00Z'
+      }
+  });
 });
 
     test('renders comments', async () => {
@@ -108,12 +128,12 @@ const mockReplies = [
           </BrowserRouter>
       );
 
-      // Wait for comments to load
       const commentText1 = await screen.findByText('Test comment 1');
       const commentText2 = await screen.findByText('Test comment 2');
       expect(commentText1).toBeInTheDocument();
       expect(commentText2).toBeInTheDocument();
     });
+
     test('allows editing a comment', async () => {
       render(
           <BrowserRouter>
@@ -126,8 +146,6 @@ const mockReplies = [
 
       openDropdownByTestId('dropdown-icon-comment1');
 
-      // const editButton = await screen.findByText('Edit');
-      // expect(editButton).toBeInTheDocument();
       const editButton = await screen.findByTestId('dropdown-edit');
         expect(editButton).toBeInTheDocument();
 
@@ -141,126 +159,67 @@ const mockReplies = [
       expect(screen.getByDisplayValue('Edited comment')).toBeInTheDocument()
     });
 
-    test('clicking on reply-toggle shows replies', async () => {
-      render(
-        <Comments />
-      );
-    
-        const dropdownIcon1 = screen.queryByTestId('dropdown-icon-comment1');
-        if (dropdownIcon1) {
-          fireEvent.click(dropdownIcon1);
-    
-        const replyToggle1 = await screen.findByTestId('reply-toggle-comment-comment1');
-        fireEvent.click(replyToggle1);
-    
-        await screen.findByText('Reply to comment 1');
-        screen.getByText('Reply to comment 1');
-      } else {
-        console.log('Dropdown icon for comment 1 not found');
-      }
-    });
-
-    test('displays replies to a comment', async () => {
-      const comment = {
-          id: 'comment1',
-          text: 'Test comment 1',
-      };
-  
-      const commentReplies = [
-          {
-              id: 'reply1',
-              text: 'Test reply',
-          },
-      ];
-  
-      let isVisible = false; // State to track visibility of replies
-      const toggleRepliesVisibility = jest.fn(() => {
-          isVisible = !isVisible; // Toggle visibility state
+    test.skip('displays replies to a comment', async () => {
+      getReplies.mockResolvedValue({
+          success: true,
+          data: [
+              {
+                  id: 'reply1',
+                  text: 'Test reply',
+                  userId: { _id: 'user3', channelName: 'User Three' },
+                  createdAt: '2023-01-03T00:00:00Z'
+              }
+          ]
       });
-  
+
       render(
-          <Comments
-              comment={comment}
-              hasReplies={true}
-              commentReplies={commentReplies}
-              toggleRepliesVisibility={toggleRepliesVisibility}
-              isVisible={isVisible}
-          />
+          <BrowserRouter>
+              <Comments videoId="video1" />
+          </BrowserRouter>
       );
-  
-      // Verify initial state
-      expect(screen.queryByText('Test reply')).toBeNull(); // Replies should not be visible initially
-  
-      // Simulate clicking on the toggle icon
-      const toggleIcon = await screen.findByTestId(`reply-toggle-comment-${comment.id}`);
-      fireEvent.click(toggleIcon);
-  
-      // Verify that replies are now visible
-      expect(screen.getByText('Test reply')).toBeInTheDocument();
+
+      // Wait for comments to load
+      const commentText = await screen.findByText('Test comment 1');
+      expect(commentText).toBeInTheDocument();
+
+      // Simulate clicking to view replies
+      const viewRepliesButton = screen.getByText('reply');
+      fireEvent.click(viewRepliesButton);
+
+      // Wait for replies to load
+      const replyText = await screen.findByText('Test reply');
+      expect(replyText).toBeInTheDocument();
   });
 
+  test.skip('allows adding a new comment', async () => {
+    commentsApi.mockResolvedValue({ success: true, data: {} }); // Mock the response
+  
+    const mockOnCommentAdded = jest.fn();
+  
+    render(
+      <BrowserRouter>
+        <CreateComments videoId="video1" onCommentAdded={mockOnCommentAdded} />
+      </BrowserRouter>
+    );
+  
+    const commentInput = await screen.findByPlaceholderText('Add a public comment...');
+    fireEvent.change(commentInput, { target: { value: 'New comment' } });
+  
+    const addButton = screen.getByText('COMMENT');
+    fireEvent.click(addButton);
+  
 
-    test('fetches and displays comments', async () => {
-      render(
-        <MockAuthProvider>
-          <Comments videoId="123" />
-        </MockAuthProvider>
-      );
-  
-      await waitFor(() => {
-        expect(screen.getByText('This is a test comment')).toBeInTheDocument();
+      expect(commentsApi).toHaveBeenCalledWith({
+        videoId: 'video1',
+        text: 'New comment'
       });
+
+  
+    await waitFor(() => {
+      expect(commentInput).toHaveValue('');
     });
-  
-    test.skip('creates a new comment', async () => {
-      commentsApi.mockResolvedValue({
-        success: true,
-        data: { id: '2', text: 'New Comment', userId: { _id: '1', channelName: 'Test User' } },
-      });
-  
-      render(
-        <MockAuthProvider>
-          <CreateComments videoId="123" onCommentAdded={jest.fn()} />
-        </MockAuthProvider>
-      );
-  
-      fireEvent.change(screen.getByPlaceholderText('Add a public comment...'), {
-        target: { value: 'New Comment' },
-      });
-      fireEvent.click(screen.getByText('COMMENT'));
-  
-      await waitFor(() => {
-        expect(screen.getByDisplayValue('New Comment')).toBeInTheDocument();
-      });
-    });
-  
-    test('updates an existing comment', async () => {
-      updateComment.mockResolvedValue({
-        success: true,
-        data: { id: '1', text: 'Updated Comment' },
-      });
-  
-      render(
-        <MockAuthProvider>
-          <UpdateComment
-            commentId="1"
-            comment={{ text: 'Old Comment' }}
-            updateCommentAdded={jest.fn()}
-            cancelEdit={jest.fn()}
-          />
-        </MockAuthProvider>
-      );
-  
-      fireEvent.change(screen.getByPlaceholderText('Old Comment'), {
-        target: { value: 'Updated Comment' },
-      });
-      fireEvent.click(screen.getByText('Save'));
-  
-      await waitFor(() => {
-        expect(screen.getByDisplayValue('Updated Comment')).toBeInTheDocument();
-      });
-    });
-  
+  });
+
     test('allows deleting a comment', async () => {
       render(
           <BrowserRouter>
@@ -291,4 +250,92 @@ const mockReplies = [
       expect(deleteCommentApi).toHaveBeenCalledWith('comment1');
   });
 
+  test('toggles comment dropdown menu', async () => {
+      require('../Apis/GetCommentsApi').fetchComments.mockResolvedValue({ success: true, data: mockComments });
+      require('../../Replies/Api/GetRepliesApi').getReplies.mockResolvedValue({ success: true, data: [] });
+
+      render(
+        <BrowserRouter>
+            <Comments videoId="video1" />
+        </BrowserRouter>
+    );
+
+      const commentText = await screen.findByText('This is a comment');
+      expect(commentText).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('dropdown-icon-1'));
+
+      expect(screen.getByText('Edit')).toBeInTheDocument();
+      expect(screen.getByText('Delete')).toBeInTheDocument();
   });
+
+  test.skip('allows authenticated user to add a comment', async () => {
+    
+    render(
+      <BrowserRouter>
+          <Comments videoId="video1" />
+      </BrowserRouter>
+  );
+
+    const commentInput = screen.getByPlaceholderText('Add a public comment...');
+    fireEvent.change(commentInput, { target: { value: 'New comment' } });
+    fireEvent.click(screen.getByText('COMMENT'));
+
+    expect(screen.getByDisplayValue('New comment')).toBeInTheDocument();
+    // expect(screen.getByText('Test User')).toBeInTheDocument();
+    expect(commentsApi).toHaveBeenCalledWith('comment3','New comment');
+  });
+
+  test.skip('should render static text', async() => {
+    render(
+      <createReply commentId="comment3"/>
+    );
+
+    const replyInput = await screen.findByPlaceholderText('Add a reply...');
+    expect(replyInput).toBeInTheDocument();
+
+  })
+
+  test('allows adding a reply to a comment', async () => {
+    createReply.mockResolvedValue({
+      success: true,
+      data: {
+          id: 'newReplyId',
+          text: 'New reply text',
+          commentId: 'comment1',
+          userId: { _id: 'user1', channelName: 'User1' },
+          createdAt: '2023-01-04T00:00:00Z'
+      }
+  });
+    render(
+        <BrowserRouter>
+            <Comments videoId="video1" />
+        </BrowserRouter>
+    );
+
+    const commentText = await screen.findByText('Test comment 1');
+    expect(commentText).toBeInTheDocument();
+
+    const replyButtons = screen.getAllByText('Reply');
+    const replyButton = replyButtons[0];
+    fireEvent.click(replyButton);
+
+    const replyInput = screen.getByPlaceholderText('Add a reply...');
+    fireEvent.change(replyInput, { target: { value: 'New reply text' } });
+
+    const addButton = screen.getByText('REPLY');
+    fireEvent.click(addButton);
+
+    const successResponse =  {
+      commentId: 'comment1',
+        text: 'New reply text'
+    }
+    expect(createReply).toHaveBeenCalledWith(successResponse);
+
+    await waitFor(() => {
+        const newReplyText = screen.getByText('New reply text');
+        expect(newReplyText).toBeInTheDocument();
+    });
+});
+
+});

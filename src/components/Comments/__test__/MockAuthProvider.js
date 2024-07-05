@@ -15,7 +15,7 @@ const mockUser = {
 };
 
 export const MockAuthProvider = ({ children }) => (
-  <AuthProvider value={{ user: mockUser, isAuthenticated: true }}>
-    {children}
+  <AuthProvider value={{ isAuthenticated: true, user: { id: 'user1' } }}>
+      {children}
   </AuthProvider>
 );
