@@ -35,7 +35,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
     }
 
     const handleVideoSidebarToggle = () => {
-          setSidebar((prevSidebar) => !prevSidebar);
+        setSidebar(!sidebar);
       };
 
       useEffect(() => {
@@ -72,7 +72,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         <div className='shortcut-links'>
             <Link to={'/'} className='linked-icons specific-link'>
             <div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
-                <img src={home} alt='' /><p>Home</p>
+                <img src={home} alt='' /><p>Home</p>    
             </div>
             </Link>
             <Link to={'/trending'} className='linked-icons specific-link'>
@@ -103,10 +103,10 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         </div> 
         <div className='subscribed-list'>
             <h3>Subscribed</h3>
-            <div className={`side-link ${activePage === 'MrBeast' ? 'active' : ''}`} onClick={() =>handleActivePageClick('MrBeast')} data-testid='MrBeast-link'>
+            <div className='side-link' data-testid='MrBeast-link'>
                 <img src={jack} alt=''/><p>MrBeast</p>
             </div>
-            <div className={`side-link ${activePage === '5-min craft' ? 'active' : ''}`} onClick={() =>handleActivePageClick('5-min craft')} data-testid='5-min-craft-link'>
+            <div className='side-link' data-testid='5-min-craft-link'>
                 <img src={tom} alt=''/><p>5-min craft</p>
             </div>
         </div>
@@ -177,10 +177,10 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         </div> 
         <div className='subscribed-list'>
             <h3>Subscribed</h3>
-            <div className={`side-link ${activePage === 'MrBeast' ? 'active' : ''}`} onClick={() =>handleActivePageClick('MrBeast')} data-testid='MrBeast-link'>
+            <div className='side-link' data-testid='MrBeast-link'>
                 <img src={jack} alt=''/><p>MrBeast</p>
             </div>
-            <div className={`side-link ${activePage === '5-min craft' ? 'active' : ''}`} onClick={() =>handleActivePageClick('5-min craft')} data-testid='5-min-craft-link'>
+            <div className='side-link' data-testid='5-min-craft-link'>
                 <img src={tom} alt=''/><p>5-min craft</p>
             </div>
         </div>

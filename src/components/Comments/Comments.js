@@ -243,12 +243,12 @@ useEffect(() => {
     );
   };
 
-  const handleReplyInputToggle = (commentId) => {
-    setShowReplyInput((prevShowReplyInput) => ({
-        ...prevShowReplyInput,
-        [commentId]: !prevShowReplyInput[commentId],
-    }));
-};
+//   const handleReplyInputToggle = (commentId) => {
+//     setShowReplyInput((prevShowReplyInput) => ({
+//         ...prevShowReplyInput,
+//         [commentId]: !prevShowReplyInput[commentId],
+//     }));
+// };
 
 
 console.log("auth:",isAuthenticated)
@@ -311,7 +311,7 @@ return (
                                 
                             <div>
                             {hasReplies && (
-                              <span className='reply-toggle' onClick={() => toggleRepliesVisibility(comment.id)}>
+                              <span className='reply-toggle' onClick={() => toggleRepliesVisibility(comment.id)} data-testid="toggle-replies">
                                 <FontAwesomeIcon data-testid={`reply-toggle-comment-${comment.id}`} icon={isVisible ? faChevronUp : faChevronDown} /> 
                                 {commentReplies.length} {commentReplies.length === 1 ? 'reply' : 'replies'}
                               </span>
@@ -337,12 +337,12 @@ return (
                                                     <h3>{reply.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
                                                     <div className='reply-actions'>
                                                         <div className="icon-circle">
-                                                            <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(comment.id, reply.id)} /></span>
+                                                            <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(comment.id, reply.id)} data-testid={`dropdown-icon-reply-${reply.id}`}/></span>
                                                         </div>
                                                         {isReplyOwner && reply.dropdownOpen && (
-                                                            <div className='dropdown-menu' ref={(el) => el ? replyDropdownRefs.current[reply.id] = el : null}>
-                                                                <button onClick={() => handleEditReply(replyIndex, reply.text)}>Edit</button>
-                                                                <button onClick={() => handleDeleteReply(reply.id)}>Delete</button>
+                                                            <div className='dropdown-menu' ref={(el) => el ? replyDropdownRefs.current[reply.id] = el : null} data-testid={`reply-dropdown-${reply.id}`}>
+                                                                <button onClick={() => handleEditReply(replyIndex, reply.text)} data-testid='dropdown-reply-edit'>Edit</button>
+                                                                <button onClick={() => handleDeleteReply(reply.id)} data-testid='dropdown-reply-delete'>Delete</button>
                                                             </div>
                                                         )}
                                                     </div>
