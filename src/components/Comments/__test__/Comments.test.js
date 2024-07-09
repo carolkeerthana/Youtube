@@ -1,12 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter, useNavigate } from 'react-router-dom';
 import Comments from '../Comments';
 import { useAuth } from '../../../util/AuthContext';
 import { fetchComments } from '../Apis/GetCommentsApi';
 import { getReplies } from '../../Replies/Api/GetRepliesApi';
 import { deleteCommentApi } from '../Apis/DeleteCommentApi';
+import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
 
 // Mock the useAuth hook
 jest.mock('../../../util/AuthContext', () => ({
@@ -22,8 +23,22 @@ jest.mock('../../Replies/Api/GetRepliesApi', () => ({
   getReplies: jest.fn(),
 }));
 
+// Mock the commentsApi
+jest.mock('../Apis/CreateCommentsApi', () => ({
+  commentsApi: jest.fn(),
+}));
+
+jest.mock('../../User/UserProfile/UserDetailsApi', () => ({
+  fetchUserDetails: jest.fn(),
+}));
+
 jest.mock('../Apis/DeleteCommentApi', () => ({
   deleteCommentApi: jest.fn(),
+}));
+
+// Mock the useNavigate hook from react-router-dom
+jest.mock('react-router-dom', () => ({
+  useNavigate: jest.fn(),
 }));
 
 const mockComments = [
@@ -61,15 +76,22 @@ const mockReplies = [
 ];
 
 describe('Comments Component', () => {
+  const mockedNavigate = jest.fn();
+
   beforeEach(() => {
+    fetchComments.mockResolvedValue({ success: true, data: mockComments });
     useAuth.mockReturnValue({
       isAuthenticated: true,
       user: { id: 'user1', channelName: 'User One' },
     });
-
-    fetchComments.mockResolvedValue({ success: true, data: mockComments });
+    fetchUserDetails.mockResolvedValue({ channelName: 'User One' });
     getReplies.mockResolvedValue({ success: true, data: mockComments[0].replies });
     deleteCommentApi.mockResolvedValue({ success: true });
+    useNavigate.mockReturnValue(mockedNavigate);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   const renderWithRouter = (ui, { route = '/' } = {}) => {
@@ -90,12 +112,35 @@ describe('Comments Component', () => {
       expect(screen.getByText('User One')).toBeInTheDocument();
       expect(screen.getByText('User Two')).toBeInTheDocument();
 
+    expect(fetchComments).toHaveBeenCalledWith("123");
+
     fireEvent.click(screen.getByTestId('reply-toggle-comment-1'));
 
     await waitFor(() => {
       expect(screen.getByText('First reply')).toBeInTheDocument();
     });
     expect(screen.getByText('User One')).toBeInTheDocument();
+    expect(getReplies).toHaveBeenCalled();
+  });
+
+  test('handles fetch comments error', async () => {
+    fetchComments.mockRejectedValueOnce(new Error('Fetch failed'));
+
+    render(<Comments videoId="123"/>);
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith('/error');
+    });
+  });
+
+  test('handles fetch replies error', async () => {
+    getReplies.mockRejectedValueOnce(new Error('Fetch failed'));
+
+    render(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith('/error');
+    });
   });
 
   test('adds a new comment', async () => {
@@ -186,10 +231,7 @@ describe('Comments Component', () => {
   });
 
   test('only shows edit options to the owner of the reply', async () => {
-    render(
-    <BrowserRouter>
-    <Comments videoId="123" />
-    </BrowserRouter>);
+    render(<Comments videoId="123" />);
 
     await waitFor(() => {
         expect(screen.getByText('First comment')).toBeInTheDocument();
@@ -222,10 +264,7 @@ test('does not show edit options to non-owners of the reply', async () => {
       user: { id: 'user3', channelName: 'User Three' },
   });
 
-  render(
-    <BrowserRouter>
-    <Comments videoId="123" />
-    </BrowserRouter>);
+  render(<Comments videoId="123" />);
 
   await waitFor(() => {
       expect(screen.getByText('First comment')).toBeInTheDocument();

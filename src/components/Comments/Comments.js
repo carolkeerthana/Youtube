@@ -76,6 +76,7 @@ const Comments = ({videoId}) => {
         }
         } catch (error) {
           console.error('Failed to fetch replies:', error);
+          navigate('/error');
           return [];
         }
       }

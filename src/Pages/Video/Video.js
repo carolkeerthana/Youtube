@@ -10,6 +10,10 @@ const Video = ({sidebar, setSidebar}) => {
 
   const {videoId, categoryId} = useParams();
 
+  useEffect(() => {
+    setSidebar(false); // Hide sidebar initially when Video component loads
+  }, [setSidebar]);
+  
   // useEffect(() => {
   //   setSidebar(false); // Hide sidebar initially when Video component loads
   // }, [setSidebar]);

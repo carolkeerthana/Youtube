@@ -38,7 +38,9 @@ const CreateComments = ({videoId, onCommentAdded}) => {
         if(!isAuthenticated){
             navigate('/signin');
             return;
-        }
+        }else {
+            setFocused(true);
+          }
 
         if (!userDetails) {
             console.error('User details not available');

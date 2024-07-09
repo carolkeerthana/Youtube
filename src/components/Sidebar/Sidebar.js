@@ -175,6 +175,8 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             </div>
             <hr/>
         </div> 
+        {sidebar && (
+            <>
         <div className='subscribed-list'>
             <h3>Subscribed</h3>
             <div className='side-link' data-testid='MrBeast-link'>
@@ -212,6 +214,8 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             <img src={feedback} alt=''/><p>Send feedback</p>
             </div>
         </div>
+        </>
+        )}
     </div>
             )}
         </>

@@ -13,12 +13,41 @@
     transition: transform 0.3s ease-in-out;
     transform: translateX(0);
 }
+
+/* Hide scrollbar by default */
+.sidebar::-webkit-scrollbar {
+    width: 0; /* Hide scrollbar */
+  }
+  
+  /* Show scrollbar when sidebar is hovered or focused */
+  .sidebar:hover::-webkit-scrollbar {
+    width: 10px; /* Adjust scrollbar width */
+  }
+  
+  /* Customize the scrollbar track */
+  .sidebar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Customize scrollbar handle */
+  .sidebar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+  
+  /* Change scrollbar handle on hover */
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 .shortcut-links img{
     display: flex;
     align-items: center;
     width: 20px;
-    margin-right: 20px;
+    /* margin-right: 20px; */
     transition: filter 0.3s ease-in-out;
+}
+.sidebar:not(.small-sidebar) .shortcut-links img {
+    margin-right: 20px;
 }
 a.specific-link{
     display: flex !important;
@@ -58,7 +87,7 @@ a.specific-link{
     border: 0;
     height: 1px;
     background: #ccc;
-    width: 90%;
+    width: 98%;
 }
 /* .subscribed-list h3{
     font-size: 13px;
@@ -72,16 +101,33 @@ a.specific-link{
 }
 .small-sidebar{
     width: 6%;
+    overflow: hidden;   
+    padding-left: 0;
+    padding-top: 80px;
 }
-.small-sidebar p{
-    display: none;
-}
+.small-sidebar .side-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px 0; 
+  }
+.small-sidebar .side-link img {
+    margin-bottom: 5px;  
+    max-width: 40px; 
+    max-height: 40px;
+  }
+  .small-sidebar .side-link p {
+    margin: 0; 
+    font-size: 14px;
+    padding-top: 5px;
+  }
 .small-sidebar h3{
     display: none;
 }
 .small-sidebar hr{
-    width: 50%;
-    margin-bottom: 25px;
+    display: none;
 }
 h3{
     font-size: 16px;
@@ -133,4 +179,10 @@ h3{
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     z-index: 20;
+  }
+  .hidden-sidebar {
+    display: none;
+  }
+  .video-page-container .nav-menu .sidebar.hidden-sidebar {
+    display: none; /* Ensure this hides the sidebar */
   }
