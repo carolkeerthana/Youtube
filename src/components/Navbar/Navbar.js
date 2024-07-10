@@ -87,9 +87,6 @@ const Navbar = ({setSidebar}) => {
           <button type='submit'>
             <img className='search-icon' src={searchIcon} alt='search' data-testid='search-icon'/>
           </button>
-
-
-          
           </form>
       </div>
 
@@ -99,11 +96,11 @@ const Navbar = ({setSidebar}) => {
         {isAuthenticated && user ? (
           <div className='user-icon flex-div'>
           <div className='profile-icon' onClick={() => setShowUserProfile(!showUserProfile)} data-testid="profile-icon">
-            <div className="user-initial" style={{ backgroundColor: userInitialColor }}>
+            <div className="user-initial" data-testid="user-initial" style={{ backgroundColor: userInitialColor }}>
               {user.channelName.charAt(0).toUpperCase()}
             </div>  
           </div>
-          {showUserProfile && <div ref={profileRef}><UserProfile userInitialColor={userInitialColor}/></div>}
+          {showUserProfile && <div ref={profileRef} data-testid="user-profile"><UserProfile userInitialColor={userInitialColor}/></div>}
         </div>
         ) : (
 

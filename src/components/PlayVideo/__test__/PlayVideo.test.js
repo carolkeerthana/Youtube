@@ -146,6 +146,41 @@ describe('PlayVideo', () => {
     });
   });
 
+  test('handles subscription failure due to incorrect channelId', async () => {
+    // Mock setIsSubscribed function
+    const setIsSubscribed = jest.fn();
+
+    // Mock checkSubscription to simulate subscription failure with "Resource not found" error
+    checkSubscription.mockImplementation(() => {
+      return Promise.resolve({ success: false, error: 'Resource not found' });
+    });
+
+    fetchVideosById.mockResolvedValue(mockVideoData);
+    checkFeeling.mockResolvedValue(mockFeelingData);
+    CreateHistory.mockResolvedValue({ success: true });
+
+    // Mock console.error to capture any errors
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+    render(
+      <AuthProvider>
+      <Router>
+        <PlayVideo videoId="video1" setIsSubscribed={setIsSubscribed} />
+      </Router>
+      </AuthProvider>
+    );
+
+    // Wait for the component to finish rendering and state updates
+    await waitFor(() => {
+      // Assert that setIsSubscribed is called with false
+      // expect(setIsSubscribed).toHaveBeenCalledWith(false);
+      // Assert that console.error was called with expected message
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Subscription check failed:', { success: false, error: 'Resource not found' });
+    });
+
+    // Clean up mock
+    consoleErrorSpy.mockRestore();
+  });
   test('logs error when API response is not in expected format', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     fetchVideosById.mockResolvedValue({ success: false });

@@ -4,9 +4,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Navbar from '../../../Navbar/Navbar';
 import { searchText } from '../../../Search/SearchApi';
 import UserProfile from '../UserProfile';
-import { AuthProvider } from '../../../../util/AuthContext';
+import { AuthProvider, useAuth } from '../../../../util/AuthContext';
+import { logoutUser } from '../LogoutApi';
 
-// Define mock user objects
 const mockUser = {
     channelName: 'testUser',
     email: 'test@example.com',
@@ -18,29 +18,31 @@ const mockUser = {
     email: 'test@example.com',
     photoUrl: 'no-photo.jpg',
   };
-  
-  // Mock useAuth function globally for AuthContext
-  jest.mock('../../../../util/AuthContext', () => ({
-    useAuth: () => ({
-      user: mockUserWithoutPhoto,
-      logout: jest.fn(),
-    }),
-  }));
-
-const mockNavigate = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
+jest.mock('../../../../util/AuthContext');
+jest.mock('../LogoutApi.js');
 
 describe('UserProfile Component', () => {
+  const mockLogout = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();
     })
 
+    beforeAll(() => {
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+  
+    afterAll(() => {
+      console.error.mockRestore();
+    });
+  
     test('renders sign in link when user is not authenticated', () => {
+      useAuth.mockReturnValue({
+        isAuthenticated: false,
+        user: null,
+        logout: mockLogout,
+      });
+      
         render(
         <Router>
             <Navbar setSidebar={() => {}} />
@@ -51,10 +53,10 @@ describe('UserProfile Component', () => {
     });
 
     test('renders user profile without photo when user is authenticated and has no photo', () => {
-        jest.spyOn(require('../../../../util/AuthContext'), 'useAuth').mockReturnValue({
-            user: mockUserWithoutPhoto,
-            logout: jest.fn(),
-          });
+      useAuth.mockReturnValue({
+        user: mockUserWithoutPhoto,
+        logout: jest.fn(),
+    });
       
           render(
               <Router>
@@ -62,32 +64,24 @@ describe('UserProfile Component', () => {
               </Router>
           );
     
-        // Assert user's channel name initial is displayed
-        const userInitialElement = screen.getByText('t');// Replace 'T' with the expected initial based on your mock user data
-        expect(userInitialElement).toBeInTheDocument();
-    
-        // Assert user's channel name and email are rendered
+        const userInitialElement = screen.getByText('t');
+        expect(userInitialElement).toBeInTheDocument();   
         expect(screen.getByText('testUser')).toBeInTheDocument();
         expect(screen.getByText('test@example.com')).toBeInTheDocument();
-    
-        // Assert user's photoUrl is not rendered (userInitialElement should cover this case)
-        // const userProfileImage = screen.getByAltText('testUser');
         expect(screen.queryByAltText('testUser')).not.toBeInTheDocument();
       });
 
-
     test('renders user profile when user is authenticated', () => {
+        useAuth.mockReturnValue({
+          user: mockUser,
+          logout: jest.fn(),
+      });
 
-        jest.spyOn(require('../../../../util/AuthContext'), 'useAuth').mockReturnValue({
-            user: mockUser,
-            logout: jest.fn(),
-          });
-      
-          render(
-              <Router>
-                <UserProfile userInitialColor="#FF5733" />
-              </Router>
-          );
+        render(
+          <Router>
+            <UserProfile userInitialColor="#FF5733" />
+          </Router>
+        );
     
         expect(screen.getByText('testUser')).toBeInTheDocument();
         expect(screen.getByText('test@example.com')).toBeInTheDocument();
@@ -97,30 +91,101 @@ describe('UserProfile Component', () => {
         expect(userProfileImage).toHaveAttribute('src', 'user-photo.jpg');
       });
 
-      
-  it.skip('navigates to search results page on search', async () => {
-    const { getByTestId, getByPlaceholderText } = render(
-      <Router>
-        <Navbar setSidebar={() => {}} />
-      </Router>
-    );
+      test('renders "Guest" and no email when user is not authenticated', () => {
+        useAuth.mockReturnValue({
+          user: null,
+          logout: mockLogout,
+        });
+    
+        render(
+            <Router>
+              <UserProfile userInitialColor="#FF5733" />
+            </Router>
+        );
+    
+        expect(screen.getByText('Guest')).toBeInTheDocument();
+        expect(screen.queryByText('test@example.com')).not.toBeInTheDocument();
+      });
 
-    // Mock searchText function
-    const searchTextMock = jest.fn().mockResolvedValue({ data: [{ id: 1, title: 'Test Video' }] });
+      test('renders user options', () => {
+        useAuth.mockReturnValue({
+          user: mockUser,
+          logout: jest.fn(),
+        });;
+        
+        render(
+          <Router>
+            <UserProfile userInitialColor="#FF5733" />
+          </Router>
+        );
+    
+        expect(screen.getByText(/your channel/i)).toBeInTheDocument();
+        expect(screen.getByText(/studio/i)).toBeInTheDocument();
+        expect(screen.getByText(/sign out/i)).toBeInTheDocument();
+      });
 
-    // Replace the original function with the mocked one
-    searchText.mockImplementation(searchTextMock);
+      test('calls logout API and handles successful logout', async () => {
+        useAuth.mockReturnValue({
+          user: mockUser,
+          logout: mockLogout,
+        });
+        logoutUser.mockResolvedValue({ success: true });
+    
+        render(
+            <Router>
+              <UserProfile userInitialColor="#FF5733" />
+            </Router>
+        );
+    
+        fireEvent.click(screen.getByText(/sign out/i));
+    
+        await waitFor(() => {
+          expect(logoutUser).toHaveBeenCalled();
+        });
+        expect(mockLogout).toHaveBeenCalled();
+      });
 
-    // Type in search input
-    fireEvent.change(screen.getByPlaceholderText('Search'), { target: { value: 'test' } });
+      test('handles failed logout', async () => {
+        useAuth.mockReturnValue({
+          user: mockUser,
+          logout: mockLogout,
+        });
+        logoutUser.mockResolvedValue({ success: false, message: 'Logout failed' });
+    
+        render(
+            <Router>
+              <UserProfile userInitialColor="#FF5733" />
+            </Router>
+        );
+    
+        fireEvent.click(screen.getByText(/sign out/i));
+    
+        await waitFor(() => {
+          expect(logoutUser).toHaveBeenCalled();
+        });
+        expect(mockLogout).not.toHaveBeenCalled();
+        expect(console.error).toHaveBeenCalledWith('Logout failed:', 'Logout failed');
+      });
 
-    // Submit the search form
-    fireEvent.submit(screen.getByTestId('search-form'));
-
-    // Wait for navigation
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/search-results'));
-
-    // Additional assertions for search results handling
-    expect(searchTextMock).toHaveBeenCalledWith({ text: 'test' });
-  });
+      test('handles logout API error', async () => {
+        useAuth.mockReturnValue({
+          user: mockUser,
+          logout: mockLogout,
+        });
+        logoutUser.mockRejectedValue(new Error('API Error'));
+    
+        render(
+            <Router>
+              <UserProfile userInitialColor="#FF5733" />
+            </Router>
+        );
+    
+        fireEvent.click(screen.getByText(/sign out/i));
+    
+        await waitFor(() => {
+          expect(logoutUser).toHaveBeenCalled();
+        });
+        expect(mockLogout).not.toHaveBeenCalled();
+        expect(console.error).toHaveBeenCalledWith('Error logging out:', expect.any(Error));
+      });   
 });

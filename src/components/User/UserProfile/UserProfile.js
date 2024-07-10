@@ -15,7 +15,7 @@ const UserProfile = ({userInitialColor }) => {
             if (response.success) {
                 logout(); // Call the logout function from context to handle local state and storage
             } else {
-                console.error('aLogout failed:', response.message);
+                console.error('Logout failed:', response.message);
             }
         } catch (error) {
             console.error('Error logging out:', error);
@@ -35,7 +35,7 @@ const UserProfile = ({userInitialColor }) => {
                     user && <img src={user.photoUrl} alt={user.channelName} className="user-photo" />
                 )}
                 <div>
-                    <p className="user-name">{user ? user.channelName : 'Guest'}</p>
+                    <p className="user-name" data-testid="user-channel-name">{user ? user.channelName : 'Guest'}</p>
                     <p className="user-email">{user ? user.email : ''}</p>
                 </div>
             </div>

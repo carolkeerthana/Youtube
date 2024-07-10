@@ -1,24 +1,29 @@
-// AuthContextMock.js
+// AuthContext.js
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const AuthProvider = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(null);
 
-export const MockAuthProvider = ({ children, isAuthenticated = false, user = null }) => {
-  const [authState, setAuthState] = useState({ isAuthenticated, user });
+    const login = (userData) => {
+        setIsAuthenticated(true);
+        setUser(userData);
+    };
 
-  const login = (userData) => {
-    setAuthState({ isAuthenticated: true, user: userData });
-  };
+    const logout = () => {
+        setIsAuthenticated(false);
+        setUser(null);
+    };
 
-  const logout = () => {
-    setAuthState({ isAuthenticated: false, user: null });
-  };
+    return (
+        <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
 
-  return (
-    <AuthContext.Provider value={{ ...authState, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+export const useAuth = () => {
+    return useContext(AuthContext);
 };

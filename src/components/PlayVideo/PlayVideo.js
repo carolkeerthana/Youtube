@@ -39,6 +39,7 @@ const PlayVideo = ({videoId, navbar}) => {
               setIsSubscribed(true);
             } else {
               setIsSubscribed(false);
+              console.error('Subscription check failed:', subscriptionResponse);
             }
   
             // Create history   
