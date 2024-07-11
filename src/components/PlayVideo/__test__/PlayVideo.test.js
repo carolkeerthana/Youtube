@@ -41,6 +41,11 @@ const mockFeelingData = {
   }
 };
 
+const mockFailedFeelingResponse = {
+  success: false,
+  message: 'No feeling found'
+};
+
 const mockSubscriptionData = {
   success: true,
   data: {
@@ -127,9 +132,39 @@ describe('PlayVideo', () => {
       </AuthProvider>
     );
 
-    await waitFor(() => {
+      await waitFor(() => {
+      expect(screen.getByText(/Test Video/i)).toBeInTheDocument();
+      });
+      expect(screen.getByText(/100 Views/i)).toBeInTheDocument();
+      await waitFor(() => {
+      expect(screen.getByText('Test Channel')).toBeInTheDocument();
+      });
+      await waitFor(() => {
+      expect(screen.getByText(/Test description/i)).toBeInTheDocument();
+      });
+      expect(screen.getByText(/Subscribe to Test Channel to watch more videos like this/i)).toBeInTheDocument();
+
+      expect(checkFeeling).toHaveBeenCalledTimes(1);
+      await waitFor(() => {
+        expect(checkFeeling).toHaveBeenCalledWith({ videoId: 'video1' });
+      });
+      expect(screen.getByText(/like/i)).toBeInTheDocument();
+  });
+
+  test('handles failed feeling check', async () => {
+    checkFeeling.mockResolvedValueOnce(mockFailedFeelingResponse);
+
+    render(
+      <AuthProvider>
+      <Router>
+        <PlayVideo videoId="video1" />
+      </Router>
+      </AuthProvider>
+    );
+
+      expect(checkFeeling).toHaveBeenCalledTimes(1);
       expect(checkFeeling).toHaveBeenCalledWith({ videoId: 'video1' });
-    });
+      console.error('Failed to check feelings:', JSON.stringify(mockFailedFeelingResponse));
   });
 
   test('handles errors gracefully', async () => {
@@ -172,15 +207,13 @@ describe('PlayVideo', () => {
 
     // Wait for the component to finish rendering and state updates
     await waitFor(() => {
-      // Assert that setIsSubscribed is called with false
-      // expect(setIsSubscribed).toHaveBeenCalledWith(false);
-      // Assert that console.error was called with expected message
       expect(consoleErrorSpy).toHaveBeenCalledWith('Subscription check failed:', { success: false, error: 'Resource not found' });
     });
 
     // Clean up mock
     consoleErrorSpy.mockRestore();
   });
+  
   test('logs error when API response is not in expected format', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     fetchVideosById.mockResolvedValue({ success: false });

@@ -68,6 +68,8 @@ const PlayVideo = ({videoId, navbar}) => {
         console.log('User feelings:', response);
         if (response.success || response.sucess) {
           setUserFeeling(response.data.feeling);
+        }else {
+          console.error('Failed to check feelings:', response);
         }
       });
   

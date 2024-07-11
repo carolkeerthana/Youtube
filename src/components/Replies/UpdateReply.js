@@ -91,7 +91,7 @@ const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) 
         />
         <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
             <button onClick={handleCancel}>Cancel</button>
-            <button onClick={handleReplySubmit}>Save</button>
+            <button onClick={handleReplySubmit} data-testid='save-reply'>Save</button>
         </div>
     </div>
   )

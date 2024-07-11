@@ -24,11 +24,23 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
     const isVideoPage = page === 'video';
     const {isAuthenticated} = useAuth();
     const [activePage, setActivePage] = useState(location.pathname);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1024);
 
     useEffect(()=>{
         setActivePage(location.pathname);
         console.log('Active page:', location.pathname);
     }, [location]);
+
+    useEffect(() => {
+        const handleResize = () => {
+          setIsSmallScreen(window.innerWidth <= 1024);
+        };
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
 
     const handleActivePageClick = (path) => {
             setActivePage(path);
@@ -142,8 +154,10 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
     )}
     {isVideoPage && sidebar && <div className="overlay" data-testid="overlay" onClick={() => setSidebar(false)}></div>}
             {!isVideoPage && (
-            <div className={`sidebar ${sidebar ? "" : "small-sidebar"}`} data-testid="sidebar">
+            <div className={`sidebar ${isSmallScreen ? "small-sidebar" : sidebar ? "" : "small-sidebar"}`} data-testid="sidebar">
             <div className='shortcut-links'>
+            {/* {isSmallScreen && ( */}
+                <>
             <Link to={'/'} className='linked-icons specific-link'>
                 <div className={`side-link ${activePage === '/' ? 'active' : ''}`} onClick={() =>handleActivePageClick('/')} data-testid='home-link'>
                     <img src={home} alt='' /><p>Home</p>
@@ -167,6 +181,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
                 <img src={history} alt=''/><p>History</p>
                 </div>
             </Link>
+            
             <Link to='/liked-videos' className='linked-icons specific-link'>
                 <div className={`side-link ${activePage === '/liked-videos' ? 'active' : ''}`} onClick={(e) =>handleProtectedLinkClick(e, '/liked-videos')} data-testid='liked-videos-link'>
                 <img src={like} alt=''/><p>Liked videos</p>
@@ -174,6 +189,8 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
             </Link>
             </div>
             <hr/>
+            </>
+            {/* )} */}
         </div> 
         {sidebar && (
             <>

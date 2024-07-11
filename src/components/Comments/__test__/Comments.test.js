@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter, MemoryRouter, useNavigate } from 'react-router-dom';
 import Comments from '../Comments';
@@ -8,6 +8,7 @@ import { fetchComments } from '../Apis/GetCommentsApi';
 import { getReplies } from '../../Replies/Api/GetRepliesApi';
 import { deleteCommentApi } from '../Apis/DeleteCommentApi';
 import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
+import UpdateReply from '../../Replies/UpdateReply';
 
 // Mock the useAuth hook
 jest.mock('../../../util/AuthContext', () => ({
@@ -40,6 +41,20 @@ jest.mock('../Apis/DeleteCommentApi', () => ({
 jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
 }));
+
+jest.mock('../../Replies/UpdateReply', () => ({ replyId, reply, channelName, onUpdateReply, cancelEdit }) => (
+  <div data-testid="update-reply-component">
+    <textarea
+      data-testid="update-reply-input"
+      defaultValue={reply.text}
+      onChange={(e) => onUpdateReply({ id: replyId, text: e.target.value, channelName })}
+    />
+    <button data-testid="update-reply-save">Save</button>
+    <button data-testid="update-reply-cancel" onClick={cancelEdit}>
+      Cancel
+    </button>
+  </div>
+));
 
 const mockComments = [
   {
@@ -79,6 +94,7 @@ describe('Comments Component', () => {
   const mockedNavigate = jest.fn();
 
   beforeEach(() => {
+    jest.clearAllMocks();
     fetchComments.mockResolvedValue({ success: true, data: mockComments });
     useAuth.mockReturnValue({
       isAuthenticated: true,
@@ -354,4 +370,32 @@ test('does not show edit options to non-owners of the reply', async () => {
     expect(screen.getByTestId('dropdown-reply-delete')).toBeInTheDocument();
   });
 
+  test.skip('handleUpdateReplyAdded updates reply text and channel name', async () => {
+    renderWithRouter(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText('First comment')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText(/1 reply/));
+
+    await waitFor(() => {
+      expect(screen.getByText('First reply')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('dropdown-icon-reply-reply1'));
+    fireEvent.click(screen.getByTestId('dropdown-reply-edit'));
+
+    const updateReplyComponent = await screen.findByTestId('update-reply-component');
+    console.log(updateReplyComponent.innerHTML); // Debugging: Print the inner HTML of the update reply component
+
+    const updateReplyInput = screen.getByTestId('update-reply-input');
+    fireEvent.change(updateReplyInput, { target: { value: 'Updated text' } });
+    fireEvent.click(screen.getByTestId('update-reply-save'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Updated text')).toBeInTheDocument();
+    });
+  });
+  
 });
