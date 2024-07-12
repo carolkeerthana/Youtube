@@ -5,6 +5,7 @@ import Recommended from '../../components/Recommended/Recommended';
 import { useParams } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import menuIcon from '../../assets/menu.png'; 
+import VideoSidebar from './VideoSidebar';
 
 const Video = ({sidebar, setSidebar}) => {
 
@@ -13,10 +14,6 @@ const Video = ({sidebar, setSidebar}) => {
   useEffect(() => {
     setSidebar(false); // Hide sidebar initially when Video component loads
   }, [setSidebar]);
-  
-  // useEffect(() => {
-  //   setSidebar(false); // Hide sidebar initially when Video component loads
-  // }, [setSidebar]);
 
   const handleVideoSidebarToggle  = () => {
     setSidebar(prevSidebar => !prevSidebar);
@@ -33,14 +30,14 @@ const Video = ({sidebar, setSidebar}) => {
         alt='menu' 
         data-testid='menu-icon'
       /> */}
-    <Sidebar sidebar={sidebar} setSidebar={setSidebar} page='video'/>
+    <VideoSidebar sidebar={sidebar} setSidebar={setSidebar} page='video'/>
     <div className="main-content">
       <div className={`play-container ${sidebar ? "" : 'large-container'}`}>
         <PlayVideo videoId={videoId}/>
         <Recommended videoId={videoId} categoryId={categoryId}/>
         </div>
     </div>
-      {sidebar && <div className="overlay" onClick={() => setSidebar(false)}></div>}
+      {sidebar && <div className="video-sidebar-overlay" onClick={() => setSidebar(false)}></div>}
     </div>
   )
 }

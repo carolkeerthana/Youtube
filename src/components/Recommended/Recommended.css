@@ -16,6 +16,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
+    cursor: pointer;
 }
 .side-video-list img{
     flex-basis: 49%;
@@ -26,11 +27,19 @@
     flex-basis: 47%;
 }
 .vid-info h4{
-    font-size: 19px;
+    font-size: 16px;
     margin-bottom: 10px;
 }
 .vid-info p{
-    font-size: 16px;
+    font-size: 14px;
     margin-bottom: 5px;
     color: #5a5a5a;
 }
+@media (max-width: 1024px) {
+    .recommended {
+      flex-basis: 100%;
+      order: 3;
+      margin-top: 20px;
+    }
+    
+  }

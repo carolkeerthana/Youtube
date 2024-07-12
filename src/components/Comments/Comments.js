@@ -145,6 +145,7 @@ useEffect(() => {
    // to handle delete comment Api
     const handleDeleteComment = async(commentId) => {  
       if(!isAuthenticated){
+        console.error('User is not authenticated');
         return;
     }
     try {
@@ -153,9 +154,10 @@ useEffect(() => {
          // Remove the deleted comment from state
         setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
       } else {
-        console.error('Failed to delete comment:', response.message);
+        console.error('API response is not in the expected format:', response.message);
       }
     } catch (error) {
+      console.error('Failed to delete comment:', error);
       navigate('/error');
     }
     };

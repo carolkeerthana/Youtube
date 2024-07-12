@@ -42,19 +42,19 @@ jest.mock('react-router-dom', () => ({
   useNavigate: jest.fn(),
 }));
 
-jest.mock('../../Replies/UpdateReply', () => ({ replyId, reply, channelName, onUpdateReply, cancelEdit }) => (
-  <div data-testid="update-reply-component">
-    <textarea
-      data-testid="update-reply-input"
-      defaultValue={reply.text}
-      onChange={(e) => onUpdateReply({ id: replyId, text: e.target.value, channelName })}
-    />
-    <button data-testid="update-reply-save">Save</button>
-    <button data-testid="update-reply-cancel" onClick={cancelEdit}>
-      Cancel
-    </button>
-  </div>
-));
+// jest.mock('../../Replies/UpdateReply', () => ({ replyId, reply, channelName, onUpdateReply, cancelEdit }) => (
+//   <div data-testid="update-reply-component">
+//     <textarea
+//       data-testid="update-reply-input"
+//       defaultValue={reply.text}
+//       onChange={(e) => onUpdateReply({ id: replyId, text: e.target.value, channelName })}
+//     />
+//     <button data-testid="update-reply-save">Save</button>
+//     <button data-testid="update-reply-cancel" onClick={cancelEdit}>
+//       Cancel
+//     </button>
+//   </div>
+// ));
 
 const mockComments = [
   {
@@ -139,7 +139,20 @@ describe('Comments Component', () => {
     expect(getReplies).toHaveBeenCalled();
   });
 
+  test('logs error when fetch comments API response is not in expected format', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    fetchComments.mockResolvedValue({ success: false });
+
+    render(<Comments videoId="123"/>);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith('API response is not in the expected format:', { success: false });
+    });
+    consoleErrorSpy.mockRestore();
+  });
+
   test('handles fetch comments error', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     fetchComments.mockRejectedValueOnce(new Error('Fetch failed'));
 
     render(<Comments videoId="123"/>);
@@ -147,9 +160,24 @@ describe('Comments Component', () => {
     await waitFor(() => {
       expect(mockedNavigate).toHaveBeenCalledWith('/error');
     });
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching data:', expect.any(Error));
+    consoleErrorSpy.mockRestore();
+  });
+
+  test('logs error when fetch reply API response is not in expected format', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    getReplies.mockResolvedValue({ success: false });
+
+    render(<Comments videoId="123"/>);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith('API response is not in the expected format:', { success: false });
+    });
+    consoleErrorSpy.mockRestore();
   });
 
   test('handles fetch replies error', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     getReplies.mockRejectedValueOnce(new Error('Fetch failed'));
 
     render(<Comments videoId="123" />);
@@ -157,6 +185,8 @@ describe('Comments Component', () => {
     await waitFor(() => {
       expect(mockedNavigate).toHaveBeenCalledWith('/error');
     });
+    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch replies:', expect.any(Error));
+    consoleErrorSpy.mockRestore();
   });
 
   test('adds a new comment', async () => {
@@ -222,6 +252,21 @@ describe('Comments Component', () => {
       expect(screen.queryByText('First comment')).not.toBeInTheDocument();
     });
   });
+
+  test('logs error if delete comment API response format is incorrect', async () => {
+    deleteCommentApi.mockResolvedValueOnce({ success: false, message: 'Error' });
+  
+    renderWithRouter(<Comments videoId="123" />);
+    
+    expect(screen.getByText('First comment')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
+    fireEvent.click(screen.getByTestId('dropdown-delete'));
+  
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalledWith('API response is not in the expected format:', 'Error');
+    });
+  });
+  
 
   test('adds a reply', async () => {
     renderWithRouter(<Comments videoId="123" />);

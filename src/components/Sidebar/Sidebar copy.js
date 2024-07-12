@@ -19,7 +19,7 @@ import tom from '../../assets/tom.png'
 import {useAuth} from '../../util/AuthContext'
 import { Link, useLocation} from 'react-router-dom';
 
-const Sidebar = ({sidebar, setSidebar, page}) => { 
+const Sidebar = ({sidebar, setSidebar, page, compactSidebar}) => { 
     const location = useLocation();
     const isVideoPage = page === 'video';
     const {isAuthenticated} = useAuth();
@@ -42,11 +42,14 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
         };
       }, []);
 
-    const handleActivePageClick = (path) => {
-            setActivePage(path);
-    }
+      const handleActivePageClick = (path) => {
+        setActivePage(path); // Update active page when a sidebar link is clicked
+        if (compactSidebar) {
+          setSidebar(false); // Close sidebar when a link is clicked in compact mode
+        }
+      };
 
-    const handleVideoSidebarToggle = () => {    
+    const handleVideoSidebarToggle = () => {
         setSidebar(!sidebar);
       };
 
@@ -71,7 +74,7 @@ const Sidebar = ({sidebar, setSidebar, page}) => {
   return (
     <>
         {isVideoPage  &&(
-        <div className={`sidebar ${sidebar ? '' : 'hidden-sidebar'}`} data-testid="sidebar">
+        <div className={`sidebar video-sidebar ${sidebar ? '' : 'hidden-sidebar'}`} data-testid="sidebar">
         <div className='video-icons' >
             <img 
             className='menu-icon' 
