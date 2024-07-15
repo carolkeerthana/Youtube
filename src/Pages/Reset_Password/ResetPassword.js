@@ -80,7 +80,7 @@ const ResetPassword = () => {
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={(e) => setPasswordFocused(e.target.value !== '')}
                   />
-                  {fieldErrors.password && <p className="error-message"><FaExclamationCircle />{fieldErrors.password}</p>}
+                  {fieldErrors.password && <p className="error-message"><FaExclamationCircle />&nbsp;{fieldErrors.password}</p>}
                 </div>
                 <div className={`input-container ${confirmPasswordFocused ? 'focused' : ''}`} data-testid="confirm-password-container">
                   <label htmlFor="confirmPassword" className={`floating-label ${fieldErrors.confirmPassword ? 'error-border' : ''}`}>Confirm Password</label>
@@ -93,7 +93,7 @@ const ResetPassword = () => {
                     onFocus={() => setConfirmPasswordFocused(true)}
                     onBlur={(e) => setConfirmPasswordFocused(e.target.value !== '')}
                   />
-                  {fieldErrors.confirmPassword && <p className="error-message"><FaExclamationCircle />{fieldErrors.confirmPassword}</p>}
+                  {fieldErrors.confirmPassword && <p className="error-message"><FaExclamationCircle />&nbsp;{fieldErrors.confirmPassword}</p>}
                 </div>
                 {error && <p className="error-message">{error}</p>}
                 <div className="button-container">

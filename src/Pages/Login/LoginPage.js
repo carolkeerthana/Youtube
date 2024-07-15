@@ -124,9 +124,9 @@ function LoginPage(){
                     value={formData.email}
                     onChange={handleChange}
                     onFocus={() => setEmailFocused(true)}
-                    // onBlur={(e) => setEmailFocused(e.target.value === '')}
+                    onBlur={(e) => setEmailFocused(e.target.value !== '')}
                     />
-                    {fieldErrors.email && <p className="error-message"><FaExclamationCircle />{fieldErrors.email}</p>}
+                    {fieldErrors.email && <p className="error-message"><FaExclamationCircle />&nbsp;{fieldErrors.email}</p>}
                 </div>
                 <div className={`input-container ${passwordFocused ? 'focused' : ''}`}>
                     <label htmlFor="password" className={`floating-label ${fieldErrors.password ? 'error-border' : ''}`}>Password</label>
@@ -139,7 +139,7 @@ function LoginPage(){
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={(e) => setPasswordFocused(e.target.value !== '')}
                     />
-                    {fieldErrors.password && <p className="error-message"><FaExclamationCircle />{fieldErrors.password}</p>}
+                    {fieldErrors.password && <p className="error-message"><FaExclamationCircle />&nbsp;{fieldErrors.password}</p>}
                     </div>
                     {error && <p className="error-message">{error}</p>}
                     <p className='forgot-password'>

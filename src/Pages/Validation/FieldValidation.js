@@ -86,7 +86,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors, va
                 value={formData.email}
                 onChange={handleChange}
                 onFocus={() => setEmailFocused(true)}
-                onBlur={handleBlur} 
+                onBlur={(e) => setEmailFocused(e.target.value !== '')}
                 required=''
             />
             {fieldErrors.email && <p className="error"><FaExclamationCircle /> {fieldErrors.email}</p>}
@@ -101,7 +101,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors, va
                 value={formData.channel}
                 onChange={handleChange}
                 onFocus={() => setChannelFocused(true)}
-                onBlur={handleBlur}  
+                onBlur={(e) => setChannelFocused(e.target.value !== '')} 
             />
             {fieldErrors.channel && <p className="error"><FaExclamationCircle /> {fieldErrors.channel}</p>}
         </div>
@@ -116,7 +116,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors, va
                 value={formData.password}
                 onChange={handleChange}
                 onFocus={() => setPasswordFocused(true)}
-                onBlur={handleBlur}  
+                onBlur={(e) => setPasswordFocused(e.target.value !== '')}   
             />
             {fieldErrors.password && <p className="error password-error"><FaExclamationCircle /> {fieldErrors.password}</p>}
         </div>
@@ -130,7 +130,7 @@ const FieldValidation = ({formData, setFormData, fieldErrors, setFieldErrors, va
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onFocus={() => setConfirmPasswordFocused(true)}
-                onBlur={handleBlur}
+                onBlur={(e) => setConfirmPasswordFocused(e.target.value !== '')}
             />
             {fieldErrors.confirmPassword && <p className="error confirmPwd-error"><FaExclamationCircle /> {fieldErrors.confirmPassword}</p>}
         </div>
