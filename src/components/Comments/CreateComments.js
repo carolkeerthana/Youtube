@@ -84,7 +84,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
 
   return (
     <div className='new-comment'>
-        <img src={userProfile} alt=''/>
+        {!focused && <img src={userProfile} alt=''/>}
         <input className={`input-field ${focused ? 'visible' : ''}`}
             type='text'
             placeholder='Add a public comment...'

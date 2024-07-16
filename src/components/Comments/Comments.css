@@ -21,6 +21,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 5px;
 }
 .comment-actions{
 display: flex;
@@ -106,7 +107,7 @@ border-radius: 50%;
   font-size: 15px;
 }
 .reply-detail > div {
-  margin-bottom: 12px;
+  /* margin-bottom: 12px; */
 }
 #reply-text{
   padding-bottom: 10px;
@@ -191,3 +192,62 @@ margin-right: 10px;
 .edit-buttons button:last-child:hover {
   background-color: #1481f6;
 } 
+
+
+/* New styles for UpdateReply component */
+.update-reply-container {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.update-reply-container img {
+  display: none; /* Hide profile icon for UpdateReply component */
+}
+
+.update-reply-input {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 5px;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.update-reply-input.visible {
+  border-bottom: 2px solid #007bff;
+}
+
+.update-reply-buttons {
+  display: none;
+  margin-left: 10px;
+}
+
+.update-reply-buttons.visible {
+  display: flex;
+  align-items: center;
+}
+
+.update-reply-buttons button {
+  background-color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.update-reply-buttons button:last-child {
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+}
+
+.update-reply-buttons button:first-child:hover {
+  background-color: #ebebe3;
+}
+
+.update-reply-buttons button:last-child:hover {
+  background-color: #1481f6;
+}

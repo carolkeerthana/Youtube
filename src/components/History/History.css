@@ -196,3 +196,106 @@ h2{
     text-align: center;
     z-index: 1000;
 }
+@media (max-width: 1024px) {
+    .history {
+        flex-direction: column; /* Stack items vertically */
+    }
+
+    .left-side-history {
+        order: 2; /* Move left-side-history to bottom */
+        margin-top: 15px; /* Add margin at the top for better spacing */
+        margin-right: 0; /* Remove right margin */
+        width: 100%;
+    }
+
+    .right-side-history {
+        order: 1; /* Move right-side-history to top */
+        width: 100%; /* Full width on smaller screens */
+        padding: 20px;
+        margin-bottom: 15px; /* Add margin at the bottom for better spacing */
+    }
+
+    .right-side-history h2 {
+        margin-top: 50px; /* Adjust margin top for better spacing */
+    }
+
+    .delete-button {
+        display: flex; /* Ensure delete button is flex */
+        align-items: center; /* Center align items vertically */
+        justify-content: space-between;
+    }
+    .title-header .delete-button {
+        position: absolute;
+        top: 0;
+        right: 10%;
+    }
+}
+
+@media (max-width: 600px) {
+    .history-image img {
+        width: 200px; /* Reduce thumbnail size */
+    }
+
+    .history-card h2 {
+        font-size: 14px; /* Reduce font size */
+    }
+
+    .history-card p {
+        font-size: 12px; /* Reduce font size */
+    }
+
+    .right-side-history h2 {
+        font-size: 16px; /* Reduce font size */
+    }
+
+    .right-side-history label {
+        font-size: 16px; /* Reduce font size */
+    }
+
+    .right-side-history span {
+        font-size: 16px; /* Reduce font size */
+    }
+    .title-header .delete-button {
+        position: absolute;
+        top: 0;
+        right: 0%;
+    }
+}
+@media (max-width: 450px) {
+    .history-card{
+        display: flex;
+        flex-direction: column;
+    }
+    .history-image img {
+        width: 200px; /* Reduce thumbnail size */
+    }
+
+    .history-card h2 {
+        font-size: 14px; /* Reduce font size */
+    }
+
+    .history-card p {
+        font-size: 12px; /* Reduce font size */
+    }
+
+    .left-side-history {
+        width: 100%;
+    }
+
+    .right-side-history h2 {
+        font-size: 16px; /* Reduce font size */
+    }
+
+    .right-side-history label {
+        font-size: 16px; /* Reduce font size */
+    }
+
+    .right-side-history span {
+        font-size: 16px; /* Reduce font size */
+    }
+    .title-header .delete-button {
+        position: absolute;
+        top: 0;
+        right: -5%;
+    }
+}

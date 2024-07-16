@@ -5,9 +5,11 @@
     grid-row-gap: 30px;
     margin-top: 15px;
 }
-.card img{
+.card .feed-thumbnail{
     width: 100%;
-    border-radius: 5px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
 }
 .card h2{
     font-size: 16px;
@@ -26,11 +28,91 @@
 }
 .feed-details{
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     margin-top: 10px;
 }
-.feed-details img{
-    width: 15%;
+.feed-details .feed-icon{
+    width: 40px; /* Fixed width for the icon */
+    height: 40px;
     border-radius: 50%;
     margin-right: 15px;
+    margin-top: 5px;
 }
+@media (max-width: 1575px) {
+    .feed {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1080px) {
+    .feed {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .feed {
+        grid-template-columns: repeat(2, 1fr);
+        grid-column-gap: 12px;
+        grid-row-gap: 20px;
+    }
+    .card .feed-thumbnail {
+        width: 100%;
+        height: 180px; /* Adjust height for smaller screens */
+        border-radius: 5px;
+    }
+
+    .card h2{
+        font-size: 14px; /* Smaller font size */
+        font-weight: 600;
+        color: #000;
+        margin: 5px 0;
+    }
+
+    .card h3{
+        font-size: 12px; /* Smaller font size */
+        font-weight: 600;
+        color: #555;
+        margin: 4px 0;
+    }
+
+    .card p{
+        font-size: 12px; /* Smaller font size */
+    }
+
+    .feed-details .feed-icon {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+}
+@media (max-width: 480px) {
+    .feed {
+      grid-template-columns: repeat(1, 1fr);
+      grid-column-gap: 8px;
+      grid-row-gap: 15px;
+      padding-bottom: 60px;
+    }
+
+    .card .feed-thumbnail {
+        height: 160px;
+    }
+  
+    .card h2 {
+      font-size: 12px;
+    }
+  
+    .card h3 {
+      font-size: 10px;
+    }
+  
+    .card p {
+      font-size: 10px;
+    }
+  
+    .feed-details .feed-icon {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+    }
+  }

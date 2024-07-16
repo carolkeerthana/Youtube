@@ -132,6 +132,10 @@ nav{
     .nav-middle .search-box {
         width: 300px;
     }
+    .nav-middle .search-box input {
+        font-size: 14px;
+        padding: 8px;
+    }
 
     .nav-right img {
         width: 20px;
@@ -145,6 +149,11 @@ nav{
     .nav-right .signin-text {
         font-size: 14px;
     }
+    .profile-icon .user-initial {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
 }
 @media (max-width: 600px) {
     .nav-left .logo {
@@ -152,23 +161,18 @@ nav{
     }
 
     .nav-middle .search-box {
-        width: 100%;
+        width: 230px;
         margin-right: 0;
     }
 
     .nav-middle .search-box input {
-        font-size: 16px;
-        padding: 8px;
+        font-size: 12px;
+        padding: 5px;
     }
 
     .nav-middle .search-box button img.search-icon {
         width: 15px;
         height: 15px;
-    }
-
-    .nav-right {
-        /* flex-direction: column; */
-        align-items: flex-start;
     }
 
     .nav-right img {
@@ -195,10 +199,15 @@ nav{
     .nav-right .signin-icon{
         font-size: 16px;
     }
+    .profile-icon .user-initial {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
 }
 @media (max-width: 480px) {
     .nav-middle .search-box {
-        width: 180px;
+        width: 200px;
     }
 
     .nav-middle .search-box input {

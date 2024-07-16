@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+// import './UpdateReply.css'
 import { useNavigate } from 'react-router-dom';
 import userProfile from '../../assets/user_profile.jpg'
 import { useAuth } from '../../util/AuthContext';
@@ -79,9 +80,9 @@ const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) 
         };
 
   return (
-    <div className='new-comment'>
-        <img src={userProfile} alt=''/>
-        <input className={`input-field ${focused ? 'visible' : ''}`}
+    <div className='update-reply-container'>
+         {!focused && <img src={userProfile} alt=''/>}
+        <input className={`update-reply-input ${focused ? 'visible' : ''}`}
             type='text'
             placeholder={editReply}
             value={editReply}
@@ -89,7 +90,7 @@ const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) 
             onFocus={handleFocus}
             onBlur={()=>!editReply && setFocused(false)}
         />
-        <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
+        <div className={`update-reply-buttons ${focused ? 'visible' : ''}`}>
             <button onClick={handleCancel}>Cancel</button>
             <button onClick={handleReplySubmit} data-testid='save-reply'>Save</button>
         </div>

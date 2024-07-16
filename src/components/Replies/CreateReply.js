@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { createReply } from './Api/CreateReplyApi';
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 
-const CreateReply = ({commentId, onReplyAdded, onCancelReply}) => {
+const CreateReply = ({commentId, onReplyAdded}) => {
     const [newReply, setNewReply] = useState('');
     const {isAuthenticated} = useAuth();
     const [userDetails, setUserDetails] = useState(null);
@@ -89,11 +89,11 @@ const CreateReply = ({commentId, onReplyAdded, onCancelReply}) => {
     }
 
      // to handle canceling edit
-     const handleCancel = () => {
-        onCancelReply(); // Call onCancelReply function passed from Comments component
-        setFocused(false); // Hide input on cancel
-        setNewReply(''); 
-    };
+    //  const handleCancel = () => {
+    //     onCancelReply(); // Call onCancelReply function passed from Comments component     
+    //     setNewReply(''); 
+    //     setFocused(false); // Hide input on cancel
+    // };
 
     // const handleEdit = () => {
     //     setIsEditing(true);
@@ -110,13 +110,13 @@ const CreateReply = ({commentId, onReplyAdded, onCancelReply}) => {
     // };
 
   return (
-    <div className={`reply ${focused ? 'focused' : ''}`}>
+    <div className={`comment-reply ${focused ? 'focused' : ''}`}>
             <img src={userProfile} alt='' className={`reply-img ${focused ? 'visible' : 'hidden'}`} 
              onClick={() => {
                 inputRef.current.focus();
               }}/>
             <div className='reply-detail'>
-                <div className='reply-header'>
+                <div className='reply-header-input'>
                     <input className={`input-field ${focused ? 'visible' : ''}`}
                     autoFocus
                     type='text'
@@ -128,7 +128,7 @@ const CreateReply = ({commentId, onReplyAdded, onCancelReply}) => {
                     // ref={inputRef}
                 />
                 <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
-                    <button onClick={handleCancel}>CANCEL</button>
+                    <button onClick={()=> {setNewReply(''); setFocused(false); }}>CANCEL</button>
                     <button onClick={handleReplySubmit}>REPLY</button>
                  </div>
                 </div>

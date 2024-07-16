@@ -232,11 +232,18 @@ useEffect(() => {
 
     const handleReplyAdded = (newReply) => {
       setReplies([...replies, newReply]);
+      setShowReplyInput(false); // Hide reply input after adding reply
     };
 
     const handleReplyFocus = (index) => {
+      setShowReplyInput(false); // Hide reply input on cancel
       setFocusedReplyIndex(index);
   };
+  // Handle cancel reply
+    const handleCancelReply = () => {
+        setShowReplyInput(false); // Hide reply input on cancel
+        setFocusedReplyIndex(null); // Reset focused reply index
+    };
 
   const toggleRepliesVisibility = (commentId) => {
     setVisibleReplies((prevVisibleReplies) =>
@@ -325,7 +332,7 @@ return (
                                 <CreateReply
                                     commentId={comment.id}
                                     onReplyAdded={handleReplyAdded}
-                                    onCancelReply={() => setShowReplyInput(false)}
+                                    // onCancelReply={handleCancelReply}
                                 />
                             )}
                             {isVisible && (

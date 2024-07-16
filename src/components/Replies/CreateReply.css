@@ -1,4 +1,4 @@
-.reply {
+.comment-reply {
   display: flex;
   align-items: center;
   margin-top: 20px;
@@ -11,7 +11,7 @@
   border-radius: 50%;
   margin-right: 10px;
 }
-.reply-header input {
+.reply-header-input input {
   flex: 1;
   /* border-bottom: 1px solid #ccc; */
   border: none;
@@ -24,7 +24,7 @@
   display: none;
   margin-left: 10px;
 }
-.reply-header .reply-input-field.visible{
+.reply-header-input .reply-input-field.visible{
   border-bottom: 2px solid #007BFF;
 }
 .reply-buttons.visible{
@@ -61,7 +61,7 @@
     flex: 1;
   }
   
-  .reply-header {
+  .reply-header-input {
     display: flex;
     justify-content: space-between;
     align-items: center;
