@@ -81,9 +81,10 @@ const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) 
 
   return (
     <div className='update-reply-container'>
-         {!focused && <img src={userProfile} alt=''/>}
+         <img src={userProfile} alt=''/>
         <input className={`update-reply-input ${focused ? 'visible' : ''}`}
             type='text'
+            autoFocus
             placeholder={editReply}
             value={editReply}
             onChange={handleReplyChange}

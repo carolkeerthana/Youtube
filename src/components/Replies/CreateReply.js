@@ -88,35 +88,14 @@ const CreateReply = ({commentId, onReplyAdded}) => {
         }
     }
 
-     // to handle canceling edit
-    //  const handleCancel = () => {
-    //     onCancelReply(); // Call onCancelReply function passed from Comments component     
-    //     setNewReply(''); 
-    //     setFocused(false); // Hide input on cancel
-    // };
-
-    // const handleEdit = () => {
-    //     setIsEditing(true);
-    //     setDropdownOpen(false);
-    // };
-
-    // const handleSaveEdit = () => {
-    //     onUpdateReply({ ...reply, text: editText });
-    //     setIsEditing(false);
-    // };
-
-    // const handleDelete = () => {
-    //     onDeleteReply(reply.id);
-    // };
-
   return (
-    <div className={`comment-reply ${focused ? 'focused' : ''}`}>
+    <div className={`reply ${focused ? 'focused' : ''}`}>
             <img src={userProfile} alt='' className={`reply-img ${focused ? 'visible' : 'hidden'}`} 
              onClick={() => {
                 inputRef.current.focus();
               }}/>
             <div className='reply-detail'>
-                <div className='reply-header-input'>
+                <div className='reply-header'>
                     <input className={`input-field ${focused ? 'visible' : ''}`}
                     autoFocus
                     type='text'
@@ -125,7 +104,6 @@ const CreateReply = ({commentId, onReplyAdded}) => {
                     onChange={handleReplyChange}    
                     onFocus={handleFocus}
                     onBlur={()=>!newReply && setFocused(false)}
-                    // ref={inputRef}
                 />
                 <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
                     <button onClick={()=> {setNewReply(''); setFocused(false); }}>CANCEL</button>

@@ -142,7 +142,8 @@ margin-top: 20px;  */
   }
 .reply-toggle{
   top: -10%;
-padding: 10px 0;
+/* padding: 10px 0; */
+padding-top: 20px;
 color:#1481f6 ;
 cursor: pointer;
 }

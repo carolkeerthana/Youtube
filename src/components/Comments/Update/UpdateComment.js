@@ -8,7 +8,7 @@ import { updateComment } from '../Apis/UpdateCommentApi';
 
 const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) => {
     const [editComment, setEditComment] = useState(comment.text || '');
-    const [focused, setFocused] = useState(false); // Focus input on edit
+    const [focused, setFocused] = useState(true); // Focus input on edit
     const [userDetails, setUserDetails] = useState(null);
     const navigate = useNavigate();
     const {isAuthenticated} = useAuth();
@@ -80,7 +80,6 @@ const UpdateComment = ({commentId, comment, updateCommentAdded, cancelEdit }) =>
 
   return (
     <div className='new-comment'>
-        <img src={userProfile} alt=''/>
         <input className={`input-field ${focused ? 'visible' : ''}`}
             type='text'
             autoFocus

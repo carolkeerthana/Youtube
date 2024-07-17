@@ -44,7 +44,6 @@ const CreateComments = ({videoId, onCommentAdded}) => {
 
         if (!userDetails) {
             console.error('User details not available');
-            // Handle error or display message to the user
             return;
         }
 
@@ -84,7 +83,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
 
   return (
     <div className='new-comment'>
-        {!focused && <img src={userProfile} alt=''/>}
+        <img src={userProfile} alt=''/>
         <input className={`input-field ${focused ? 'visible' : ''}`}
             type='text'
             placeholder='Add a public comment...'

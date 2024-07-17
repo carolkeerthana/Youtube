@@ -16,6 +16,7 @@ import Reply from '../Replies/CreateReply';
 import CreateReply from '../Replies/CreateReply';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import UpdateReply from '../Replies/UpdateReply';
+import { deleteReply } from '../Replies/Api/DeleteReplyApi';
 
 const Comments = ({videoId}) => {
     const [comments, setComments] = useState([]);
@@ -29,13 +30,14 @@ const Comments = ({videoId}) => {
     const [dropdownIndex, setDropdownIndex] = useState(null);
     const [editCommentIndex, setEditCommentIndex] = useState(null);
     const [editCommentText, setEditCommentText] = useState('');
+    const [editReplyId, setEditReplyId] = useState(null);
     const [replyDropdownIndex, setReplyDropdownIndex] = useState(null);
     const [editReplyIndex, setEditReplyIndex] = useState(null);
     const [editReplyText, setEditReplyText] = useState('');
     const [userDetails, setUserDetails] = useState(null);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRefs = useRef([]);  
-    const replyDropdownRefs = useRef([]);
+    const replyDropdownRefs = useRef([]); 
     const [focusInput, setFocusInput] = useState(false);
 
     useEffect(() => {
@@ -89,13 +91,17 @@ const Comments = ({videoId}) => {
     // to add a new comment
     const handleCommentAdded = (newComment) => {
       console.log('New comment added:', newComment);
-        setComments((prevComments)=> [newComment, ...prevComments]);
+      const newCommentWithUser = {
+        ...newComment,
+        userId: user // Add the authenticated user information
+    };
+        setComments((prevComments)=> [newCommentWithUser, ...prevComments]);
     }
 
      // to toggle dropdown menu for actions on a comment
      const toggleCommentDropdown = (index) => {
       if (editCommentIndex === null) {
-          setCommentDropdownIndex(commentDropdownIndex === index ? null : index);
+      setCommentDropdownIndex(commentDropdownIndex === index ? null : index);
       }
   }
 
@@ -110,21 +116,28 @@ const Comments = ({videoId}) => {
 };
 
 useEffect(() => {
+  console.log('useEffect hook running');
   const handleClickOutside = (event) => {
+    console.log('Click event detected');
+
+    console.log('Event target:', event.target);
       // Close comment dropdown if clicked outside
       if (commentDropdownIndex !== null && dropdownRefs.current[commentDropdownIndex]) {
           if (!dropdownRefs.current[commentDropdownIndex].contains(event.target)) {
+            console.log('Clicked outside comment dropdown');
               setCommentDropdownIndex(null);
           }
       }
 
+      console.log('Reply Dropdown Refs:', replyDropdownRefs.current);
       // Close reply dropdown if clicked outside
       const isOutsideAnyReplyDropdown = replies.some((reply) =>
-          reply.dropdownOpen && replyDropdownRefs.current[reply.id] && !replyDropdownRefs.current[reply.id].contains(event.target)
-      );
+        reply.dropdownOpen && replyDropdownRefs.current[reply.id] && !replyDropdownRefs.current[reply.id].contains(event.target)
+    );
 
       if (isOutsideAnyReplyDropdown) {
-          setReplies((prevReplies) =>
+        console.log('Clicked outside reply dropdown');
+          setReplies((prevReplies) => 
               prevReplies.map((reply) =>
                   reply.dropdownOpen ? { ...reply, dropdownOpen: false } : reply
               )
@@ -138,8 +151,8 @@ useEffect(() => {
   return () => {
       // Cleanup: remove event listener on component unmount
       document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, [commentDropdownIndex, replies]);
+  };  
+}, [commentDropdownIndex,replies]);
 
 
    // to handle delete comment Api
@@ -153,6 +166,7 @@ useEffect(() => {
       if (response.success) {
          // Remove the deleted comment from state
         setComments((prevComments) => prevComments.filter((comment) => comment.id !== commentId));
+        setCommentDropdownIndex(null);
       } else {
         console.error('API response is not in the expected format:', response.message);
       }
@@ -182,7 +196,7 @@ useEffect(() => {
       // Set initial text for editing
       setEditCommentText(text);
       // Close dropdown if open
-      setDropdownIndex(null);
+      setCommentDropdownIndex(null);
     };  
 
      // to cancel editing a comment
@@ -192,16 +206,21 @@ useEffect(() => {
       setEditCommentText('');
     };
    
-    // to handle delete comment Api
+    // to handle delete reply Api
     const handleDeleteReply = async(replyId) => {  
       if(!isAuthenticated){
         return;
     }
     try {
-      const response = await deleteCommentApi(replyId);
+      const response = await deleteReply(replyId);
       if (response.success) {
          // Remove the deleted comment from state
         setReplies((prevComments) => prevComments.filter((reply) => reply.id !== replyId));
+        setReplies((prevReplies) => 
+          prevReplies.map((reply) => 
+              reply.id === replyId ? { ...reply, dropdownOpen: false } : reply
+          )
+      );
       } else {
         console.error('Failed to delete reply:', response.message);
       }
@@ -215,25 +234,37 @@ useEffect(() => {
         prevReplies.map((reply) => 
           (reply.id === updatedReply.id ? { ...reply, text: updatedReply.text, channelName: updatedReply.channelName } : reply))
     );
-    setEditReplyIndex(null);
+    // setEditReplyIndex(null); 
+    setEditReplyId(null);
     setEditReplyText('');
 }
 
-    const handleEditReply = (index, text) => {
-      setEditReplyIndex(index);
-      setEditReplyText(text);
-      setReplyDropdownIndex(null);
-    }
+const handleEditReply = (replyId, text) => {
+  setEditReplyId(replyId); // Set the reply ID being edited
+  setEditReplyText(text); // Set initial text of the reply being edited
+  setReplies((prevReplies) =>
+    prevReplies.map((reply) => ({
+        ...reply,
+        dropdownOpen: reply.id === replyId,
+    }))
+);
+};
 
     const handleCancelEditReply = () => {
-      setEditReplyIndex(null);
+      setEditReplyId(null);
       setEditReplyText('');
     };
 
     const handleReplyAdded = (newReply) => {
-      setReplies([...replies, newReply]);
+      const newReplyWithUser = {
+          ...newReply,  
+          userId: user // Add the authenticated user information
+      };
+  
+      setReplies([...replies, newReplyWithUser]);
       setShowReplyInput(false); // Hide reply input after adding reply
-    };
+  };
+  
 
     const handleReplyFocus = (index) => {
       setShowReplyInput(false); // Hide reply input on cancel
@@ -241,7 +272,7 @@ useEffect(() => {
   };
   // Handle cancel reply
     const handleCancelReply = () => {
-        setShowReplyInput(false); // Hide reply input on cancel
+      setShowReplyInput(false); // Hide reply input on cancel
         setFocusedReplyIndex(null); // Reset focused reply index
     };
 
@@ -272,10 +303,6 @@ return (
             <h4>{comments.length} Comments</h4>
             <CreateComments videoId={videoId} onCommentAdded={handleCommentAdded} isAuthenticated={isAuthenticated} />
             {comments.map((comment, index) => {
-               // Get the channelName of the commenter from userDetails
-                // Get the channelName of the commenter from userDetails
-                // const channelName = userDetails[comment.userId]?.channelName || 'Unknown User';
-                // const channelName = userDetails.channelName;
                 const commentReplies = replies.filter((reply) => reply.commentId === comment.id);
                 const hasReplies = commentReplies.length > 0;
                 const isVisible = visibleReplies.includes(comment.id);
@@ -285,14 +312,19 @@ return (
                         <img src={userProfile} alt='' />
                         <div className='comments-detail'>
                             <div className='comment-header'>
+                              {editCommentIndex !== index ? (
                                 <h3>{comment.channelName} <span>{moment(comment.createdAt).fromNow()}</span></h3>
+                              ) : null}
                                 <div className='comment-actions'>
+                                  {/* {console.log('editCommentIndex:', editCommentIndex)} */}
+                                {editCommentIndex !== index && (
                                     <div className="icon-circle">
                                         <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleCommentDropdown(index)} data-testid={`dropdown-icon-${comment.id}`}/></span>
                                     </div>
-                                    {console.log('isOwner:', isOwner)}
+                                )}
+                                    {/* {console.log('isOwner:', isOwner)}
                                     {console.log('commentDropdownIndex:', commentDropdownIndex)}
-                                    {console.log('index:', index)}
+                                    {console.log('index:', index)} */}
 
                                     {isOwner && commentDropdownIndex === index && (
                                 <div ref={(el) => el ? dropdownRefs.current[index] = el : null} className='dropdown-menu' >
@@ -319,10 +351,10 @@ return (
                                     setShowReplyInput(true);
                                 }}>Reply</button>
                                 
-                            <div>
+                            <div><br/>
                             {hasReplies && (
                               <span className='reply-toggle' onClick={() => toggleRepliesVisibility(comment.id)} data-testid="toggle-replies">
-                                <FontAwesomeIcon data-testid={`reply-toggle-comment-${comment.id}`} icon={isVisible ? faChevronUp : faChevronDown} /> 
+                                <FontAwesomeIcon data-testid={`reply-toggle-comment-${comment.id}`} icon={isVisible ? faChevronUp : faChevronDown} />&nbsp; 
                                 {commentReplies.length} {commentReplies.length === 1 ? 'reply' : 'replies'}
                               </span>
                             )}
@@ -337,27 +369,31 @@ return (
                             )}
                             {isVisible && (
                                 <div className="replies">
-                                    {commentReplies.map((reply, replyIndex) => {
+                                    {commentReplies.map((reply) => {
                                       const isReplyOwner = isAuthenticated && reply.userId?._id === user?.id;
                                       return (
                                         <div key={reply.id} className='reply'>
                                             <img src={userProfile} alt='' />
                                             <div className='reply-detail'>
                                                 <div className='reply-header'>
+                                                {editReplyIndex !== index ? (                              
                                                     <h3>{reply.channelName} <span>{moment(reply.createdAt).fromNow()}</span></h3>
+                                                  ) : null}
                                                     <div className='reply-actions'>
+                                                    {editReplyIndex !== index && (
                                                         <div className="icon-circle">
                                                             <span><FontAwesomeIcon icon={faEllipsisVertical} style={{ color: "#6f7276", }} onClick={() => toggleReplyDropdown(comment.id, reply.id)} data-testid={`dropdown-icon-reply-${reply.id}`}/></span>
                                                         </div>
+                                                    )}
                                                         {isReplyOwner && reply.dropdownOpen && (
                                                             <div className='dropdown-menu' ref={(el) => el ? replyDropdownRefs.current[reply.id] = el : null} data-testid={`reply-dropdown-${reply.id}`}>
-                                                                <button onClick={() => handleEditReply(replyIndex, reply.text)} data-testid='dropdown-reply-edit'>Edit</button>
+                                                                <button onClick={() => {handleEditReply(reply.id, reply.text); toggleReplyDropdown(comment.id, reply.id);}} data-testid='dropdown-reply-edit'>Edit</button>
                                                                 <button onClick={() => handleDeleteReply(reply.id)} data-testid='dropdown-reply-delete'>Delete</button>
                                                             </div>
                                                         )}
-                                                    </div>
+                                                    </div>  
                                                 </div>
-                                                {editReplyIndex === replyIndex ? (
+                                                {editReplyId  === reply.id ? (
                                                     <UpdateReply
                                                         replyId={reply.id}
                                                         reply={reply}
