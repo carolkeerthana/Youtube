@@ -41,7 +41,7 @@ const Recommended = ({videoId}) => {
         <div key={item._id} className='side-video-list' onClick={()=>handleVideoClick(item._id)}>
             <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${item.thumbnailUrl}`} alt={`Thumbnail for ${item.title}`}/>
             <div className='vid-info'>
-                <h4>{item.title}</h4>
+                <span>{item.title}</span>
                 <p>{item.userId.channelName}</p>
                 <p>{item.views} Views &bull; {moment(item.createdAt).fromNow()}</p>
             </div>

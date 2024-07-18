@@ -154,7 +154,7 @@ h3{
   margin-left: -10px;
 }
 
-.video-icons .menu-icon {
+/* .video-icons .menu-icon {
   cursor: pointer;
   width: 22px;
   margin-right: 25px;
@@ -162,7 +162,7 @@ h3{
 .video-icons .logo{
   cursor: pointer;
   width: 70px;
-}   
+}    */
 
 
 .video-sidebar {
@@ -241,17 +241,18 @@ h3{
     padding-top: 5px;
   }
 }
-/* @media (max-width: 480px) {
-  .sidebar {
-    display: none; /* Hide the main sidebar style for small screens */
-  /* } */
 
-  /* .small-sidebar {
+@media (max-width: 500px) {
+  .sidebar {
+    display: none; 
+  }
+  .small-sidebar {
     position: fixed;
+    top:90%;
     bottom: 0;
     left: 0;
     right: 0;
-    height: auto;
+    height: 10%;
     width: 100%;
     background: #fff;
     padding: 10px 0;
@@ -259,29 +260,11 @@ h3{
     border-top: 1px solid #ccc;
     overflow-y: hidden;
     display: flex;
+    align-items: center;
     justify-content: space-around;
   }
-
   .small-sidebar .side-link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 10px;
-  }
-
-  .feed {
-    padding-bottom: 80px; /* Ensure feed content does not overlap with sidebar */
-  /* }
-} */  
-@media (max-width: 500px) {
-  .sidebar {
-    width: 180px;
-  }
-
-  .small-sidebar {
-    width: 6%;
+    padding: 10px 40px;
   }
   .small-sidebar .side-link img {
     margin-bottom: 5px;  
@@ -290,5 +273,17 @@ h3{
   }
   .small-sidebar .side-link p {
     display: none;
+  }
+  .small-sidebar .shortcut-links{
+    display: flex;  
+    flex-direction: row;
+    /* justify-content: space-between; */
+    align-items: center;
+    /* width: 100%; */
+  }
+  .side-link{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }

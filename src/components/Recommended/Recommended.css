@@ -17,6 +17,7 @@
     justify-content: space-between;
     margin-bottom: 8px;
     cursor: pointer;
+    flex-wrap: wrap;
 }
 .side-video-list img{
     flex-basis: 49%;
@@ -25,10 +26,14 @@
 }
 .vid-info{
     flex-basis: 47%;
+    padding-bottom: 30px;
 }
-.vid-info h4{
+.vid-info span{
     font-size: 16px;
-    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+    /* margin-bottom: 10px; */
+    padding-bottom: 20px;
 }
 .vid-info p{
     font-size: 14px;
@@ -40,6 +45,15 @@
       flex-basis: 100%;
       order: 3;
       margin-top: 20px;
-    }
-    
+    }  
   }
+@media (min-width: 768px) {
+    .side-video-list {
+        flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+    }
+
+    .vid-info {
+        flex: 1; /* Make video info take the remaining width */
+        padding-left: 10px; /* Add padding between image and info */
+    }
+}

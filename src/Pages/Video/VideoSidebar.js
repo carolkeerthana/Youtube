@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import './VideoSidebar'
+import './VideoSidebar.css'
 import menuIcon from '../../assets/menu.png';
 import logo from '../../assets/logo.png';
 import home from '../../assets/home.png'
@@ -63,7 +63,7 @@ const VideoSidebar = ({sidebar, setSidebar, page, compactSidebar}) => {
         <div className='video-icons' >
             <img 
             className='menu-icon' 
-            onClick={handleVideoSidebarToggle} 
+            onClick={handleVideoSidebarToggle}      
             src={menuIcon} 
             alt='menu' 
             data-testid='menu-icon'/>

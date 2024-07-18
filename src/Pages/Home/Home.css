@@ -15,7 +15,15 @@
     padding-bottom: 20px;
     width: 100%;
     flex-grow: 1;
+    overflow-y: auto;
+    max-height: 100%;
 }
 .large-container{
     padding-left: 7%;
+}
+@media (max-width: 480px) {
+    .container{
+        padding-right: 7%;
+        padding-bottom: 20px;
+    }
 }
