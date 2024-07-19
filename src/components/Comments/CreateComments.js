@@ -84,6 +84,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
   return (
     <div className='new-comment'>
         <img src={userProfile} alt=''/>
+        <div className='input-field-comment'>
         <input className={`input-field ${focused ? 'visible' : ''}`}
             type='text'
             placeholder='Add a public comment...'
@@ -95,6 +96,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
         <div className={`comment-buttons ${focused ? 'visible' : ''}`}>
             <button onClick={()=> {setNewComment(''); setFocused(false); }}>CANCEL</button>
             <button onClick={handleCommentSubmit}>COMMENT</button>
+        </div>
         </div>
     </div>
   )

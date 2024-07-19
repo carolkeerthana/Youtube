@@ -84,7 +84,7 @@ const PlayVideo = ({videoId, navbar}) => {
       <video controls autoPlay >
         <source src={`https://apps.rubaktechie.me/uploads/videos/${videoData.url}`} type="video/mp4"/>
     </video>
-      <h3>{videoData.title}</h3>
+      <span className='video-title'>{videoData.title}</span>
       <div className='play-video-info'>
         <p>{videoData.views} Views &bull; {moment(videoData.createdAt).fromNow()}</p>
       <div className='user-actions'>

@@ -23,4 +23,8 @@
     color: red;
     margin-top: 10px;
   }
-  
+  @media (max-width: 480px) {
+    .button {
+      padding: 8px 10px;
+    }
+  }

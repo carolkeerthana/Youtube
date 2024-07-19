@@ -1,16 +1,20 @@
 .play-video{
-    flex-basis: 67%;
-    padding-left: 50px;
+    flex-basis: 65%;
+    /* padding-left: 50px; */
     box-sizing: border-box;
 }
 .play-video video{
     width: 100%;
-    height: 37vw;
+    height: 36vw;
+    object-fit: cover;
+    border-radius: 10px;
 }
-.play-video h3{
-    margin-top: 10px;
-    font-size: 22px;
-    font-weight: 600;
+.play-video .video-title {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
 }
 .play-video-info{
     display: flex;
@@ -41,7 +45,9 @@
 .user-actions span {
     display: inline-flex;
     align-items: center;
-    margin-left: 15px;
+    justify-content: center;
+    margin-left: 10px;
+    font-size: 16px;
   }
 .play-video hr{
     border: 0;
@@ -86,14 +92,39 @@
     color: #5a5a5a;
     margin-top: 15px;
 }
-@media (min-width: 768px) {
+@media (max-width: 1023px) {
+  .play-video {
+    flex-basis: 100%;
+    flex-direction: row;
+  }
+  .play-video video {
+    height: 50vw;
+  }
+
+  .play-video-info {
+    font-size: 18px;
+  }
+
+  .user-actions span {
+    margin-left: 25px;
+  }
+
+  .publisher {
+    margin-top: 40px;
+  }
+
+  .vid-description {
+    /* margin-left: 70px; */
+  }
+}
+@media (max-width: 768px) {
     .play-video {    
       flex-direction: row;
       align-items: flex-start;
     }
   
     .play-video video {
-      max-height: 400px;
+      height: 60vw;
     }
   
     .play-video-info {
@@ -113,51 +144,33 @@
     }
   }
   
-  @media (min-width: 1000px) and (min-height: 1000px){
-    .play-video {
-      flex-basis: 100%;
-      flex-direction: row;
-    }
   
-    .play-video video {
-      max-height: 620px;
-    }
-  
-    .play-video-info {
-      font-size: 18px;
-    }
-  
-    .user-actions span {
-      margin-left: 25px;
-    }
-  
-    .publisher {
-      margin-top: 40px;
-    }
-  
-    .vid-description {
-      /* margin-left: 70px; */
-    }
-  }
-  @media (max-width: 767px) {
+  @media (max-width: 480px) {
     .play-video {
       flex-basis: 100%;
       padding-left: 0;
     }
-  
+    .play-video video {
+      height: 60vw;
+    }
     .play-video-info {
       flex-direction: column;
       align-items: flex-start;
     }
-  
+    .play-video span {
+      margin-bottom: 25px;
+    }
     .user-actions {
-      justify-content: space-between;
-      width: 100%;
       margin-top: 10px;
     }
-  
+    .user-actions span {
+      margin-left: 4px;
+      margin-right: 15px;
+    }
+    .play-video hr{
+      margin: 0;
+  }
     .publisher {
-      /* flex-direction: column; */
       align-items: flex-start;
       margin-top: 20px;
     }
@@ -170,4 +183,7 @@
     .publisher div {
       margin-top: 10px;
     }
+    .vid-description p{
+      line-height: 30px;
+  }
   }

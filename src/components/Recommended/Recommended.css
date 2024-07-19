@@ -1,11 +1,11 @@
 .recommended{
-    flex-basis: 31%;
+    flex-basis: 33%;
 }
 .recommended hr{
     border: 0;
     height: 1px;
     background: #ccc;
-    margin: 15px 0;
+    margin-bottom: 15px;
 }
 .recommended .next{
     font-size: 20px;
@@ -40,7 +40,7 @@
     margin-bottom: 5px;
     color: #5a5a5a;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
     .recommended {
       flex-basis: 100%;
       order: 3;
