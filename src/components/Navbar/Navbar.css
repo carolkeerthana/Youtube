@@ -215,6 +215,7 @@ nav{
         width: 25px;
         height: 25px;
         font-size: 14px;
+        margin-right: 10px;
     }
 }
 @media (max-width: 480px) {

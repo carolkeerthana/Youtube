@@ -22,7 +22,6 @@ const Navbar = ({setSidebar}) => {
   const [userInitialColor, setUserInitialColor] = useState(getRandomColor());
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [searchHistory, setSearchHistory] = useState([]);
   const profileRef = useRef(null);
  
   const isSignInOrSignUp = location.pathname === '/signin' || location.pathname === '/signup';
@@ -54,7 +53,7 @@ const Navbar = ({setSidebar}) => {
         const results = await searchText({text : searchInput});
         if(results && results.data){
           setSearchResults(results.data);
-          navigate('/search-results', {state: {results: results.data}}); //passed in the state
+          navigate('/search-results', {state: {results: results.data}});
           console.log(results);
           const historyData = {
           searchText : searchInput,
