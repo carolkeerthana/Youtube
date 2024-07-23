@@ -1,7 +1,6 @@
 import './UserProfile.css';
 // import {useNavigate } from "react-router-dom";
 import { useAuth } from '../../../util/AuthContext';
-import { getRandomColor } from '../../../util/Color';
 import { FaCog, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import { logoutUser } from './LogoutApi';
 

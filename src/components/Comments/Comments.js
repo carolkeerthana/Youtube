@@ -157,10 +157,10 @@ useEffect(() => {
 
    // to handle delete comment Api
     const handleDeleteComment = async(commentId) => {  
-      if(!isAuthenticated){
-        console.error('User is not authenticated');
-        return;
-    }
+    //   if(!isAuthenticated){
+    //     console.error('User is not authenticated');
+    //     return;
+    // }
     try {
       const response = await deleteCommentApi(commentId);
       if (response.success) {

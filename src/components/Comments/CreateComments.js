@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import userProfile from '../../assets/user_profile.jpg'
 import { useAuth } from '../../util/AuthContext';
-import { commentsApi } from './Apis/CreateCommentsApi';
+import { createCommentsApi } from './Apis/CreateCommentsApi';
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
 
 const CreateComments = ({videoId, onCommentAdded}) => {
@@ -54,7 +54,7 @@ const CreateComments = ({videoId, onCommentAdded}) => {
         console.log(commentsData)
 
         try {
-            const response = await commentsApi(commentsData);
+            const response = await createCommentsApi(commentsData);
             console.log("create comments",response)
             if ((response.success || response.sucess) && response.data) {
                 const commentWithChannel = {

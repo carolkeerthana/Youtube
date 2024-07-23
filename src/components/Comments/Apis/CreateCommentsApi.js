@@ -1,4 +1,4 @@
-export const commentsApi = async (commentsData) => {
+export const createCommentsApi = async (commentsData) => {
 
     const token = localStorage.getItem('token');
     if(!token){
