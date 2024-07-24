@@ -13,7 +13,7 @@ const SearchResults = () => {
         <div className="search-results">
             {results && results.length > 0 ? (
                 results.map((result) => (
-                  result &&
+                //   result &&
                     <div key={result.id} className="search-result-item flex-div">
                         <img src={`https://apps.rubaktechie.me/uploads/thumbnails/${result.thumbnailUrl}`} alt={result.title || 'No title'}/>
                         <div className="result-details">

@@ -71,7 +71,7 @@ const Sidebar = ({sidebar, setSidebar}) => {
     };
 
   return (
-    <div className={`sidebar ${forceSmallSidebar ? 'small-sidebar' : isSmallScreen ? 'small-sidebar' : sidebar ? '' : 'small-sidebar'}`} data-testid="sidebar">
+    <div className={`sidebar ${forceSmallSidebar ? 'small-sidebar' :  sidebar ? '' : 'small-sidebar'}`} data-testid="sidebar">
         {/* <div className='menu-icon-containers' >
             <img
             className='menu-icon'
@@ -98,7 +98,7 @@ const Sidebar = ({sidebar, setSidebar}) => {
                 </div>
             </Link>
             <hr/>
-            <div className='shortcut-links'>
+            {/* <div className='shortcut-links'> */}
             <h3>You</h3>
             <Link to='/history' className='linked-icons specific-link'>
                 <div className={`side-link ${activePage === '/history' ? 'active' : ''}`}  onClick={(e) =>handleProtectedLinkClick(e, '/history')} data-testid='history-link'>
@@ -111,10 +111,10 @@ const Sidebar = ({sidebar, setSidebar}) => {
                 <img src={like} alt=''/><p>Liked videos</p>
                 </div>
             </Link>
-            </div>
+            {/* </div> */}
             <hr/>
         </div>
-        {sidebar && !isSmallScreen &&(
+        {sidebar && !forceSmallSidebar &&(
             <>
         <div className='subscribed-list'>
             <h3>Subscribed</h3>

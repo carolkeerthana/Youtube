@@ -21,9 +21,37 @@
 .large-container{
     padding-left: 7%;
 }
+@media (max-width: 1300px) {
+    .container{
+        padding-left: 9%;
+    }
+}
+@media (max-width: 1024px) {
+    .container{
+        padding-left: 10%;
+    }
+}
+@media (max-width: 850px) {
+    .container{
+        padding-left: 12%;
+    }
+}
+@media (max-width: 750px) {
+    .container{
+        /* padding-right: 3%; */
+        padding-left: 12%;
+    }
+}
+@media (max-width: 550px) {
+    .container{
+        padding-left: 3%;
+        padding-right: 3%;
+    }
+}
 @media (max-width: 480px) {
     .container{
-        padding-right: 7%;
+        padding-left: 5%;
+        padding-right: 5%;
         padding-bottom: 20px;
     }
 }

@@ -85,6 +85,14 @@
         margin-right: 10px;
     }
 }
+@media (max-width: 600px) {
+    .card .feed-thumbnail {
+        width: 100%;
+        height: 150px;
+        border-radius: 5px;
+    }
+
+}
 @media (max-width: 480px) {
     .feed {
         grid-template-columns: repeat(1, 1fr);
