@@ -5,7 +5,7 @@
   background: #fff;
   width: 280px;
   height: 100vh;
-  top: 25px;
+  top: 30px;
   left: 0;
   padding-left: 1%;
   padding-top: 80px;
@@ -62,7 +62,7 @@ a.specific-link{
   cursor: pointer;
   width: 100%;
   padding: 10px;
-  transition: background-color 0.3s ease, padding 0.3s ease; /* Smooth transitions */
+  /* transition: background-color 0.3s ease, padding 0.3s ease; Smooth transitions */
 }
 .side-link p {
   color: black;
@@ -256,6 +256,9 @@ h3{
   .small-sidebar {
     width: 8%;
     padding-top: 70px; 
+  }
+  .small-sidebar .side-link p {
+    font-size: 8px;
   }
 }
 @media (max-width: 550px) {

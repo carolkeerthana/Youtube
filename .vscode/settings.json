@@ -6,5 +6,6 @@
         "testgmail",
         "testid",
         "utube"
-    ]
+    ],
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

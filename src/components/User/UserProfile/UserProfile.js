@@ -1,5 +1,4 @@
 import './UserProfile.css';
-// import {useNavigate } from "react-router-dom";
 import { useAuth } from '../../../util/AuthContext';
 import { FaCog, FaSignOutAlt, FaUser } from 'react-icons/fa';
 import { logoutUser } from './LogoutApi';
@@ -26,9 +25,7 @@ const UserProfile = ({userInitialColor }) => {
             <div className="user-info">
                 {user && user.photoUrl === 'no-photo.jpg' ? (
                     <div className="user-initial" 
-                    // style={{ backgroundColor: `rgba(${parseInt(userInitialColor.slice(1, 3), 16)}, ${parseInt(userInitialColor.slice(3, 5), 16)}, ${parseInt(userInitialColor.slice(5, 7), 16)}, 0.3)` }}
-                    style={{ backgroundColor: userInitialColor }}>
-                        {user.channelName.charAt(0)}
+                    style={{ backgroundColor: userInitialColor }}>{user.channelName.charAt(0)}
                     </div>
                 ) : (
                     user && <img src={user.photoUrl} alt={user.channelName} className="user-photo" />

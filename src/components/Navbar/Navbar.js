@@ -97,7 +97,7 @@ const Navbar = ({setSidebar}) => {
           <div className='profile-icon' onClick={() => setShowUserProfile(!showUserProfile)} data-testid="profile-icon">
             <div className="user-initial" data-testid="user-initial" style={{ backgroundColor: userInitialColor }}>
               {user.channelName.charAt(0).toUpperCase()}
-            </div>  
+            </div>
           </div>
           {showUserProfile && <div ref={profileRef} data-testid="user-profile"><UserProfile userInitialColor={userInitialColor}/></div>}
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './CreateSubscriber.css'
 import SignInPopup from '../../Feelings/SignInPopup ';
 import { useAuth } from '../../../util/AuthContext';

@@ -3,12 +3,12 @@ import './Feed.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { fetchVideos } from './GetVideosApi';
 
-const Feed = ({category}) => {
+const Feed = () => {
   const[data, setData] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
+  useEffect(()=>{
   const fetchData = async () =>{
-
     try {
       const response = await fetchVideos();
       console.log('API response:', response);
@@ -23,10 +23,8 @@ const Feed = ({category}) => {
       setData([]);
     }
   };
-
-  useEffect(()=>{
     fetchData();
-  }, [category])
+  }, []);
 
   const getDaysAgo = (dateString) => {
     const createdAt = new Date(dateString); //creates date obj from createdAt

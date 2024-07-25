@@ -48,6 +48,14 @@
         grid-template-columns: repeat(2, 1fr);
     }
 }
+@media (max-width: 1080px) and (max-height: 700px){
+    .feed {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .card .feed-thumbnail {
+        height: 180px;
+    }
+}
 
 @media (max-width: 768px) {
     .feed {

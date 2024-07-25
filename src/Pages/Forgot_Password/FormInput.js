@@ -1,22 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-const FormInput = (props) => {
-    const [emailFocused, setEmailFocused] = useState(false);
-    const {label, onChange, id, ...inputProps} = props;
-    
-  return (
-    <div className={`formInput ${emailFocused ? 'focused' : ''}`}>
-        <label htmlFor="inputField" className="floating-label">{label}</label>
-        <input 
-        id="inputField"
-        className='input-container'
-        {...inputProps}
-        onChange={onChange}
-        onFocus={() => setEmailFocused(true)}
-        onBlur={(e) => setEmailFocused(e.target.value !== '')}
-        />   
-    </div>
-  )
+const FormInput = ({ label, errorMessage, onChange, onBlur, id, ...inputProps }) => {
+  const [focused, setFocused] = useState(false);
+
+  const handleFocus = () => {
+    setFocused(true);
 }
 
-export default FormInput
+const handleBlur = (e) => {
+    setFocused(e.target.value !== '');
+    if (onBlur) onBlur(e); // Call parent onBlur if provided
+}
+
+  return (
+    <div className={`formInput ${errorMessage ? 'error' : ''} ${focused ? 'focused' : ''}`}>
+      <label htmlFor={id} className="floating-label">
+        {label}
+      </label>
+      <input
+        id={id}
+        className="input-container"
+        {...inputProps}
+        onChange={onChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+      />
+      {errorMessage && <span className="error-message">{errorMessage}</span>}
+    </div>
+  );
+};
+
+export default FormInput;

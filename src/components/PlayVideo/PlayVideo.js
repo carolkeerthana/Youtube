@@ -14,7 +14,7 @@ import { checkSubscription } from '../Subscriptions/CheckSubscriptionApi'
 import { fetchVideosById } from './GetVideoApi'
 import { CreateHistory } from '../History/HistoryApi/CreateHistoryApi'
 
-const PlayVideo = ({videoId, navbar}) => {
+const PlayVideo = ({videoId}) => {
     const[videoData, setVideoData] = useState(null);
     const [userFeeling, setUserFeeling] = useState(null);
     const [isSubscribed, setIsSubscribed] = useState(false); //initial state of subscription

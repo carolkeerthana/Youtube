@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import './CustomNotification.css'; // Style this component as per your design
+import React, { useEffect } from "react";
+import "./CustomNotification.css"; // Style this component as per your design
 
 const CustomNotification = ({ message, onClose }) => {
   useEffect(() => {
