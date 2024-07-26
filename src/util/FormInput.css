@@ -1,0 +1,66 @@
+.input-container {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.input-container.focused .floating-label,
+.input-container input:not(:placeholder-shown) + .floating-label {
+  top: -0.75rem;
+  left: 0.8rem;
+  font-size: 16px;
+  color: #0b57d0;
+  z-index: 10;
+}
+
+.input-container.focused input {
+  border: 3px solid #0b57d0;
+}
+.input-container.error-border .floating-label {
+  color: red;
+}
+.input-container.error-border input {
+  border: 3px solid red;
+}
+input {
+  width: 100%;
+  padding: 18px;
+  font-size: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
+  outline: none;
+  background: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  /* margin-bottom: 20px; */
+}
+
+.floating-label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 20px;
+  color: #999;
+  transition: all 0.3s ease;
+  background-color: white;
+  padding: 0 0.25rem;
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.error p {
+  display: flex;
+  align-items: center;
+}
+
+.error svg {
+  margin-right: 0.5rem;
+}

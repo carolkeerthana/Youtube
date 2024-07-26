@@ -1,63 +1,68 @@
-import React from 'react'
+// util/ValidationForm.js
 
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-      };
-
-    const validatePassword = (password) => {
-    const errors = {};
-    
-    if (!password) {
-        errors.password = 'Enter password';
-    } else if (password.length < 8) {
-        errors.password = 'Password must be at least 8 characters long';
-    } else if (password.length > 20) { // Optional: set a maximum length
-        errors.password = 'Password must not exceed 20 characters';
-    } else if (!/[A-Z]/.test(password)) {
-        errors.password = 'Password must contain at least one uppercase letter';
-    } else if (!/[a-z]/.test(password)) {
-        errors.password = 'Password must contain at least one lowercase letter';
-    } else if (!/[0-9]/.test(password)) {
-        errors.password = 'Password must contain at least one digit';
-    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        errors.password = 'Password must contain at least one special character';
-    }
-    return errors;
+export const validateEmail = (email) => {
+  if (!email) return "Enter an email";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) ? "" : "Enter a valid email";
 };
 
-  // Function to validate all fields
-const validateAllFields = (email, password, confirmPassword, channel) => {
-    const errors = {};
-  
-    if (!email) {
-      errors.email = 'Enter an email';
-    } else if (!validateEmail(email)) {
-      errors.email = 'Enter a valid email';
-    }
-  
-    if (!channel) {
-      errors.channel = 'Enter channel name';
-    } else if (channel.length < 3) {
-      errors.channel = 'Channel name must be at least 3 characters long';
-    }
-  
-    // Validate password and confirmPassword
-    Object.assign(errors, validatePassword(password));
-  
-    if (!confirmPassword) {
-      errors.confirmPassword = 'Enter confirm password';
-    } else if (confirmPassword !== password) {
-      errors.confirmPassword = 'Passwords do not match';
-    }
-  
-    return errors;
-  };
-  
-  const ValidationForm = ({ email, password, confirmPassword, channel, setFieldErrors }) => {
-    const errors = validateAllFields(email, password, confirmPassword, channel);
-    setFieldErrors(errors);
-    return null; // This component does not render anything
-  };
+export const validatePassword = (password) => {
+  if (!password) return "Enter password";
+  if (password.length < 8) return "Password must be at least 8 characters long";
+  if (password.length > 20) return "Password must not exceed 20 characters";
+  if (!/[A-Z]/.test(password))
+    return "Password must contain at least one uppercase letter";
+  if (!/[a-z]/.test(password))
+    return "Password must contain at least one lowercase letter";
+  if (!/[0-9]/.test(password))
+    return "Password must contain at least one digit";
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password))
+    return "Password must contain at least one special character";
+  return "";
+};
 
-export default ValidationForm
+// Validate confirm password function
+export const validateConfirmPassword = (password, confirmPassword) => {
+  if (!confirmPassword) return "Enter confirm password";
+  return password !== confirmPassword ? "Passwords do not match" : "";
+};
+
+// Validate channel function
+export const validateChannel = (channel) => {
+  if (!channel) return "Enter channel name";
+  return channel.length < 3
+    ? "Channel name must be at least 3 characters long"
+    : "";
+};
+
+// Validate all fields function
+const validateAllFields = (fields) => {
+  const errors = {};
+
+  if (fields.email !== undefined) {
+    const emailError = validateEmail(fields.email);
+    if (emailError) errors.email = emailError;
+  }
+
+  if (fields.password !== undefined) {
+    const passwordError = validatePassword(fields.password);
+    if (passwordError) errors.password = passwordError;
+  }
+
+  if (fields.confirmPassword !== undefined && fields.password !== undefined) {
+    const confirmPasswordError = validateConfirmPassword(
+      fields.password,
+      fields.confirmPassword
+    );
+    if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
+  }
+
+  if (fields.channel !== undefined) {
+    const channelError = validateChannel(fields.channel);
+    if (channelError) errors.channel = channelError;
+  }
+
+  return errors;
+};
+
+export default validateAllFields;

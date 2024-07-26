@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import './ResetPassword.css';
-import { FaExclamationCircle } from 'react-icons/fa';
-import { useNavigate, useParams } from 'react-router-dom';
-import { resetPassword } from './ResetPasswordApi';
+import React, { useState } from "react";
+import "./ResetPassword.css";
+import { FaExclamationCircle } from "react-icons/fa";
+import { useNavigate, useParams } from "react-router-dom";
+import { resetPassword } from "./ResetPasswordApi";
+import validateAllFields from "../../util/ValidationForm";
+import FormInput from "../../util/FormInput";
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -15,21 +17,61 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const { token } = useParams();
 
-  const validateAllFields = () => {
-    const errors = {};
+  const inputs = [
+    {
+      id: 1,
+      name: "password",
+      type: "password",
+      placeholder: "New Password",
+      label: "New Password",
+      required: true,
+    },
+    {
+      id: 2,
+      name: "confirmPassword",
+      type: "password",
+      placeholder: "Confirm Password",
+      label: "Confirm Password",
+      required: true,
+    },
+  ];
 
-    if (!password) {
-      errors.password = 'Enter password';
-    } else if (password.length < 8) {
-      errors.password = 'Password must be at least 8 characters long';
+  // const validateAllFields = () => {
+  //   const errors = {};
+
+  //   if (!password) {
+  //     errors.password = 'Enter password';
+  //   } else if (password.length < 8) {
+  //     errors.password = 'Password must be at least 8 characters long';
+  //   }
+
+  //   if (!confirmPassword) {
+  //     errors.confirmPassword = 'Confirm your password';
+  //   } else if (password !== confirmPassword) {
+  //     errors.confirmPassword = 'Passwords do not match';
+  //   }
+
+  //   setFieldErrors(errors);
+  //   return Object.keys(errors).length === 0;
+  // };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "password") {
+      setPassword(value);
+    } else if (name === "confirmPassword") {
+      setConfirmPassword(value);
     }
 
-    if (!confirmPassword) {
-      errors.confirmPassword = 'Confirm your password';
-    } else if (password !== confirmPassword) {
-      errors.confirmPassword = 'Passwords do not match';
+    // Clear fieldError when the user starts typing in the field
+    if (fieldErrors[name]) {
+      setFieldErrors({ ...fieldErrors, [name]: "" });
     }
+  };
 
+  const validateForm = () => {
+    const errors = validateAllFields({ password, confirmPassword });
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -37,24 +79,24 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateAllFields()) {
-      return;
-    }
+    if (validateForm()) {
+      try {
+        const response = await resetPassword(token, password);
 
-    try {
-      const response = await resetPassword(token, password);
-
-      if (response.success) {
-        setSuccessMessage('Your password has been reset successfully.');
-        setFieldErrors({});
-        setPassword('');
-        setConfirmPassword('');
-        navigate('/signin?resetSuccess=true'); // Pass success message as query parameter
-      } else {
-        setError('Password reset failed. Please try again.');
+        if (response.success) {
+          setSuccessMessage("Your password has been reset successfully.");
+          setFieldErrors({});
+          setPassword("");
+          setConfirmPassword("");
+          navigate("/signin?resetSuccess=true"); // Pass success message as query parameter
+        } else {
+          setError("Password reset failed. Please try again.");
+        }
+      } catch (error) {
+        navigate("/error");
       }
-    } catch (error) {
-      navigate('/error');
+    } else {
+      console.log("Validation errors:", fieldErrors);
     }
   };
 
@@ -69,35 +111,22 @@ const ResetPassword = () => {
           <form onSubmit={handleSubmit} noValidate autoComplete="off">
             {!successMessage && (
               <>
-                <div className={`input-container ${passwordFocused ? 'focused' : ''}`} data-testid="password-container">
-                  <label htmlFor="password" className={`floating-label ${fieldErrors.password ? 'error-border' : ''}`}>New Password</label>
-                  <input
-                    id="password"
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onFocus={() => setPasswordFocused(true)}
-                    onBlur={(e) => setPasswordFocused(e.target.value !== '')}
+                {inputs.map((input) => (
+                  <FormInput
+                    key={input.id}
+                    {...input}
+                    value={
+                      input.name === "password" ? password : confirmPassword
+                    }
+                    onChange={handleChange}
+                    errorMessage={fieldErrors[input.name] || ""}
                   />
-                  {fieldErrors.password && <p className="error-message"><FaExclamationCircle />&nbsp;{fieldErrors.password}</p>}
-                </div>
-                <div className={`input-container ${confirmPasswordFocused ? 'focused' : ''}`} data-testid="confirm-password-container">
-                  <label htmlFor="confirmPassword" className={`floating-label ${fieldErrors.confirmPassword ? 'error-border' : ''}`}>Confirm Password</label>
-                  <input
-                    id="confirmPassword"
-                    type="password"
-                    name="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    onFocus={() => setConfirmPasswordFocused(true)}
-                    onBlur={(e) => setConfirmPasswordFocused(e.target.value !== '')}
-                  />
-                  {fieldErrors.confirmPassword && <p className="error-message"><FaExclamationCircle />&nbsp;{fieldErrors.confirmPassword}</p>}
-                </div>
+                ))}
                 {error && <p className="error-message">{error}</p>}
                 <div className="button-container">
-                  <button type="submit" className="reset-submit">Reset Password</button>
+                  <button type="submit" className="reset-submit">
+                    Reset Password
+                  </button>
                 </div>
               </>
             )}

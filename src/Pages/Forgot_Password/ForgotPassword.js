@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import "./ForgotPassword.css";
-import FormInput from "./FormInput";
 import { FaExclamationCircle } from "react-icons/fa";
 import { forgotPasswordApi } from "./ForgotPasswordApi";
 import { Link, useNavigate } from "react-router-dom";
+import FormInput from "../../util/FormInput";
+import validateAllFields from "../../util/ValidationForm";
 
 const ForgotPassword = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-  });
+  const [formData, setFormData] = useState({ email: "" });
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [fieldError, setFieldError] = useState(null);
+  const [fieldError, setFieldError] = useState({});
   const navigate = useNavigate();
 
   const inputs = [
@@ -30,37 +29,17 @@ const ForgotPassword = () => {
     setFormData({ ...formData, [name]: value });
 
     // Clear fieldError when the user starts typing in the email field
-    if (name === "email" && fieldError) {
-      setFieldError(null);
+    if (fieldError[name]) {
+      setFieldError({ ...fieldError, [name]: "" });
     }
-  };
-
-  const emptyField = () => {
-    return Object.values(formData).every((value) => value.trim() === "");
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (emptyField()) {
-      setFieldError("Enter an email");
-      return;
-    }
-
-    if (!validateEmail(formData.email)) {
-      setFieldError("Please enter a valid email address!");
-      return;
-    }
-
-    const emailData = {
-      email: formData.email,
-    };
-    console.log(emailData);
+    const errors = validateAllFields({ email: formData.email });
+    setFieldError(errors);
+    if (Object.keys(errors).length > 0) return;
 
     try {
       const response = await forgotPasswordApi(formData);
@@ -70,13 +49,14 @@ const ForgotPassword = () => {
         setSuccessMessage(
           "An email has been sent to your email address to reset your password"
         );
-        setFieldError(null);
+        setFieldError({});
       } else {
         setError(response.error);
         setFormData({ email: "" });
-        setFieldError(response.error);
+        setFieldError({ email: response.error });
       }
     } catch (error) {
+      console.error("Submission error:", error);
       navigate("/error");
     }
 
@@ -108,13 +88,14 @@ const ForgotPassword = () => {
                   {...input}
                   value={formData[input.name]}
                   onChange={handleChange}
+                  errorMessage={fieldError[input.name] || ""}
                 />
               ))}
             <div className="error-container">
-              {fieldError && (
+              {error && (
                 <p className="error-text">
                   <FaExclamationCircle className="error-icon" />
-                  &nbsp;{fieldError}
+                  &nbsp;{error}
                 </p>
               )}
             </div>

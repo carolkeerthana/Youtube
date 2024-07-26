@@ -5,8 +5,8 @@ import { FaExclamationCircle } from "react-icons/fa";
 import { loginUser } from "./LoginApi";
 import { useAuth } from "../../util/AuthContext";
 import CustomNotification from "../Register/CustomNotification";
-import ValidationForm from "../../util/ValidationForm";
-import FormInput from "../Forgot_Password/FormInput";
+import FormInput from "../../util/FormInput";
+import validateAllFields from "../../util/ValidationForm";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,6 +20,25 @@ function LoginPage() {
   const location = useLocation();
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+
+  const inputs = [
+    {
+      id: 1,
+      name: "email",
+      type: "email",
+      placeholder: "Email",
+      label: "Email",
+      required: true,
+    },
+    {
+      id: 2,
+      name: "password",
+      type: "password",
+      placeholder: "Password",
+      label: "Password",
+      required: true,
+    },
+  ];
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -69,31 +88,51 @@ function LoginPage() {
   //   return Object.keys(errors).length === 0;
   // };
 
+  const validateForm = () => {
+    const errors = validateAllFields({ email, password });
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+
+    // Clear fieldError when the user starts typing in the email o  r password field
+    if (fieldErrors[name]) {
+      setFieldErrors({ ...fieldErrors, [name]: "" });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    ValidationForm({ email, password, confirmPassword: password, channel: "" }, setFieldErrors);
-    if (Object.keys(fieldErrors).length > 0) {
-      return; // Exit if there are validation errors
-    }
     const loginData = {
       email,
       password,
     };
     console.log(loginData);
 
-    try {
-      const response = await loginUser({ email, password });
-      console.log(response);
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        login();
-        navigate("/");
-      } else {
-        setError("Login failed. Please try again.");
+    if (validateForm()) {
+      try {
+        const response = await loginUser({ email, password });
+        console.log(response);
+        if (response.token) {
+          localStorage.setItem("token", response.token);
+          login();
+          navigate("/");
+        } else {
+          setError("Login failed. Please try again.");
+        }
+      } catch {
+        navigate("/error");
       }
-    } catch {
-      navigate("/error");
+    } else {
+      console.log("Validation errors:", fieldErrors);
     }
 
     // if(!response.ok){
@@ -127,28 +166,15 @@ function LoginPage() {
             className="login-RightSide"
             autocomplete="off"
           >
-            <FormInput
-              label="Email"
-              id="email"
-              type="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setEmailFocused(true)}
-              onBlur={(e) => setEmailFocused(e.target.value !== '')}
-              errorMessage={fieldErrors.email}
-            />
-            <FormInput
-              label="Password"
-              id="password"
-              type="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={() => setPasswordFocused(true)}
-              onBlur={(e) => setPasswordFocused(e.target.value !== '')}
-              errorMessage={fieldErrors.password}
-            />
+            {inputs.map((input) => (
+              <FormInput
+                key={input.id}
+                {...input}
+                value={input.name === "email" ? email : password}
+                onChange={handleChange}
+                errorMessage={fieldErrors[input.name] || ""}
+              />
+            ))}
             {error && <p className="error-message">{error}</p>}
             <p className="forgot-password">
               <Link to={"/forgotpassword"}>forgot password?</Link>

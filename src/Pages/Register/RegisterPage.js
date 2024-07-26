@@ -3,6 +3,13 @@ import "./RegisterPage.css";
 import { useState } from "react";
 import FieldValidation from "../Validation/FieldValidation";
 import { registerUser } from "./RegisterApi";
+import validateAllFields, {
+  validateChannel,
+  validateConfirmPassword,
+  validateEmail,
+  validatePassword,
+} from "../../util/ValidationForm";
+import FormInput from "../../util/FormInput";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -13,48 +20,105 @@ function RegisterPage() {
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
 
-  const validateAllFields = () => {
-    const errors = {};
+  const inputs = [
+    {
+      id: "email",
+      name: "email",
+      type: "email",
+      placeholder: "Email",
+      label: "Email",
+      value: email,
+    },
+    {
+      id: "channel",
+      name: "channel",
+      type: "text",
+      placeholder: "Channel Name",
+      label: "Channel Name",
+      value: channel,
+    },
+  ];
 
-    if (!email) {
-      errors.email = "Enter an email";
-    } else if (!validateEmail(email)) {
-      errors.email = "Enter a valid email";
-    }
+  // const validateAllFields = () => {
+  //   const errors = {};
 
-    if (!channel) {
-      errors.channel = "Enter channel name";
-    } else if (channel.length < 3) {
-      errors.channel = "Channel name must be at least 3 characters long";
-    }
+  //   if (!email) {
+  //     errors.email = "Enter an email";
+  //   } else if (!validateEmail(email)) {
+  //     errors.email = "Enter a valid email";
+  //   }
 
-    if (!password) {
-      errors.password = "Enter password";
-    } else if (password.length < 8) {
-      errors.password = "Password must be at least 8 characters long";
-    }
+  //   if (!channel) {
+  //     errors.channel = "Enter channel name";
+  //   } else if (channel.length < 3) {
+  //     errors.channel = "Channel name must be at least 3 characters long";
+  //   }
 
-    if (!confirmPassword) {
-      errors.confirmPassword = "Enter confirm password";
-    } else if (confirmPassword !== password) {
-      errors.confirmPassword = "Passwords do not match";
-    }
+  //   if (!password) {
+  //     errors.password = "Enter password";
+  //   } else if (password.length < 8) {
+  //     errors.password = "Password must be at least 8 characters long";
+  //   }
 
+  //   if (!confirmPassword) {
+  //     errors.confirmPassword = "Enter confirm password";
+  //   } else if (confirmPassword !== password) {
+  //     errors.confirmPassword = "Passwords do not match";
+  //   }
+
+  //   setFieldErrors(errors);
+  //   return Object.keys(errors).length === 0;
+  // };
+
+  // const validateEmail = (email) => {
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   return emailRegex.test(email);
+  // };
+
+  const validateForm = () => {
+    const fields = {
+      email,
+      password,
+      confirmPassword,
+      channel,
+    };
+
+    const errors = validateAllFields(fields);
+
+    console.log("Validation errors:", errors);
     setFieldErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "channel") {
+      setChannel(value);
+    } else if (name === "password") {
+      setPassword(value);
+    } else if (name === "confirmPassword") {
+      setConfirmPassword(value);
+    }
+
+    // Clear fieldError when the user starts typing in the email o  r password field
+    if (fieldErrors[name]) {
+      setFieldErrors({ ...fieldErrors, [name]: "" });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validateAllFields()) {
+    if (validateForm()) {
       try {
-        const response = await registerUser({email, channel, password, confirmPassword});
+        const response = await registerUser({
+          email,
+          channel,
+          password,
+          confirmPassword,
+        });
         localStorage.setItem("token", response.token);
         navigate("/signin");
       } catch (error) {
@@ -73,19 +137,37 @@ function RegisterPage() {
         </div>
         <div className="register-rightSide">
           <form onSubmit={handleSubmit} noValidate autocomplete="off">
-            <FieldValidation
-              validateAllFields={validateAllFields}
-              email={email}
-              setEmail={setEmail}
-              channel={channel}
-              setChannel={setChannel}
-              password={password}
-              setPassword={setPassword}
-              confirmPassword={confirmPassword}
-              setConfirmPassword={setConfirmPassword}
-              fieldErrors={fieldErrors}
-              setFieldErrors={setFieldErrors}
-            />
+            {inputs.map((input) => (
+              <FormInput
+                key={input.id}
+                {...input}
+                name={input.name}
+                onChange={handleChange}
+                errorMessage={fieldErrors[input.name] || ""}
+              />
+            ))}
+            <div className="password-container">
+              <FormInput
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Password"
+                label="Password"
+                value={password}
+                onChange={handleChange}
+                errorMessage={fieldErrors.password || ""}
+              />
+              <FormInput
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="Confirm Password"
+                label="Confirm Password"
+                value={confirmPassword}
+                onChange={handleChange}
+                errorMessage={fieldErrors.confirmPassword || ""}
+              />
+            </div>
             <div className="button-container">
               <Link to="/signin">
                 <button className="signin" type="button">

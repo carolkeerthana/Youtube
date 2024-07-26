@@ -26,6 +26,9 @@
   flex: 1;
   padding: 20px;
 }
+.register-rightSide {
+  margin-right: 30px;
+}
 .right-side {
   display: flex;
   flex-direction: column;
@@ -75,23 +78,14 @@
 .right-side input:focus {
   border: 3px solid #0b57d0;
 }
-.right-side .password-container {
+.password-container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 95%;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
 }
-.right-side #password {
-  margin-left: -0.7rem;
-}
-.right-side #confirmPassword {
-  margin-left: 0.85rem;
-}
-.right-side #pwd-label {
-  margin-left: -0.7rem;
-}
-.right-side #confirm-label {
-  margin-left: 0.7rem;
+.password-container .input-container {
+  flex: 1;
 }
 .register-rightSide .button-container {
   display: flex;
@@ -99,7 +93,6 @@
   align-items: center;
   margin-bottom: 2.5rem;
   width: 100%;
-  margin-left: -2rem;
 }
 .register-rightSide .sign-up {
   width: 100px;
