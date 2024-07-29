@@ -25,6 +25,7 @@ const ResetPassword = () => {
       placeholder: "New Password",
       label: "New Password",
       required: true,
+      dataTestId: "password",
     },
     {
       id: 2,
@@ -33,6 +34,7 @@ const ResetPassword = () => {
       placeholder: "Confirm Password",
       label: "Confirm Password",
       required: true,
+      dataTestId: "confirmPassword",
     },
   ];
 

@@ -29,6 +29,7 @@ function LoginPage() {
       placeholder: "Email",
       label: "Email",
       required: true,
+      dataTestId: "email",
     },
     {
       id: 2,
@@ -37,6 +38,7 @@ function LoginPage() {
       placeholder: "Password",
       label: "Password",
       required: true,
+      dataTestId: "password",
     },
   ];
 
@@ -129,6 +131,10 @@ function LoginPage() {
           setError("Login failed. Please try again.");
         }
       } catch {
+        console.error("Login failed:", error);
+        setError(
+          error?.message || "An unexpected error occurred. Please try again."
+        );
         navigate("/error");
       }
     } else {

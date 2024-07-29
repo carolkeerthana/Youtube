@@ -1,174 +1,443 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import LoginPage from "../LoginPage";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
-import {loginUser} from '../LoginApi';
+import { loginUser } from "../LoginApi";
 import ErrorPage from "../../Error/ErrorPage";
+import { AuthProvider } from "../../../util/AuthContext";
+import FormInput from "../../../util/FormInput";
 
+const FormInputsWrapper = ({
+  emailValue,
+  passwordValue,
+  emailError,
+  passwordError,
+}) => (
+  <>
+    <FormInput
+      id="email"
+      label="Email"
+      value={emailValue}
+      onChange={() => {}}
+      errorMessage={emailError}
+      dataTestId="email-input"
+    />
+    <FormInput
+      id="password"
+      label="Password"
+      value={passwordValue}
+      onChange={() => {}}
+      errorMessage={passwordError}
+      dataTestId="password-input"
+    />
+  </>
+);
 const mockNavigate = jest.fn();
-jest.mock('../LoginApi.js');
+jest.mock("../LoginApi.js");
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate ,
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
 }));
-describe('Login page', () => {
-
+describe("Login page", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test('renders login page with all elements', () => {
+  test("renders login page with all elements", () => {
     render(
+      <AuthProvider>
         <BrowserRouter>
-            <LoginPage />
+          <LoginPage />
         </BrowserRouter>
+      </AuthProvider>
     );
-    expect(screen.getByTestId('utube-text')).toHaveTextContent('UTube');
-    expect(screen.getByTestId('signin-text')).toHaveTextContent('Sign in');
-    expect(screen.getByTestId('text')).toHaveTextContent('to continue to UTube');
+    expect(screen.getByTestId("utube-text")).toHaveTextContent("UTube");
+    expect(screen.getByTestId("signin-text")).toHaveTextContent("Sign in");
+    expect(screen.getByTestId("text")).toHaveTextContent(
+      "to continue to UTube"
+    );
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(screen.getByText(/forgot password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /sign in/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /create account/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /sign in/i })
+    ).toBeInTheDocument();
   });
 
-  test('handles change correctly', () => {
+  test("handles change correctly", () => {
     render(
-      <BrowserRouter>
-            <LoginPage />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
     );
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
 
-    fireEvent.change(emailInput, { target: { value: 'test@gmail.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'Password123' } });
+    fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
+    fireEvent.change(passwordInput, { target: { value: "Password123" } });
 
-    expect(emailInput.value).toBe('test@gmail.com');
-    expect(passwordInput.value).toBe('Password123');
+    expect(emailInput.value).toBe("test@gmail.com");
+    expect(passwordInput.value).toBe("Password123");
   });
 
-  test('should display error messages when all fields are empty', () => {
+  test("should display error messages when all fields are empty", () => {
     render(
-      <BrowserRouter>
-      <LoginPage />
-      </BrowserRouter>
-    )
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+      <AuthProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(screen.getByText(/Enter an email/i)).toBeInTheDocument();
     expect(screen.getByText(/Enter password/i)).toBeInTheDocument();
   });
 
-  test('if email & password are not valid', () => {
+  test("should throw error message, if email is not valid", () => {
     render(
-      <BrowserRouter>
-      <LoginPage />
-      </BrowserRouter>
-    )
+      <AuthProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
 
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
+    fireEvent.change(screen.getByTestId("email"), {
+      target: { value: "test01gmail.com" },
+    });
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "Password1!" },
+    });
 
-    fireEvent.change(emailInput, { target: { value: 'testgmail.com' } });
-    fireEvent.change(passwordInput, { target: { value: '12345' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(screen.getByText(/Enter a valid email/i)).toBeInTheDocument();
-    expect(screen.getByText(/Password must be at least 8 characters long/i)).toBeInTheDocument();
   });
 
-  test('should handle onFocus and onBlur events for email and password fields', () => {
+  test("should throw error message if password is not valid", () => {
+    render(
+      <AuthProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByTestId("email"), {
+      target: { value: "test01@gmail.com" },
+    });
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "1234" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    expect(
+      screen.getByText(/Password must be at least 8 characters long/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "HelloWorld1234567890!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    expect(
+      screen.getByText(/Password must not exceed 20 characters/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "hello1234567!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    expect(
+      screen.getByText(/Password must contain at least one uppercase letter/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "K1234567!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    expect(
+      screen.getByText(/Password must contain at least one lowercase letter/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "Helloworld!" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    expect(
+      screen.getByText(/Password must contain at least one digit/i)
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "Helloworld123" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+    expect(
+      screen.getByText(/Password must contain at least one special character/i)
+    ).toBeInTheDocument();
+  });
+
+  test("handles change correctly and clears fieldError when the user starts typing in the email or password field", async () => {
     render(
       <BrowserRouter>
-        <LoginPage />
+        <AuthProvider>
+          <LoginPage />
+        </AuthProvider>
       </BrowserRouter>
     );
-  
-    const emailInput = screen.getByLabelText('Email');
-    const passwordInput = screen.getByLabelText('Password');
-  
-    // Simulate focus event on email input
-    fireEvent.focus(emailInput);
-    expect(emailInput.className.includes('focused')).toBe(true);
-  
-    // Simulate blur event with non-empty value on email input
-    fireEvent.change(emailInput, { target: { value: 'example@example.com' } });
-    fireEvent.blur(emailInput);
-    expect(emailInput.className.includes('focused')).toBe(true);
-  
-    // Simulate blur event with empty value on email input
-    fireEvent.change(emailInput, { target: { value: '' } });
-    fireEvent.blur(emailInput);
-    expect(emailInput.className.includes('focused')).toBe(false);
-  
-    // Simulate focus event on password input
-    fireEvent.focus(passwordInput);
-    expect(passwordInput.className.includes('focused')).toBe(true);
-  
-    // Simulate blur event with non-empty value on password input
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
-    fireEvent.blur(passwordInput);
-    expect(passwordInput.className.includes('focused')).toBe(true);
-  
-    // Simulate blur event with empty value on password input
-    fireEvent.change(passwordInput, { target: { value: '' } });
-    fireEvent.blur(passwordInput);
-    expect(passwordInput.className.includes('focused')).toBe(false);
+
+    // Initially submit the form to trigger validation errors
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    // Expect validation errors to be shown
+    expect(screen.getByText(/Enter an email/i)).toBeInTheDocument();
+    expect(screen.getByText(/Enter password/i)).toBeInTheDocument();
+
+    // Simulate user input in the email field
+    const emailInput = screen.getByLabelText(/email/i);
+    fireEvent.change(emailInput, { target: { value: "test@gmail.com" } });
+
+    // Expect the email validation error to be cleared and email state to be updated
+    await waitFor(() => {
+      expect(screen.queryByText(/Enter an email/i)).not.toBeInTheDocument();
+    });
+    expect(emailInput.value).toBe("test@gmail.com");
+
+    // Simulate user input in the password field
+    const passwordInput = screen.getByLabelText(/password/i);
+    fireEvent.change(passwordInput, { target: { value: "Password1!" } });
+
+    // Expect the password validation error to be cleared and password state to be updated
+    await waitFor(() => {
+      expect(screen.queryByText(/Enter password/i)).not.toBeInTheDocument();
+    });
+    expect(passwordInput.value).toBe("Password1!");
   });
 
-
-  test('with correct data, api call should responds to home page', async() => {
-    loginUser.mockResolvedValue({token: "fake-token"});
+  test("handles focus event correctly for all fields", () => {
     render(
-      <BrowserRouter>
-            <LoginPage />
-      </BrowserRouter>
-    )
+      <FormInputsWrapper
+        emailValue=""
+        passwordValue=""
+        emailError=""
+        passwordError=""
+      />
+    );
 
-    fireEvent.change(screen.getByLabelText(/email/i), {target : {value: "test@gmail.com"}});
-    fireEvent.change(screen.getByLabelText(/password/i), {target : {value: "12345678"}});
+    const emailInputElement = screen.getByTestId("email-input");
+    const passwordInputElement = screen.getByTestId("password-input");
 
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.focus(emailInputElement);
+    fireEvent.focus(passwordInputElement);
 
-    await waitFor(() => {expect(localStorage.getItem("token")).toBe("fake-token") });
-    await waitFor(() => {expect(mockNavigate).toHaveBeenCalledWith("/") });
+    expect(screen.getByTestId("email-input-container")).toHaveClass("focused");
+    expect(screen.getByTestId("password-input-container")).toHaveClass(
+      "focused"
+    );
   });
 
-  test('if login fails, it should redirect to error page and shows error message', async() => {
+  test("handles blur event correctly with non-empty values for all fields", () => {
+    render(
+      <FormInputsWrapper
+        emailValue="tester@gmail.com"
+        passwordValue="Password123!"
+        emailError=""
+        passwordError=""
+      />
+    );
+    const emailInputElement = screen.getByTestId("email-input");
+    const passwordInputElement = screen.getByTestId("password-input");
+
+    fireEvent.blur(emailInputElement);
+    fireEvent.blur(passwordInputElement);
+
+    expect(screen.getByTestId("email-input-container")).toHaveClass("focused");
+    expect(screen.getByTestId("password-input-container")).toHaveClass(
+      "focused"
+    );
+  });
+
+  test("handles blur event correctly with empty value", () => {
+    render(
+      <FormInputsWrapper
+        emailValue=""
+        passwordValue=""
+        emailError=""
+        passwordError=""
+      />
+    );
+
+    const emailInputElement = screen.getByTestId("email-input");
+    const passwordInputElement = screen.getByTestId("password-input");
+
+    fireEvent.blur(emailInputElement);
+    fireEvent.blur(passwordInputElement);
+
+    expect(screen.getByTestId("email-input-container")).not.toHaveClass(
+      "focused"
+    );
+    expect(screen.getByTestId("password-input-container")).not.toHaveClass(
+      "focused"
+    );
+  });
+
+  test("remains focused with error-border when there is an error message", () => {
+    render(
+      <FormInputsWrapper
+        emailValue=""
+        passwordValue=""
+        emailError="Enter an email"
+        passwordError="Enter a valid password"
+      />
+    );
+
+    const emailInputElement = screen.getByTestId("email-input");
+    const passwordInputElement = screen.getByTestId("password-input");
+
+    fireEvent.focus(emailInputElement);
+    fireEvent.focus(passwordInputElement);
+
+    fireEvent.blur(emailInputElement);
+    fireEvent.blur(passwordInputElement);
+
+    expect(screen.getByTestId("email-input-container")).toHaveClass("focused");
+    expect(screen.getByTestId("email-input-container")).toHaveClass(
+      "error-border"
+    );
+
+    expect(screen.getByTestId("password-input-container")).toHaveClass(
+      "focused"
+    );
+    expect(screen.getByTestId("password-input-container")).toHaveClass(
+      "error-border"
+    );
+  });
+
+  test("with correct data, api call should responds to home page", async () => {
+    loginUser.mockResolvedValue({ token: "fake-token" });
+    render(
+      <AuthProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "Password1!" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    await waitFor(() => {
+      expect(localStorage.getItem("token")).toBe("fake-token");
+    });
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+  });
+
+  test("displays error message on failed login", async () => {
+    loginUser.mockResolvedValue({});
+    render(
+      <AuthProvider>
+        <BrowserRouter>
+          <LoginPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
+
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "Password1!" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    expect(
+      await screen.findByText("Login failed. Please try again.")
+    ).toBeInTheDocument();
+  });
+
+  test("if login fails, it should redirect to error page and shows error message", async () => {
     const errorResponse = {
       message: "An error occurred. please try again",
       status: 500,
-      data: {message: "Internal Server Error"}
-    }
-    loginUser.mockRejectedValueOnce(errorResponse); 
+      data: { message: "Internal Server Error" },
+    };
+    loginUser.mockRejectedValueOnce(errorResponse);
 
     render(
+      <AuthProvider>
         <BrowserRouter>
-            <LoginPage />
+          <LoginPage />
         </BrowserRouter>
+      </AuthProvider>
     );
 
-    fireEvent.change(screen.getByLabelText(/email/i), {target : {value: "test@gmail.com"}});
-    fireEvent.change(screen.getByLabelText(/password/i), {target : {value: "12345678"}});
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@gmail.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "Password1!" },
+    });
 
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/error")
-    })
+      expect(mockNavigate).toHaveBeenCalledWith("/error");
+    });
 
     render(
-      <BrowserRouter>
-      <ErrorPage/>
-      </BrowserRouter>
-    )
+      <AuthProvider>
+        <BrowserRouter>
+          <ErrorPage />
+        </BrowserRouter>
+      </AuthProvider>
+    );
 
     expect(screen.getByText(/Couldn't sign in/i)).toBeInTheDocument();
     expect(screen.getByText(/Oops something went wrong/i)).toBeInTheDocument();
-});
+  });
 
+  test("displays notification message on password reset success", async () => {
+    jest.useFakeTimers();
+
+    render(
+      <AuthProvider>
+        <MemoryRouter initialEntries={["/login?resetSuccess=true"]}>
+          <LoginPage />
+        </MemoryRouter>
+      </AuthProvider>
+    );
+
+    expect(
+      screen.getByText(
+        "Your password has been reset successfully. Please sign in with your new password."
+      )
+    ).toBeInTheDocument();
+
+    jest.advanceTimersByTime(3000);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(
+          "Your password has been reset successfully. Please sign in with your new password."
+        )
+      ).not.toBeInTheDocument();
+    });
+
+    jest.useRealTimers();
+  });
 });

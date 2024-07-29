@@ -44,7 +44,7 @@ input {
   font-size: 20px;
   color: #999;
   transition: all 0.3s ease;
-  background-color: white;
+  background-color: #ffffff;
   padding: 0 0.25rem;
 }
 
@@ -63,4 +63,13 @@ input {
 
 .error svg {
   margin-right: 0.5rem;
+}
+@media (max-width: 1150px) {
+  .floating-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 16px;
+    padding: 0 0.25rem;
+  }
 }

@@ -15,7 +15,7 @@
   padding-bottom: 20px;
   width: 100%;
   flex-grow: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   max-height: 100%;
 }
 .large-container {

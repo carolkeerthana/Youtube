@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
 import { useState } from "react";
-import FieldValidation from "../Validation/FieldValidation";
 import { registerUser } from "./RegisterApi";
 import validateAllFields, {
   validateChannel,
@@ -13,7 +12,7 @@ import FormInput from "../../util/FormInput";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
-  const [channel, setChannel] = useState("");
+  const [channelName, setChannelName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -28,14 +27,16 @@ function RegisterPage() {
       placeholder: "Email",
       label: "Email",
       value: email,
+      dataTestId: "email",
     },
     {
-      id: "channel",
-      name: "channel",
+      id: "channelName",
+      name: "channelName",
       type: "text",
-      placeholder: "Channel Name",
-      label: "Channel Name",
-      value: channel,
+      placeholder: "User Name",
+      label: "User Name",
+      value: channelName,
+      dataTestId: "channelName",
     },
   ];
 
@@ -80,7 +81,7 @@ function RegisterPage() {
       email,
       password,
       confirmPassword,
-      channel,
+      channelName,
     };
 
     const errors = validateAllFields(fields);
@@ -94,8 +95,8 @@ function RegisterPage() {
     const { name, value } = e.target;
     if (name === "email") {
       setEmail(value);
-    } else if (name === "channel") {
-      setChannel(value);
+    } else if (name === "channelName") {
+      setChannelName(value);
     } else if (name === "password") {
       setPassword(value);
     } else if (name === "confirmPassword") {
@@ -115,7 +116,7 @@ function RegisterPage() {
       try {
         const response = await registerUser({
           email,
-          channel,
+          channelName,
           password,
           confirmPassword,
         });
@@ -156,6 +157,7 @@ function RegisterPage() {
                 value={password}
                 onChange={handleChange}
                 errorMessage={fieldErrors.password || ""}
+                dataTestId="password"
               />
               <FormInput
                 id="confirmPassword"
@@ -166,9 +168,10 @@ function RegisterPage() {
                 value={confirmPassword}
                 onChange={handleChange}
                 errorMessage={fieldErrors.confirmPassword || ""}
+                dataTestId="confirmPassword"
               />
             </div>
-            <div className="button-container">
+            <div className="register-button-container">
               <Link to="/signin">
                 <button className="signin" type="button">
                   Sign in

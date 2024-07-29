@@ -28,10 +28,10 @@ export const validateConfirmPassword = (password, confirmPassword) => {
 };
 
 // Validate channel function
-export const validateChannel = (channel) => {
-  if (!channel) return "Enter channel name";
+export const validateUserName = (channel) => {
+  if (!channel) return "Enter user name";
   return channel.length < 3
-    ? "Channel name must be at least 3 characters long"
+    ? "User name must be at least 3 characters long"
     : "";
 };
 
@@ -58,7 +58,7 @@ const validateAllFields = (fields) => {
   }
 
   if (fields.channel !== undefined) {
-    const channelError = validateChannel(fields.channel);
+    const channelError = validateUserName(fields.channel);
     if (channelError) errors.channel = channelError;
   }
 

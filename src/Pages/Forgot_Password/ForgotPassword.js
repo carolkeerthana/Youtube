@@ -21,6 +21,7 @@ const ForgotPassword = () => {
       placeholder: "Email",
       label: "Email",
       required: true,
+      dataTestId: "email",
     },
   ];
 
@@ -91,14 +92,14 @@ const ForgotPassword = () => {
                   errorMessage={fieldError[input.name] || ""}
                 />
               ))}
-            <div className="error-container">
+            {/* <div className="error-container">
               {error && (
                 <p className="error-text">
                   <FaExclamationCircle className="error-icon" />
                   &nbsp;{error}
                 </p>
               )}
-            </div>
+            </div> */}
             {successMessage ? (
               <span className="success">{successMessage}</span>
             ) : (

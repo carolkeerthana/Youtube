@@ -10,6 +10,7 @@ const FormInput = ({
   onBlur,
   id,
   value,
+  dataTestId,
   ...inputProps
 }) => {
   const [focused, setFocused] = useState(false);
@@ -36,6 +37,7 @@ const FormInput = ({
       className={`input-container ${focused || errorMessage ? "focused" : ""} ${
         errorMessage ? "error-border" : ""
       }`}
+      data-testid={`${dataTestId}-container`}
     >
       <label
         htmlFor={id}
@@ -53,6 +55,7 @@ const FormInput = ({
         onBlur={handleBlur}
         placeholder=" "
         required
+        data-testid={dataTestId}
       />
       {errorMessage && (
         <p className="error">
