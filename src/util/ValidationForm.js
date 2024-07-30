@@ -28,9 +28,9 @@ export const validateConfirmPassword = (password, confirmPassword) => {
 };
 
 // Validate channel function
-export const validateUserName = (channel) => {
-  if (!channel) return "Enter user name";
-  return channel.length < 3
+export const validateUserName = (channelName) => {
+  if (!channelName) return "Enter user name";
+  return channelName.length < 3
     ? "User name must be at least 3 characters long"
     : "";
 };
@@ -57,9 +57,9 @@ const validateAllFields = (fields) => {
     if (confirmPasswordError) errors.confirmPassword = confirmPasswordError;
   }
 
-  if (fields.channel !== undefined) {
-    const channelError = validateUserName(fields.channel);
-    if (channelError) errors.channel = channelError;
+  if (fields.channelName !== undefined) {
+    const channelError = validateUserName(fields.channelName);
+    if (channelError) errors.channelName = channelError;
   }
 
   return errors;

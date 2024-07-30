@@ -3,7 +3,6 @@
   align-items: center;
   margin-top: 7px;
   margin-bottom: 10px;
-
 }
 .reply-img {
   width: 40px;
@@ -11,9 +10,18 @@
   border-radius: 50%;
   margin-right: 10px;
 }
-.reply-header input {
+.reply-detail {
+  flex: 1;
+}
+.reply-field {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: flex-start;
+}
+.reply-field input {
   flex: 1;
   /* border-bottom: 1px solid #ccc; */
+  width: 100%;
   border: none;
   padding: 5px;
   outline: none;
@@ -22,12 +30,17 @@
 }
 .reply-buttons {
   display: none;
-  margin-left: 10px;
+  position: relative; /* Position absolutely within the input field container */
+  bottom: 0;
+  right: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 }
-.reply-header .reply-input-field.visible{
-  border-bottom: 2px solid #007BFF;
+.reply-field .reply-input-field.visible {
+  border-bottom: 2px solid #007bff;
 }
-.reply-buttons.visible{
+.reply-buttons.visible {
   display: flex;
   align-items: center;
 }
@@ -35,42 +48,32 @@
   background-color: #fff;
   border: none;
   padding: 10px 20px;
-  margin-left: 10px;
+  margin-right: 10px;
   cursor: pointer;
 }
 .reply-buttons button:last-child {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border-radius: 4px;
 }
 .reply-buttons button:first-child:hover {
   background-color: #ebebe3;
-}  
+}
 .reply-buttons button:last-child:hover {
   background-color: #1481f6;
-}  
- 
-  /* .reply img {
+}
+
+/* .reply img {
     border-radius: 50%;
     width: 40px;
     height: 40px;
     margin-right: 10px;
   }
    */
-  .reply-detail {
-    flex: 1;
-  }
-  
-  .reply-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  /* .reply-header input {
+
+/* .reply-header input {
     width: 100%;
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
   } */
-  

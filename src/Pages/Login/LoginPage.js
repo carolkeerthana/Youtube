@@ -7,19 +7,19 @@ import { useAuth } from "../../util/AuthContext";
 import CustomNotification from "../Register/CustomNotification";
 import FormInput from "../../util/FormInput";
 import validateAllFields from "../../util/ValidationForm";
+import { useDispatch, useSelector } from "react-redux";
+import { hideNotification } from "../../components/Notification/notificationSlice";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { login } = useAuth();
   const location = useLocation();
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
+  const notification = useSelector((state) => state.notifications);
 
   const inputs = [
     {
@@ -43,52 +43,14 @@ function LoginPage() {
   ];
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const resetSuccess = queryParams.get("resetSuccess");
-
-    if (resetSuccess === "true") {
-      setNotificationMessage(
-        "Your password has been reset successfully. Please sign in with your new password."
-      );
-      setShowNotification(true);
-
-      // Clear notification after 5 seconds
+    if (notification.visible) {
       const timer = setTimeout(() => {
-        setShowNotification(false);
-      }, 3000); // Adjust the timer duration (in milliseconds) as needed
+        dispatch(hideNotification());
+      }, 3000);
 
       return () => clearTimeout(timer);
     }
-  }, [location.search]);
-
-  // const handleChange = (e) => {
-  //     const {name,value} = e.target;
-  //     setFormData({...formData, [name]: value});
-  // }
-
-  // const validateEmail = (email) => {
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   return emailRegex.test(email);
-  // };
-
-  // const validateAllFields = () => {
-  //   const errors = {};
-
-  //   if (!email) {
-  //     errors.email = "Enter an email";
-  //   } else if (!validateEmail(email)) {
-  //     errors.email = "Enter a valid email";
-  //   }
-
-  //   if (!password) {
-  //     errors.password = "Enter password";
-  //   } else if (password.length < 8) {
-  //     errors.password = "Password must be at least 8 characters long";
-  //   }
-
-  //   setFieldErrors(errors);
-  //   return Object.keys(errors).length === 0;
-  // };
+  }, [notification.visible, dispatch]);
 
   const validateForm = () => {
     const errors = validateAllFields({ email, password });
@@ -151,18 +113,20 @@ function LoginPage() {
   return (
     <div className="login">
       <div className="login-container">
-        {showNotification && (
-          <CustomNotification
-            message={notificationMessage}
-            onClose={() => setShowNotification(false)}
-          />
-        )}
+        {notification.visible && <CustomNotification />}
         <div className="login-LeftSide">
-          <h1 data-testid="utube-text">UTube</h1>
+          <span data-testid="utube-text" className="login-heading-1">
+            UTube
+          </span>
           <div className="signin-text">
             <br />
-            <h2 data-testid="signin-text">Sign in</h2>
-            <span data-testid="text">to continue to UTube</span>
+            <span data-testid="signin-text" className="login-heading-2">
+              Sign in
+            </span>
+            <br />
+            <span data-testid="text" className="login-heading-3">
+              to continue to UTube
+            </span>
           </div>
         </div>
         <div className="login-RightSide">

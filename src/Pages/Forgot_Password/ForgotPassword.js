@@ -72,8 +72,8 @@ const ForgotPassword = () => {
     <div className="forgotPassword">
       <div className="forgot-password-container">
         <div className="forgotPwd-leftSide">
-          <h1 data-testid="utube-text">UTube</h1>
-          <h2 data-testid="static-text">Account recovery</h2>
+          <span data-testid="utube-text" className="forgot-password-heading-1">UTube</span>
+          <span data-testid="static-text" className="forgot-password-heading-2">Account recovery</span>
         </div>
         <div className="forgotPwd-rightSide">
           <form onSubmit={handleSubmit} noValidate autocomplete="off">

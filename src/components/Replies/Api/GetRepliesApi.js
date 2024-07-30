@@ -1,10 +1,4 @@
 export const getReplies = async () => {
-  const token = localStorage.getItem("token");
-  console.log("Retrieved token:", token);
-  if (!token) {
-    return { success: false, message: "No token found" };
-  }
-
   try {
     const response = await fetch(
       `https://apps.rubaktechie.me/api/v1/replies/`,
@@ -12,21 +6,17 @@ export const getReplies = async () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
-    // Check if response is successful
+
     if (!response.ok) {
-      console.error(`Error: ${response.status} - ${response.statusText}`);
-      return { success: false, message: "Failed to fetch replies" };
+      throw new Error("Failed to fetch replies");
     }
 
-    // Parse and return the JSON response
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
-    console.error("Failed to fetch replies:", error);
-    return { success: false, message: "Failed to fetch replies" };
+    console.error("Error fetching replies:", error);
+    throw error; // Or handle it as needed
   }
 };

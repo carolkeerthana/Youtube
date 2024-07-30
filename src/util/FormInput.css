@@ -24,7 +24,7 @@
 .input-container.error-border input {
   border: 3px solid red;
 }
-input {
+.input-container input {
   width: 100%;
   padding: 18px;
   font-size: 20px;

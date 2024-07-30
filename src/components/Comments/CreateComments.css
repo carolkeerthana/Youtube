@@ -1,78 +1,83 @@
 .new-comment {
-    display: flex;
-    align-items: flex-start;
-    margin-top: 20px;
-    margin-bottom: 20px;
- 
-  }
-  .new-comment img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    flex-shrink: 0;
-  }
-  .input-field-comment {
-    flex: 1; /* Allow the input field to take available space */
-    display: flex;
-    flex-direction: row; /* Stack the input and buttons vertically */
-  }
-  .new-comment input {
-    flex: 1;
-    border: none;
-    border-bottom: 1px solid #ccc;
-    padding: 5px;
-    outline: none;
-    margin-bottom: 15px;
-    font-size: 16px;
-
-    
-  }
+  display: flex;
+  align-items: flex-start;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.new-comment img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.input-field-comment {
+  flex: 1; /* Allow the input field to take available space */
+  display: flex;
+  flex-direction: column; /* Stack the input and buttons vertically */
+  /* position: relative; For positioning the buttons at the bottom right */
+}
+.new-comment input {
+  width: 100%;
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 6px 10px;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+.comment-buttons {
+  display: none;
+  position: relative; /* Position absolutely within the input field container */
+  /* margin-left: 10px; */
+  bottom: 0;
+  right: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px; /* Space between buttons */
+}
+.input-field.visible {
+  border-bottom: 2px solid #007bff;
+}
+.comment-buttons.visible {
+  display: flex;
+  align-items: center;
+}
+.comment-buttons button {
+  background-color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.comment-buttons button:last-child {
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+}
+.comment-buttons button:first-child:hover {
+  background-color: #ebebe3;
+}
+.comment-buttons button:last-child:hover {
+  background-color: #1481f6;
+}
+@media (max-width: 480px) {
   .comment-buttons {
-    display: none;
-    margin-left: 10px;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+    justify-content: space-between;
   }
-  .input-field.visible{
-    border-bottom: 2px solid #007BFF;
-  }
-  .comment-buttons.visible{
-    display: flex;
-    align-items: center;
-  }
+
   .comment-buttons button {
-    background-color: #fff;
-    border: none;
-    padding: 10px 20px;
-    margin-left: 10px;
-    cursor: pointer;
+    flex: 1;
+    margin-left: 0;
+    margin-right: 10px;
+    padding: 10px;
   }
+
   .comment-buttons button:last-child {
-    background-color: #007BFF;
-    color: white;
-    border-radius: 4px;
+    margin-right: 0;
   }
-  .comment-buttons button:first-child:hover {
-    background-color: #ebebe3;
-  }  
-  .comment-buttons button:last-child:hover {
-    background-color: #1481f6;
-  }
-  @media (max-width: 480px) {
-    .comment-buttons {
-      width: 100%;
-      margin-left: 0;
-      margin-top: 10px;
-      justify-content: space-between;
-    }
-  
-    .comment-buttons button {
-      flex: 1;
-      margin-left: 0;
-      margin-right: 10px;
-      padding: 10px;
-    }
-  
-    .comment-buttons button:last-child {
-      margin-right: 0;
-    }
-  }
+}

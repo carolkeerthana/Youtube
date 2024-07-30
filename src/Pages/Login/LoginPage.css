@@ -128,22 +128,28 @@
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  margin-top: -5rem;
+  margin-bottom: 50px;
   margin-left: 50px;
   padding-bottom: 6rem;
 }
-.login-LeftSide h1 {
+.login-LeftSide .login-heading-1 {
   font-size: 60px;
   color: red;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
-.login-LeftSide h2 {
+.login-LeftSide .login-heading-2 {
   font-size: 40px;
   font-weight: lighter;
-  padding-bottom: 10px;
+  display: block;
 }
-.login-LeftSide .signin-text span {
+.login-LeftSide .login-heading-3 {
   font-size: 20px;
   font-weight: 400;
+  display: block;
+}
+.signin-text {
+  margin-bottom: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 /* .input-container .error-message {

@@ -40,42 +40,6 @@ function RegisterPage() {
     },
   ];
 
-  // const validateAllFields = () => {
-  //   const errors = {};
-
-  //   if (!email) {
-  //     errors.email = "Enter an email";
-  //   } else if (!validateEmail(email)) {
-  //     errors.email = "Enter a valid email";
-  //   }
-
-  //   if (!channel) {
-  //     errors.channel = "Enter channel name";
-  //   } else if (channel.length < 3) {
-  //     errors.channel = "Channel name must be at least 3 characters long";
-  //   }
-
-  //   if (!password) {
-  //     errors.password = "Enter password";
-  //   } else if (password.length < 8) {
-  //     errors.password = "Password must be at least 8 characters long";
-  //   }
-
-  //   if (!confirmPassword) {
-  //     errors.confirmPassword = "Enter confirm password";
-  //   } else if (confirmPassword !== password) {
-  //     errors.confirmPassword = "Passwords do not match";
-  //   }
-
-  //   setFieldErrors(errors);
-  //   return Object.keys(errors).length === 0;
-  // };
-
-  // const validateEmail = (email) => {
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   return emailRegex.test(email);
-  // };
-
   const validateForm = () => {
     const fields = {
       email,
@@ -131,9 +95,9 @@ function RegisterPage() {
     <div className="register">
       <div className="register-container">
         <div className="register-leftSide">
-          <h1 data-testid="utube-text">UTube</h1>
+          <span data-testid="utube-text" className="heading-1">UTube</span>
           <div>
-            <h2 data-testid="static-text">Create a UTube Account</h2>
+            <span data-testid="static-text" className="heading-2">Create a UTube Account</span>
           </div>
         </div>
         <div className="register-rightSide">

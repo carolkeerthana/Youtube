@@ -1,14 +1,21 @@
 import React, { useEffect } from "react";
-import "./CustomNotification.css"; // Style this component as per your design
+import "./CustomNotification.css";
+import { useDispatch, useSelector } from "react-redux";
+import { hideNotification } from "../../components/Notification/notificationSlice";
 
-const CustomNotification = ({ message, onClose }) => {
+const CustomNotification = () => {
+  const dispatch = useDispatch();
+  const message = useSelector((state) => state.notifications.message);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
-    }, 3000); // Adjust the timer duration (in milliseconds) as needed
+      dispatch(hideNotification());
+    }, 3000);
 
     return () => clearTimeout(timer);
-  }, [onClose]);
+  }, [dispatch, message]);
+
+  if (!message) return null;
 
   return (
     <div className="custom-notification">

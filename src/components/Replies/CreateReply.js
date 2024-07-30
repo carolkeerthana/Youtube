@@ -106,7 +106,7 @@ const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
         }}
       />
       <div className="reply-detail">
-        <div className="reply-header">
+        <div className="reply-field">
           <input
             className={`input-field ${focused ? "visible" : ""}`}
             autoFocus
@@ -117,7 +117,7 @@ const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <div className={`comment-buttons ${focused ? "visible" : ""}`}>
+          <div className={`reply-buttons ${focused ? "visible" : ""}`}>
             <button
               onClick={() => {
                 setNewReply("");

@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { resetPassword } from "./ResetPasswordApi";
 import validateAllFields from "../../util/ValidationForm";
 import FormInput from "../../util/FormInput";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../../components/Notification/notificationSlice";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -16,6 +18,7 @@ const ResetPassword = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { token } = useParams();
+  const dispatch = useDispatch();
 
   const inputs = [
     {
@@ -37,25 +40,6 @@ const ResetPassword = () => {
       dataTestId: "confirmPassword",
     },
   ];
-
-  // const validateAllFields = () => {
-  //   const errors = {};
-
-  //   if (!password) {
-  //     errors.password = 'Enter password';
-  //   } else if (password.length < 8) {
-  //     errors.password = 'Password must be at least 8 characters long';
-  //   }
-
-  //   if (!confirmPassword) {
-  //     errors.confirmPassword = 'Confirm your password';
-  //   } else if (password !== confirmPassword) {
-  //     errors.confirmPassword = 'Passwords do not match';
-  //   }
-
-  //   setFieldErrors(errors);
-  //   return Object.keys(errors).length === 0;
-  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,11 +70,15 @@ const ResetPassword = () => {
         const response = await resetPassword(token, password);
 
         if (response.success) {
-          setSuccessMessage("Your password has been reset successfully.");
+          dispatch(
+            showNotification(
+              "Your password has been reset successfully. Please sign in with your new password."
+            )
+          );
           setFieldErrors({});
           setPassword("");
           setConfirmPassword("");
-          navigate("/signin?resetSuccess=true"); // Pass success message as query parameter
+          navigate("/signin"); // Pass success message as query parameter
         } else {
           setError("Password reset failed. Please try again.");
         }
@@ -106,8 +94,12 @@ const ResetPassword = () => {
     <div className="resetPassword">
       <div className="reset-password-container">
         <div className="resetPwd-leftSide">
-          <h1 data-testid="utube-text">UTube</h1>
-          <h2 data-testid="static-text">Reset your password</h2>
+          <span data-testid="utube-text" className="reset-heading-1">
+            UTube
+          </span>
+          <span data-testid="static-text" className="reset-heading-2">
+            Reset your password
+          </span>
         </div>
         <div className="resetPwd-rightSide">
           <form onSubmit={handleSubmit} noValidate autoComplete="off">

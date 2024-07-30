@@ -296,8 +296,12 @@ const Comments = ({ videoId }) => {
   };
 
   const handleReplyFocus = (index) => {
-    setShowReplyInput(false); // Hide reply input on cancel
-    setFocusedReplyIndex(index);
+    if (!isAuthenticated) {
+      navigate("/signin"); // Redirect to sign-in page if the user is not authenticated
+    } else {
+      setShowReplyInput(true); // Show reply input if authenticated
+      setFocusedReplyIndex(index);
+    }
   };
   // Handle cancel reply
   const handleCancelReply = () => {
@@ -407,10 +411,7 @@ const Comments = ({ videoId }) => {
               <div className="reply-section">
                 <button
                   data-testid="reply-button"
-                  onClick={() => {
-                    handleReplyFocus(index);
-                    setShowReplyInput(true);
-                  }}
+                  onClick={() => handleReplyFocus(index)}
                 >
                   Reply
                 </button>
@@ -423,6 +424,16 @@ const Comments = ({ videoId }) => {
                       onClick={() => toggleRepliesVisibility(comment.id)}
                       data-testid="toggle-replies"
                     >
+                      {showReplyInput && focusedReplyIndex === index && (
+                        <CreateReply
+                          commentId={comment.id}
+                          onReplyAdded={handleReplyAdded}
+                          onCancel={() => {
+                            setShowReplyInput(false);
+                            setFocusedReplyIndex(null);
+                          }}
+                        />
+                      )}
                       <FontAwesomeIcon
                         data-testid={`reply-toggle-comment-${comment.id}`}
                         icon={isVisible ? faChevronUp : faChevronDown}
@@ -434,16 +445,7 @@ const Comments = ({ videoId }) => {
                   )}
                 </div>
               </div>
-              {showReplyInput && focusedReplyIndex === index && (
-                <CreateReply
-                  commentId={comment.id}
-                  onReplyAdded={handleReplyAdded}
-                  onCancel={() => {
-                    setShowReplyInput(false);
-                    setFocusedReplyIndex(null);
-                  }}
-                />
-              )}
+
               {isVisible && (
                 <div className="replies">
                   {commentReplies.map((reply) => {
@@ -478,33 +480,34 @@ const Comments = ({ videoId }) => {
                                   </span>
                                 </div>
                               )}
-                              {/* {isReplyOwner && reply.dropdownOpen && ( */}
-                              <div
-                                className="dropdown-menu"
-                                ref={(el) =>
-                                  el
-                                    ? (replyDropdownRefs.current[reply.id] = el)
-                                    : null
-                                }
-                                data-testid={`reply-dropdown-${reply.id}`}
-                              >
-                                <button
-                                  onClick={() => {
-                                    handleEditReply(reply.id, reply.text);
-                                    toggleReplyDropdown(comment.id, reply.id);
-                                  }}
-                                  data-testid="dropdown-reply-edit"
+                              {isReplyOwner && reply.dropdownOpen && (
+                                <div
+                                  className="dropdown-menu"
+                                  ref={(el) =>
+                                    el
+                                      ? (replyDropdownRefs.current[reply.id] =
+                                          el)
+                                      : null
+                                  }
+                                  data-testid={`reply-dropdown-${reply.id}`}
                                 >
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteReply(reply.id)}
-                                  data-testid="dropdown-reply-delete"
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                              {/* )} */}
+                                  <button
+                                    onClick={() => {
+                                      handleEditReply(reply.id, reply.text);
+                                      toggleReplyDropdown(comment.id, reply.id);
+                                    }}
+                                    data-testid="dropdown-reply-edit"
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteReply(reply.id)}
+                                    data-testid="dropdown-reply-delete"
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
                             </div>
                           </div>
                           {editReplyId === reply.id ? (

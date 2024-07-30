@@ -1,40 +1,40 @@
-.comment{
+.comment {
   display: flex;
   align-items: flex-start;
   margin: 30px 0;
   margin-bottom: 20px;
 }
-.comment img{
+.comment img {
   width: 40px;
   border-radius: 50%;
   margin-right: 15px;
 }
-.comments-detail{
+.comments-detail {
   display: flex;
   flex-direction: column;
   flex: 1;
   margin-top: -15px;
   /* margin-bottom: 10px; */
-
 }
-.comment-header, .reply-header {
+.comment-header,
+.reply-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 5px;
+  /* margin-top: 5px; */
 }
-.comment-actions{
-display: flex;
+.comment-actions {
+  display: flex;
 }
 .reply-actions {
   display: flex;
   position: relative;
   cursor: pointer;
-  }
+}
 .comment-header span {
-font-size: 14px;
-color: #888;
-margin-left: 10px;
+  font-size: 14px;
+  color: #888;
+  margin-left: 10px;
 }
 .comment-actions {
   position: relative;
@@ -57,8 +57,8 @@ margin-left: 10px;
   background-color: transparent;
   transition: background-color 0.3s ease; Smooth transition for hover effect  */
   display: inline-block;
-padding: 8px;
-border-radius: 50%;
+  padding: 8px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
@@ -89,17 +89,17 @@ border-radius: 50%;
 .dropdown-menu button:hover {
   background-color: #f0f0f0;
 }
-.comment h3{
+.comment h3 {
   font-size: 15px;
   margin-bottom: 2px;
 }
-.comment h3 span{
+.comment h3 span {
   font-size: 15px;
   color: #5a5a5a;
   font-weight: 500;
   margin-left: 8px;
 }
-.reply-detail{
+.reply-detail {
   display: flex;
   flex-direction: column;
   /* align-items: center; */
@@ -109,49 +109,49 @@ border-radius: 50%;
 .reply-detail > div {
   /* margin-bottom: 12px; */
 }
-#reply-text{
+#reply-text {
   padding-bottom: 10px;
 }
-.comment-action img{
+.comment-action img {
   border-radius: 0;
   width: 20px;
   margin-right: 5px;
 }
 .reply-section {
-display: flex;
-flex-direction: column;
-/* margin-left: 30px; /* Adjust this value to control indentation */
-/* margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  /* margin-left: 30px; /* Adjust this value to control indentation */
+  /* margin-bottom: 10px;
 margin-top: 20px;  */
 }
-.reply-section button{
+.reply-section button {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
   width: 50px;
   padding: 5px;
-  margin-left: 20px; 
-  margin-top: 5px;  
+  margin-left: 20px;
+  margin-top: 5px;
   border: none;
   border-radius: 4px;
   /* margin-bottom: 10px;*/
-  }
-  .reply-section button:hover{
-    background-color: #dedddd;
-  }
-.reply-toggle{
+}
+.reply-section button:hover {
+  background-color: #dedddd;
+}
+.reply-toggle {
   top: -10%;
-/* padding: 10px 0; */
-padding-top: 20px;
-color:#1481f6 ;
-cursor: pointer;
+  /* padding: 10px 0; */
+  padding-top: 20px;
+  color: #1481f6;
+  cursor: pointer;
 }
 .reply img {
-margin-right: 10px;
+  margin-right: 10px;
 }
 
-.comment-edit{
+.comment-edit {
   display: flex;
   align-items: center;
   margin-top: 20px;
@@ -161,7 +161,7 @@ margin-right: 10px;
 .edit-input {
   flex: 1;
   border: none;
-  border-bottom: 2px solid #007BFF;
+  border-bottom: 2px solid #007bff;
   padding: 5px;
   outline: none;
   margin-bottom: 15px;
@@ -183,17 +183,16 @@ margin-right: 10px;
   cursor: pointer;
 }
 .edit-buttons button:last-child {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border-radius: 4px;
 }
 .edit-buttons button:first-child:hover {
   background-color: #ebebe3;
-}  
+}
 .edit-buttons button:last-child:hover {
   background-color: #1481f6;
-} 
-
+}
 
 /* New styles for UpdateReply component */
 .update-reply-container {
