@@ -2,10 +2,11 @@
   display: flex;
   background: #f9f9f9;
   height: 100vh;
-  overflow: hidden;
+  overflow: auto;
 }
 .sidebar {
   flex-shrink: 0; /* Prevent sidebar from shrinking */
+  overflow: hidden;
 }
 .container {
   background: #f9f9f9;
@@ -15,11 +16,12 @@
   padding-bottom: 20px;
   width: 100%;
   flex-grow: 1;
-  /* overflow-y: auto; */
+  overflow-y: hidden;
   max-height: 100%;
 }
 .large-container {
   padding-left: 7%;
+  height: 100%;
 }
 @media (max-width: 1300px) {
   .container {

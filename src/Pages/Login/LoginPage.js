@@ -66,13 +66,14 @@ function LoginPage() {
       setPassword(value);
     }
 
-    // Clear fieldError when the user starts typing in the email o  r password field
     if (fieldErrors[name]) {
       setFieldErrors({ ...fieldErrors, [name]: "" });
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) =>
+    
+    {
     e.preventDefault();
 
     const loginData = {

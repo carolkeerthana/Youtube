@@ -351,7 +351,7 @@ const Comments = ({ videoId }) => {
             <div className="comments-detail">
               <div className="comment-header">
                 {editCommentIndex !== index ? (
-                  <h3>
+                  <h3 className="comment-channel-name">
                     {comment.channelName}{" "}
                     <span>{moment(comment.createdAt).fromNow()}</span>
                   </h3>
@@ -457,7 +457,7 @@ const Comments = ({ videoId }) => {
                         <div className="reply-detail">
                           <div className="reply-header">
                             {editReplyIndex !== index ? (
-                              <h3>
+                              <h3 className="reply-channel-name">
                                 {reply.channelName}{" "}
                                 <span>{moment(reply.createdAt).fromNow()}</span>
                               </h3>

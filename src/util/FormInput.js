@@ -21,7 +21,7 @@ const FormInput = ({
 
   const handleBlur = (e) => {
     setFocused(e.target.value !== "");
-    if (onBlur) onBlur(e); // Call parent onBlur if provided
+    // if (onBlur) onBlur(e); // Call parent onBlur if provided
   };
 
   useEffect(() => {

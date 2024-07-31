@@ -2,12 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "./RegisterPage.css";
 import { useState } from "react";
 import { registerUser } from "./RegisterApi";
-import validateAllFields, {
-  validateChannel,
-  validateConfirmPassword,
-  validateEmail,
-  validatePassword,
-} from "../../util/ValidationForm";
+import validateAllFields from "../../util/ValidationForm";
 import FormInput from "../../util/FormInput";
 
 function RegisterPage() {
@@ -15,7 +10,6 @@ function RegisterPage() {
   const [channelName, setChannelName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
 
@@ -67,7 +61,6 @@ function RegisterPage() {
       setConfirmPassword(value);
     }
 
-    // Clear fieldError when the user starts typing in the email o  r password field
     if (fieldErrors[name]) {
       setFieldErrors({ ...fieldErrors, [name]: "" });
     }
@@ -95,9 +88,13 @@ function RegisterPage() {
     <div className="register">
       <div className="register-container">
         <div className="register-leftSide">
-          <span data-testid="utube-text" className="heading-1">UTube</span>
+          <span data-testid="utube-text" className="heading-1">
+            UTube
+          </span>
           <div>
-            <span data-testid="static-text" className="heading-2">Create a UTube Account</span>
+            <span data-testid="static-text" className="heading-2">
+              Create a UTube Account
+            </span>
           </div>
         </div>
         <div className="register-rightSide">

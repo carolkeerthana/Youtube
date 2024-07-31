@@ -1,5 +1,3 @@
-// util/ValidationForm.js
-
 export const validateEmail = (email) => {
   if (!email) return "Enter an email";
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,13 +19,11 @@ export const validatePassword = (password) => {
   return "";
 };
 
-// Validate confirm password function
 export const validateConfirmPassword = (password, confirmPassword) => {
   if (!confirmPassword) return "Enter confirm password";
   return password !== confirmPassword ? "Passwords do not match" : "";
 };
 
-// Validate channel function
 export const validateUserName = (channelName) => {
   if (!channelName) return "Enter user name";
   return channelName.length < 3
@@ -35,7 +31,6 @@ export const validateUserName = (channelName) => {
     : "";
 };
 
-// Validate all fields function
 const validateAllFields = (fields) => {
   const errors = {};
 
