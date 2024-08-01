@@ -1,301 +1,320 @@
 .history {
-    display: flex;
-    flex-direction: row;
-    margin: 15px;
+  display: flex;
+  flex-direction: row;
+  /* width: 100%; */
+  /* height: 100%; Full viewport height */
+  overflow: hidden;
+  overflow-x: hidden;
+  padding-right: -60px;
+  margin: 15px;
 }
-.left-side-history{
-    width: 70%;
-    height: 100vh;
-    flex-direction: column;
+.left-side-history {
+  width: 70%;
+  /* height: 100vh; */
+  flex-direction: column;
+  height: 100%; /* Full height */
+  /* overflow-y: auto; Enable vertical scrolling */
+  /* padding: 15px; */
 }
-.history-details{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-self: start;
-    width: 400px;
-    height: 100%;
+.history-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-self: start;
+  width: 400px;
+  height: 100%;
 }
-h2{
-    margin-top: 15px;
-    margin-bottom: 20px;
-    color: black;
+h2 {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  color: black;
 }
-.title-header .history-title{
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 15px;
+.title-header .history-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 15px;
 }
-.history-details .title-p{
-    margin-bottom: 10px;
-    color: #5a5a5a;
-    font-size: 18px;
+.history-details .title-p {
+  margin-bottom: 10px;
+  color: #5a5a5a;
+  font-size: 18px;
 }
-.history-card{
-    display: flex;
-    margin-bottom: 20px;
-    width: 100%;
-    align-items: flex-start;
-    position: relative;
+.history-card {
+  display: flex;
+  margin-bottom: 20px;
+  width: 100%;
+  align-items: flex-start;
+  position: relative;
 }
-.history-image img{
-    width: 300px;
-    height: auto;
-    border-radius: 5px;
-    margin-right: 20px;
+.history-image img {
+  width: 300px;
+  height: auto;
+  border-radius: 5px;
+  margin-right: 20px;
 }
-.history-card h2, .history-card p {
-    width: 100%;
-    margin: 0; /* Reset margin to avoid extra spacing */
+.history-card h2,
+.history-card p {
+  width: 100%;
+  margin: 0; /* Reset margin to avoid extra spacing */
 }
 .history-card p {
-    margin-top: 5px;
+  margin-top: 5px;
 }
-.title-header{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.title-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.title-header .delete-button  img{
-    width: 17px; 
+.title-header .delete-button img {
+  width: 17px;
 }
 .title-header .delete-button {
-    position: absolute;
-    width: 60px;
-    height: 35px; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 0;
-    right: -30%;
-    background: none;
-    border: none;
-    font-size: 3rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  position: absolute;
+  width: 60px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  right: -30%;
+  background: none;
+  border: none;
+  font-size: 3rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
-.title-header .delete-button:hover{
-    background-color: rgb(231, 229, 229);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border-radius: 0;
+.title-header .delete-button:hover {
+  background-color: rgb(231, 229, 229);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 0;
 }
-.right-side-history{
-    width: 45%;
-    padding: 20px;
-    padding-left: 35px;
-    background-color: #f3f0f0;
+.right-side-history {
+  width: 35%;
+  padding: 20px;
+  /* padding-left: 50px; */
+  /* padding-left: 20px; */
+  background-color: #f3f0f0;
+  box-sizing: border-box; /* Ensure padding and border are included in the width */
+  min-width: 300px; /* Set a minimum width */
+  max-width: 350px; /* Set a maximum width */
+  flex-shrink: 0;
 }
-.watch-div{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.watch-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-.right-side-history h2{
-    margin: 20px;
-    margin-top: 50px;
-    color: #333;
+.right-side-history h2 {
+  margin: 20px;
+  margin-top: 50px;
+  color: #333;
 }
-.right-side-history hr{
-    border: 0;
-    height: 1px;
-    background: #ccc;
-    width: 100%;
+.right-side-history hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  width: 100%;
 }
 .right-side-history input[type="radio"] {
-    width: 15px;
-    height: 15px;
-    margin-right: 10px;
-    transform: scale(1.5); 
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  transform: scale(1.5);
 }
 .right-side-history label {
-    font-size: 20px;
-    font-weight: 500;
-    color: #333;
-    cursor: pointer;
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
 }
-.right-side-history div{
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    padding: 30px;
-    transition: background-color 0.3s, border-color 0.3s;
+.right-side-history div {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 30px;
+  transition: background-color 0.3s, border-color 0.3s;
 }
-.right-side-history div:hover{
-    background-color: rgb(231, 229, 229);
+.right-side-history div:hover {
+  background-color: rgb(231, 229, 229);
 }
-.right-side-history div.active{
-    background-color: rgb(209, 209, 209); /* Example: change background color on hover */
+.right-side-history div.active {
+  background-color: rgb(
+    209,
+    209,
+    209
+  ); /* Example: change background color on hover */
 }
 
 .right-side-history span {
-    display: block;
-    margin-top: 20px;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    padding-left: 30px;
-    cursor: pointer;
-    color: #333;
+  display: block;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding-left: 30px;
+  cursor: pointer;
+  color: #333;
 }
-.search-h2{
-    padding-bottom: 30px;
+.search-h2 {
+  padding-bottom: 30px;
 }
-.search-text .delete-button  img{
-    width: 17px;   
+.search-text .delete-button img {
+  width: 17px;
 }
 .search-text .delete-button {
-    width: 50px;
-    height: 50px; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 0;
-    background: none;
-    border: none;
-    /* font-size: 1.5rem; */
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  background: none;
+  border: none;
+  /* font-size: 1.5rem; */
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
-.search-text .delete-button:hover{
-    background-color:rgb(231, 229, 229);
-    border-radius: 50%;
+.search-text .delete-button:hover {
+  background-color: rgb(231, 229, 229);
+  border-radius: 50%;
 }
-.search-text{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 700px;
-    color: #333;
+.search-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 700px;
+  color: #333;
 }
-.search-text p{
-    font-size: 20px;
-    font-weight: 700;
-    /* margin-bottom: 15px; */
+.search-text p {
+  font-size: 20px;
+  font-weight: 700;
+  /* margin-bottom: 15px; */
 }
-.search-history{
-    padding-bottom: 20px;
+.search-history {
+  padding-bottom: 20px;
 }
-.search-subtext p{
-    margin-bottom: 10px;
-    color: #5a5a5a;
-    font-size: 18px;
+.search-subtext p {
+  margin-bottom: 10px;
+  color: #5a5a5a;
+  font-size: 18px;
 }
 .notification {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgb(37, 36, 36);
-    color: white;
-    padding: 20px;
-    /* padding-right: 10%; */
-    border-radius: 5px;
-    text-align: center;
-    z-index: 1000;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgb(37, 36, 36);
+  color: white;
+  padding: 20px;
+  /* padding-right: 10%; */
+  border-radius: 5px;
+  text-align: center;
+  z-index: 1000;
 }
 @media (max-width: 1024px) {
-    .history {
-        flex-direction: column; /* Stack items vertically */
-    }
+  .history {
+    flex-direction: column; /* Stack items vertically */
+    width: 100%;
+  }
 
-    .left-side-history {
-        order: 2; /* Move left-side-history to bottom */
-        margin-top: 15px; /* Add margin at the top for better spacing */
-        margin-right: 0; /* Remove right margin */
-        width: 100%;
-    }
+  .left-side-history {
+    order: 2; /* Move left-side-history to bottom */
+    margin-top: 15px; /* Add margin at the top for better spacing */
+    margin-right: 0; /* Remove right margin */
+    width: 100%;
+  }
 
-    .right-side-history {
-        order: 1; /* Move right-side-history to top */
-        width: 100%; /* Full width on smaller screens */
-        padding: 20px;
-        margin-bottom: 15px; /* Add margin at the bottom for better spacing */
-    }
+  .right-side-history {
+    order: 1; /* Move right-side-history to top */
+    width: 100%; /* Full width on smaller screens */
+    padding: 20px;
+    margin-bottom: 15px; /* Add margin at the bottom for better spacing */
+  }
 
-    .right-side-history h2 {
-        margin-top: 50px; /* Adjust margin top for better spacing */
-    }
+  .right-side-history h2 {
+    margin-top: 50px; /* Adjust margin top for better spacing */
+  }
 
-    .delete-button {
-        display: flex; /* Ensure delete button is flex */
-        align-items: center; /* Center align items vertically */
-        justify-content: space-between;
-    }
-    .title-header .delete-button {
-        position: absolute;
-        top: 0;
-        right: 10%;
-    }
+  .delete-button {
+    display: flex; /* Ensure delete button is flex */
+    align-items: center; /* Center align items vertically */
+    justify-content: space-between;
+  }
+  .title-header .delete-button {
+    position: absolute;
+    top: 0;
+    right: 10%;
+  }
 }
 
 @media (max-width: 600px) {
-    .history-image img {
-        width: 200px; /* Reduce thumbnail size */
-    }
+  .history-image img {
+    width: 200px; /* Reduce thumbnail size */
+  }
 
-    .history-card h2 {
-        font-size: 14px; /* Reduce font size */
-    }
+  .history-card h2 {
+    font-size: 14px; /* Reduce font size */
+  }
 
-    .history-card p {
-        font-size: 12px; /* Reduce font size */
-    }
+  .history-card p {
+    font-size: 12px; /* Reduce font size */
+  }
 
-    .right-side-history h2 {
-        font-size: 16px; /* Reduce font size */
-    }
+  .right-side-history h2 {
+    font-size: 16px; /* Reduce font size */
+  }
 
-    .right-side-history label {
-        font-size: 16px; /* Reduce font size */
-    }
+  .right-side-history label {
+    font-size: 16px; /* Reduce font size */
+  }
 
-    .right-side-history span {
-        font-size: 16px; /* Reduce font size */
-    }
-    .title-header .delete-button {
-        position: absolute;
-        top: 0;
-        right: 0%;
-    }
+  .right-side-history span {
+    font-size: 16px; /* Reduce font size */
+  }
+  .title-header .delete-button {
+    position: absolute;
+    top: 0;
+    right: 0%;
+  }
 }
 @media (max-width: 450px) {
-    .history-card{
-        display: flex;
-        flex-direction: column;
-    }
-    .history-image img {
-        width: 200px; /* Reduce thumbnail size */
-    }
+  .history-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .history-image img {
+    width: 200px; /* Reduce thumbnail size */
+  }
 
-    .history-card h2 {
-        font-size: 14px; /* Reduce font size */
-    }
+  .history-card h2 {
+    font-size: 14px; /* Reduce font size */
+  }
 
-    .history-card p {
-        font-size: 12px; /* Reduce font size */
-    }
+  .history-card p {
+    font-size: 12px; /* Reduce font size */
+  }
 
-    .left-side-history {
-        width: 100%;
-    }
+  .left-side-history {
+    width: 100%;
+  }
 
-    .right-side-history h2 {
-        font-size: 16px; /* Reduce font size */
-    }
+  .right-side-history h2 {
+    font-size: 16px; /* Reduce font size */
+  }
 
-    .right-side-history label {
-        font-size: 16px; /* Reduce font size */
-    }
+  .right-side-history label {
+    font-size: 16px; /* Reduce font size */
+  }
 
-    .right-side-history span {
-        font-size: 16px; /* Reduce font size */
-    }
-    .title-header .delete-button {
-        position: absolute;
-        top: 0;
-        right: -5%;
-    }
+  .right-side-history span {
+    font-size: 16px; /* Reduce font size */
+  }
+  .title-header .delete-button {
+    position: absolute;
+    top: 0;
+    right: -5%;
+  }
 }
