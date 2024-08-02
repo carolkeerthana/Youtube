@@ -1,16 +1,16 @@
-.play-container{
-    background: #f9f9f9;
-    padding: 35px 2%;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    flex-grow: 1;
+.play-container {
+  background: #f9f9f9;
+  padding: 35px 2%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  flex-grow: 1;
 }
 .video-page-container {
-    display: flex;
-    position: relative;
-    flex-direction: column;
-  }
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
 /* .play-container {
 
     padding-left: 20px;
@@ -35,6 +35,7 @@
 }
 .large-container {
   margin-left: 0;
+  margin-right: 0;
 }
 .video-sidebar-overlay {
   position: fixed;

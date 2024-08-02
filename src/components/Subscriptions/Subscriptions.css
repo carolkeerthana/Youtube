@@ -9,10 +9,8 @@
 .subscriptions-card {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center the content */
-  margin: 0; /* Remove margin */
-  padding: 0; /* Remove padding */
-  /* border: 1px solid #e0e0e0; Optional: Add a border to see the card edges */
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 .subscriptions-card img {
@@ -23,18 +21,16 @@
   font-size: 16px;
   font-weight: 600;
   color: #000;
-  margin: 5px 0 0 0;
+  margin: 5px 0;
 }
 .subscriptions-card h3 {
   font-size: 14px;
   font-weight: 600;
   color: #555;
-  margin: 6px 0 0 0;
+  margin: 6px 0;
 }
 .subscriptions-card p {
   font-size: 14px;
-  margin: 6px 0 0 0; /* Remove bottom margin */
-  padding: 0;
 }
 .subscriptions-details {
   display: flex;
@@ -46,73 +42,58 @@
   border-radius: 50%;
   margin-right: 15px;
 }
-@media (max-width: 1575px) {
+@media (max-width: 1200px) {
   .subscriptions {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-
-@media (max-width: 1080px) {
+@media (max-width: 900px) {
   .subscriptions {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    height: 100%;
   }
 }
-
 @media (max-width: 768px) {
   .subscriptions {
     grid-template-columns: repeat(2, 1fr);
+    grid-row-gap: 20px;
   }
-  .subscriptions-card img {
-    /* width: 100%; */
-    border-radius: 5px;
-  }
-
   .subscriptions-card h2 {
     font-size: 14px;
     font-weight: 600;
     color: #000;
     margin: 5px 0;
   }
-
   .subscriptions-card h3 {
     font-size: 12px;
     font-weight: 600;
     color: #555;
     margin: 4px 0;
   }
-
   .subscriptions-card p {
     font-size: 12px;
   }
-  
   .subscriptions-details img {
-    /* width: 15%; Adjust avatar size */
-    margin-right: 10px; /* Adjust margin */
+    margin-right: 10px;
   }
 }
-
 @media (max-width: 480px) {
   .subscriptions {
     grid-template-columns: repeat(1, 1fr);
     grid-column-gap: 8px;
     grid-row-gap: 15px;
-    padding-bottom: 60px; /* Add space for the fixed sidebar */
+    padding-bottom: 60px;
   }
-
   .subscriptions-card h2 {
     font-size: 12px;
   }
-
   .subscriptions-card h3 {
     font-size: 10px;
   }
-
   .subscriptions-card p {
     font-size: 10px;
   }
-
   .subscriptions-details img {
-    /* width: 25%; */
     margin-right: 8px;
   }
 }

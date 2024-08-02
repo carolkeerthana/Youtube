@@ -5,7 +5,11 @@ import { loginUser } from "../LoginApi";
 import ErrorPage from "../../Error/ErrorPage";
 import { AuthProvider } from "../../../util/AuthContext";
 import FormInput from "../../../util/FormInput";
+import configureStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import { Provider } from "react-redux";
 
+const mockStore = configureStore([thunk]);
 const FormInputsWrapper = ({
   emailValue,
   passwordValue,
@@ -39,18 +43,28 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 describe("Login page", () => {
+  let store;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    store = mockStore({
+      notifications: { visible: false },
+    });
   });
 
-  test("renders login page with all elements", () => {
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
+  const renderWithProviders = (component) => {
+    return render(
+      <Provider store={store}>
+        <AuthProvider>
+          <BrowserRouter>{component}</BrowserRouter>
+        </AuthProvider>
+      </Provider>
     );
+  };
+
+  test("renders login page with all elements", () => {
+    renderWithProviders(<LoginPage />);
+
     expect(screen.getByTestId("utube-text")).toHaveTextContent("UTube");
     expect(screen.getByTestId("signin-text")).toHaveTextContent("Sign in");
     expect(screen.getByTestId("text")).toHaveTextContent(

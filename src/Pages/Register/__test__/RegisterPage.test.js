@@ -8,7 +8,7 @@ import FormInput from "../../../util/FormInput";
 
 const FormInputsWrapper = ({
   emailValue,
-  channelValue,
+  channelNameValue,
   passwordValue,
   confirmPasswordValue,
   emailError,
@@ -28,7 +28,7 @@ const FormInputsWrapper = ({
     <FormInput
       id="channel"
       label="Channel Name"
-      value={channelValue}
+      value={channelNameValue}
       onChange={() => {}}
       errorMessage={channelError}
       dataTestId="channel-input"
@@ -72,7 +72,7 @@ describe("Register page", () => {
     );
 
     expect(screen.getByTestId("email")).toBeInTheDocument();
-    expect(screen.getByTestId("channel")).toBeInTheDocument();
+    expect(screen.getByTestId("channelName")).toBeInTheDocument();
     expect(screen.getByTestId("password")).toBeInTheDocument();
     expect(screen.getByTestId("confirmPassword")).toBeInTheDocument();
   });
@@ -121,7 +121,7 @@ describe("Register page", () => {
     );
 
     const emailInput = screen.getByTestId("email");
-    const channelInput = screen.getByTestId("channel");
+    const channelInput = screen.getByTestId("channelName");
     const passwordInput = screen.getByTestId("password");
     const confirmPasswordInput = screen.getByTestId("confirmPassword");
 
@@ -160,7 +160,7 @@ describe("Register page", () => {
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01gmail.com" },
     });
-    fireEvent.change(screen.getByTestId("channel"), {
+    fireEvent.change(screen.getByTestId("channelName"), {
       target: { value: "life on earth" },
     });
     fireEvent.change(screen.getByTestId("password"), {
@@ -185,7 +185,7 @@ describe("Register page", () => {
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01@gmail.com" },
     });
-    fireEvent.change(screen.getByTestId("channel"), {
+    fireEvent.change(screen.getByTestId("channelName"), {
       target: { value: "life on earth" },
     });
     fireEvent.change(screen.getByTestId("password"), {
@@ -210,7 +210,7 @@ describe("Register page", () => {
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01@gmail.com" },
     });
-    fireEvent.change(screen.getByTestId("channel"), {
+    fireEvent.change(screen.getByTestId("channelName"), {
       target: { value: "li" },
     });
     fireEvent.change(screen.getByTestId("password"), {
@@ -237,7 +237,7 @@ describe("Register page", () => {
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01@gmail.com" },
     });
-    fireEvent.change(screen.getByTestId("channel"), {
+    fireEvent.change(screen.getByTestId("channelName"), {
       target: { value: "life on earth" },
     });
     fireEvent.change(screen.getByTestId("password"), {
@@ -297,7 +297,7 @@ describe("Register page", () => {
     render(
       <FormInputsWrapper
         emailValue=""
-        channelValue=""
+        channelNameValue=""
         passwordValue=""
         confirmPasswordValue=""
         emailError=""
@@ -335,7 +335,7 @@ describe("Register page", () => {
     render(
       <FormInputsWrapper
         emailValue="tester@gmail.com"
-        channelValue="John"
+        channelNameValue="John"
         passwordValue="Password123!"
         confirmPasswordValue="Password123!"
         emailError=""
@@ -372,7 +372,7 @@ describe("Register page", () => {
     render(
       <FormInputsWrapper
         emailValue=""
-        channelValue=""
+        channelNameValue=""
         passwordValue=""
         confirmPasswordValue=""
         emailError=""
@@ -412,7 +412,7 @@ describe("Register page", () => {
     render(
       <FormInputsWrapper
         emailValue=""
-        channelValue=""
+        channelNameValue=""
         passwordValue=""
         confirmPasswordValue=""
         emailError="Enter an email"
@@ -474,7 +474,7 @@ describe("Register page", () => {
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01@gmail.com" },
     });
-    fireEvent.change(screen.getByTestId("channel"), {
+    fireEvent.change(screen.getByTestId("channelName"), {
       target: { value: "life on earth" },
     });
     fireEvent.change(screen.getByTestId("password"), {
@@ -506,7 +506,7 @@ describe("Register page", () => {
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test@example.com" },
     });
-    fireEvent.change(screen.getByTestId("channel"), {
+    fireEvent.change(screen.getByTestId("channelName"), {
       target: { value: "testChannel" },
     });
     fireEvent.change(screen.getByTestId("password"), {
