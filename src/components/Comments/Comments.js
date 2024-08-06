@@ -245,9 +245,13 @@ const Comments = ({ videoId }) => {
           )
         );
       } else {
-        console.error("Failed to delete reply:", response.message);
+        console.error(
+          "API response is not in the expected format:",
+          response.message
+        );
       }
     } catch (error) {
+      console.error("Failed to delete reply:", error);
       navigate("/error");
     }
   };

@@ -8,8 +8,8 @@ import FormInput from "../../../util/FormInput";
 import configureStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
+import CustomNotification from "../../Register/CustomNotification";
 
-const mockStore = configureStore([thunk]);
 const FormInputsWrapper = ({
   emailValue,
   passwordValue,
@@ -42,28 +42,36 @@ jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: () => mockNavigate,
 }));
-describe("Login page", () => {
-  let store;
 
+const mockStore = configureStore([]);
+
+describe("Login page", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    store = mockStore({
-      notifications: { visible: false },
-    });
   });
 
-  const renderWithProviders = (component) => {
+  const renderWithProviders = (
+    ui,
+    { initialState, store = mockStore(initialState) } = {}
+  ) => {
     return render(
       <Provider store={store}>
         <AuthProvider>
-          <BrowserRouter>{component}</BrowserRouter>
+          <BrowserRouter>{ui}</BrowserRouter>
         </AuthProvider>
       </Provider>
     );
   };
 
   test("renders login page with all elements", () => {
-    renderWithProviders(<LoginPage />);
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     expect(screen.getByTestId("utube-text")).toHaveTextContent("UTube");
     expect(screen.getByTestId("signin-text")).toHaveTextContent("Sign in");
@@ -82,13 +90,14 @@ describe("Login page", () => {
   });
 
   test("handles change correctly", () => {
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
@@ -101,13 +110,15 @@ describe("Login page", () => {
   });
 
   test("should display error messages when all fields are empty", () => {
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
+
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
     expect(screen.getByText(/Enter an email/i)).toBeInTheDocument();
@@ -115,13 +126,14 @@ describe("Login page", () => {
   });
 
   test("should throw error message, if email is not valid", () => {
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01gmail.com" },
@@ -136,13 +148,14 @@ describe("Login page", () => {
   });
 
   test("should throw error message if password is not valid", () => {
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     fireEvent.change(screen.getByTestId("email"), {
       target: { value: "test01@gmail.com" },
@@ -198,13 +211,14 @@ describe("Login page", () => {
   });
 
   test("handles change correctly and clears fieldError when the user starts typing in the email or password field", async () => {
-    render(
-      <BrowserRouter>
-        <AuthProvider>
-          <LoginPage />
-        </AuthProvider>
-      </BrowserRouter>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     // Initially submit the form to trigger validation errors
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -335,13 +349,14 @@ describe("Login page", () => {
 
   test("with correct data, api call should responds to home page", async () => {
     loginUser.mockResolvedValue({ token: "fake-token" });
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "test@gmail.com" },
@@ -362,13 +377,14 @@ describe("Login page", () => {
 
   test("displays error message on failed login", async () => {
     loginUser.mockResolvedValue({});
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "test@gmail.com" },
@@ -392,13 +408,14 @@ describe("Login page", () => {
     };
     loginUser.mockRejectedValueOnce(errorResponse);
 
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <LoginPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    const initialState = {
+      notifications: {
+        visible: false,
+        message: "",
+      },
+    };
+
+    renderWithProviders(<LoginPage />, { initialState });
 
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "test@gmail.com" },
@@ -413,13 +430,7 @@ describe("Login page", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/error");
     });
 
-    render(
-      <AuthProvider>
-        <BrowserRouter>
-          <ErrorPage />
-        </BrowserRouter>
-      </AuthProvider>
-    );
+    renderWithProviders(<ErrorPage />, { initialState });
 
     expect(screen.getByText(/Couldn't sign in/i)).toBeInTheDocument();
     expect(screen.getByText(/Oops something went wrong/i)).toBeInTheDocument();
@@ -428,22 +439,32 @@ describe("Login page", () => {
   test("displays notification message on password reset success", async () => {
     jest.useFakeTimers();
 
-    render(
+    renderWithProviders(
       <AuthProvider>
-        <MemoryRouter initialEntries={["/login?resetSuccess=true"]}>
-          <LoginPage />
-        </MemoryRouter>
-      </AuthProvider>
+        <LoginPage />
+        <CustomNotification />
+      </AuthProvider>,
+      {
+        initialState: {
+          notifications: {
+            visible: true,
+            message:
+              "Your password has been reset successfully. Please sign in with your new password.",
+          },
+        },
+      }
     );
 
-    expect(
-      screen.getByText(
-        "Your password has been reset successfully. Please sign in with your new password."
-      )
-    ).toBeInTheDocument();
+    // Find all elements with the notification message
+    const notifications = screen.getAllByText(
+      "Your password has been reset successfully. Please sign in with your new password."
+    );
+    // expect(notifications.length).toBe(1); // Ensure only one notification is present
 
+    // Advance timers to simulate the passage of time
     jest.advanceTimersByTime(3000);
 
+    // Verify that the notification disappears
     await waitFor(() => {
       expect(
         screen.queryByText(

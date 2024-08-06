@@ -80,9 +80,11 @@ const ResetPassword = () => {
           setConfirmPassword("");
           navigate("/signin"); // Pass success message as query parameter
         } else {
+          console.log("Reset failed");
           setError("Password reset failed. Please try again.");
         }
       } catch (error) {
+        console.log("Error occurred:", error);
         navigate("/error");
       }
     } else {

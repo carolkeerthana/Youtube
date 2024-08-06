@@ -1,10 +1,29 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import {
+  BrowserRouter,
+  MemoryRouter,
+  Route,
+  Router,
+  Routes,
+} from "react-router-dom";
 import ResetPassword from "../ResetPassword";
 import { resetPassword } from "../ResetPasswordApi";
 import ErrorPage from "../../Error/ErrorPage";
 import FormInput from "../../../util/FormInput";
+import { configureStore, createStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import { AuthProvider } from "../../../util/AuthContext";
+// import store from "../../../components/Notification/store";
+import notificationReducer, {
+  showNotification,
+} from "../../../components/Notification/notificationSlice";
+import rootReducer from "../../../components/Notification/rootReducer";
+import LoginPage from "../../Login/LoginPage";
+
+const store = configureStore({
+  reducer: rootReducer,
+});
 
 const FormInputsWrapper = ({
   passwordValue,
@@ -31,30 +50,52 @@ const FormInputsWrapper = ({
     />
   </>
 );
-const mockNavigate = jest.fn();
-// Mock useParams and useNavigate from react-router-dom
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useParams: () => ({ token: "mock-token" }),
-  useNavigate: () => mockNavigate,
-}));
+
+jest.mock("react-router-dom", () => {
+  const actual = jest.requireActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => jest.fn(), // Default mock function
+    useParams: () => ({ token: "mock-token" }),
+  };
+});
 
 // Mock resetPassword function
 jest.mock("../ResetPasswordApi", () => ({
   resetPassword: jest.fn(),
 }));
 
+jest.mock("../../../components/Notification/notificationSlice", () => ({
+  showNotification: jest.fn(),
+}));
+
+const renderWithProviders = (ui) => {
+  return render(
+    <Provider store={store}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </Provider>
+  );
+};
+
 describe("ResetPassword", () => {
+  let mockNavigate;
+
   beforeEach(() => {
+    mockNavigate = jest.fn();
+    jest.mock("react-router-dom", () => ({
+      ...jest.requireActual("react-router-dom"),
+      useNavigate: () => mockNavigate,
+      useParams: () => ({ token: "mock-token" }),
+    }));
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   test("renders reset password form", () => {
-    render(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    renderWithProviders(<ResetPassword />);
 
     expect(screen.getByTestId("utube-text")).toBeInTheDocument();
     expect(screen.getByTestId("static-text")).toBeInTheDocument();
@@ -66,11 +107,8 @@ describe("ResetPassword", () => {
   });
 
   test("should display error messages when all fields are empty", () => {
-    render(
-      <BrowserRouter>
-        <ResetPassword />
-      </BrowserRouter>
-    );
+    renderWithProviders(<ResetPassword />);
+
     fireEvent.click(screen.getByRole("button", { name: "Reset Password" }));
 
     expect(screen.getByText(/Enter password/i)).toBeInTheDocument();
@@ -78,11 +116,7 @@ describe("ResetPassword", () => {
   });
 
   test("validates form fields on submission", async () => {
-    render(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    renderWithProviders(<ResetPassword />);
 
     const passwordInput = screen.getByLabelText("New Password");
     const confirmPasswordInput = screen.getByLabelText("Confirm Password");
@@ -139,11 +173,7 @@ describe("ResetPassword", () => {
   });
 
   test("should throw error message if password & confirm password does not match", () => {
-    render(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    renderWithProviders(<ResetPassword />);
 
     fireEvent.change(screen.getByTestId("password"), {
       target: { value: "Password1!" },
@@ -157,32 +187,46 @@ describe("ResetPassword", () => {
     expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
   });
 
-  test("submits the form successfully", async () => {
-    resetPassword.mockResolvedValue({ success: true });
+  test("should dispatch notification and redirect to login page on successful password reset", async () => {
+    resetPassword.mockResolvedValue({
+      success: true,
+      token: "mock-token",
+    });
 
     render(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <Routes>
+            <Route path="/" element={<ResetPassword />} />
+            <Route path="/signin" element={<LoginPage />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
     );
 
-    const passwordInput = screen.getByLabelText("New Password");
-    const confirmPasswordInput = screen.getByLabelText("Confirm Password");
-    const submitButton = screen.getByRole("button", { name: "Reset Password" });
-
-    fireEvent.change(passwordInput, { target: { value: "Password123!" } });
-    fireEvent.change(confirmPasswordInput, {
-      target: { value: "Password123!" },
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "NewPassword@123" },
     });
-    fireEvent.click(submitButton);
+    fireEvent.change(screen.getByTestId("confirmPassword"), {
+      target: { value: "NewPassword@123" },
+    });
 
-    expect(resetPassword).toHaveBeenCalledWith("mock-token", "Password123!");
+    fireEvent.click(screen.getByText("Reset Password"));
 
     await waitFor(() => {
-      expect(
-        screen.getByText("Your password has been reset successfully.")
-      ).toBeInTheDocument();
+      console.log("showNotification calls:", showNotification.mock.calls);
+      console.log("mockNavigate calls:", mockNavigate.mock.calls);
+
+      expect(showNotification).toHaveBeenCalledWith(
+        "Your password has been reset successfully. Please sign in with your new password."
+      );
     });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/signin");
+    });
+
+    expect(screen.getByText("Sign In")).toBeInTheDocument();
   });
 
   test("if reset password fails, it should redirect to error page and shows error message", async () => {
@@ -193,11 +237,7 @@ describe("ResetPassword", () => {
     };
     resetPassword.mockRejectedValueOnce(errorResponse);
 
-    render(
-      <BrowserRouter>
-        <ResetPassword />
-      </BrowserRouter>
-    );
+    renderWithProviders(<ResetPassword />);
 
     fireEvent.change(screen.getByLabelText("New Password"), {
       target: { value: "Password1!" },
@@ -212,11 +252,7 @@ describe("ResetPassword", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/error");
     });
 
-    render(
-      <BrowserRouter>
-        <ErrorPage />
-      </BrowserRouter>
-    );
+    renderWithProviders(<ErrorPage />);
 
     expect(screen.getByText(/Couldn't sign in/i)).toBeInTheDocument();
     expect(screen.getByText(/Oops something went wrong/i)).toBeInTheDocument();
@@ -225,7 +261,7 @@ describe("ResetPassword", () => {
   test("displays error message when password reset fails", async () => {
     resetPassword.mockResolvedValueOnce({ success: false });
 
-    render(<ResetPassword />);
+    renderWithProviders(<ResetPassword />);
 
     fireEvent.change(screen.getByLabelText("New Password"), {
       target: { value: "Password1!" },
@@ -357,11 +393,7 @@ describe("ResetPassword", () => {
   });
 
   test("updates password and confirmPassword state on input change and clears fieldErrors", () => {
-    render(
-      <MemoryRouter>
-        <ResetPassword />
-      </MemoryRouter>
-    );
+    renderWithProviders(<ResetPassword />);
 
     const passwordInput = screen.getByTestId("password");
     const confirmPasswordInput = screen.getByTestId("confirmPassword");

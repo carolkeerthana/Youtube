@@ -28,7 +28,7 @@
   transition: transform 0.3s ease;
 }
 .video-sidebar {
-  width: 300px;
+  /* width: 300px; */
 }
 .main-content {
   flex-grow: 1;

@@ -1,46 +1,54 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import { BrowserRouter, MemoryRouter, useNavigate } from 'react-router-dom';
-import Comments from '../Comments';
-import { useAuth } from '../../../util/AuthContext';
-import { fetchComments } from '../Apis/GetCommentsApi';
-import { getReplies } from '../../Replies/Api/GetRepliesApi';
-import { deleteCommentApi } from '../Apis/DeleteCommentApi';
-import { fetchUserDetails } from '../../User/UserProfile/UserDetailsApi';
-import UpdateReply from '../../Replies/UpdateReply';
-import { deleteReply } from '../../Replies/Api/DeleteReplyApi';
-import { createCommentsApi } from '../Apis/CreateCommentsApi';
+import React from "react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+  act,
+} from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
+import { BrowserRouter, MemoryRouter, useNavigate } from "react-router-dom";
+import Comments from "../Comments";
+import { useAuth } from "../../../util/AuthContext";
+import { fetchComments } from "../Apis/GetCommentsApi";
+import { getReplies } from "../../Replies/Api/GetRepliesApi";
+import { deleteCommentApi } from "../Apis/DeleteCommentApi";
+import { fetchUserDetails } from "../../User/UserProfile/UserDetailsApi";
+import UpdateReply from "../../Replies/UpdateReply";
+import { deleteReply } from "../../Replies/Api/DeleteReplyApi";
+import { createCommentsApi } from "../Apis/CreateCommentsApi";
 
 // Mock the useAuth hook
-jest.mock('../../../util/AuthContext', () => ({
+jest.mock("../../../util/AuthContext", () => ({
   useAuth: jest.fn(),
 }));
 
 // Mock API calls
-jest.mock('../Apis/GetCommentsApi', () => ({
+jest.mock("../Apis/GetCommentsApi", () => ({
   fetchComments: jest.fn(),
 }));
 
-jest.mock('../../Replies/Api/GetRepliesApi', () => ({
+jest.mock("../../Replies/Api/GetRepliesApi", () => ({
   getReplies: jest.fn(),
 }));
 
 // Mock the commentsApi
-jest.mock('../Apis/CreateCommentsApi', () => ({
+jest.mock("../Apis/CreateCommentsApi", () => ({
   createCommentsApi: jest.fn(),
 }));
 
-jest.mock('../../User/UserProfile/UserDetailsApi', () => ({
+jest.mock("../../User/UserProfile/UserDetailsApi", () => ({
   fetchUserDetails: jest.fn(),
 }));
 
-jest.mock('../Apis/DeleteCommentApi', () => ({
+jest.mock("../Apis/DeleteCommentApi", () => ({
   deleteCommentApi: jest.fn(),
 }));
-jest.mock('../../Replies/Api/DeleteReplyApi.js');
-// Mock the useNavigate hook from react-router-dom
-jest.mock('react-router-dom', () => ({
+jest.mock("../../Replies/Api/DeleteReplyApi.js", () => ({
+  deleteReply: jest.fn(),
+}));
+jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 
@@ -60,40 +68,40 @@ jest.mock('react-router-dom', () => ({
 
 const mockComments = [
   {
-    id: '1',
-    text: 'First comment',
-    userId: { _id: 'user1', channelName: 'User One' },
-    createdAt: '2023-07-01T12:00:00Z',
+    id: "1",
+    text: "First comment",
+    userId: { _id: "user1", channelName: "User One" },
+    createdAt: "2023-07-01T12:00:00Z",
     replies: [
       {
-          id: 'reply1',
-          text: 'First reply',
-          createdAt: '2023-07-01T12:00:00Z',
-          userId: { _id: 'user1', channelName: 'User Two' },
-          commentId: '1',
+        id: "reply1",
+        text: "First reply",
+        createdAt: "2023-07-01T12:00:00Z",
+        userId: { _id: "user1", channelName: "User Two" },
+        commentId: "1",
       },
-  ],
+    ],
   },
   {
-    id: '2',
-    text: 'Second comment',
-    userId: { _id: 'user2', channelName: 'User Two' },
-    createdAt: '2023-07-02T12:00:00Z',
+    id: "2",
+    text: "Second comment",
+    userId: { _id: "user2", channelName: "User Two" },
+    createdAt: "2023-07-02T12:00:00Z",
   },
 ];
 
 const mockReplies = [
   {
-    id: '1',
-    text: 'First reply',
-    commentId: '1',
-    userId: { _id: 'user3', channelName: 'User Three' },
-    createdAt: '2023-07-03T12:00:00Z',
+    id: "1",
+    text: "First reply",
+    commentId: "1",
+    userId: { _id: "user3", channelName: "User Three" },
+    createdAt: "2023-07-03T12:00:00Z",
   },
 ];
 
-const mockUser = { id: 'user1', channelName: 'User One' };
-describe('Comments Component', () => {
+const mockUser = { id: "user1", channelName: "User One" };
+describe("Comments Component", () => {
   const mockedNavigate = jest.fn();
 
   beforeEach(() => {
@@ -103,8 +111,11 @@ describe('Comments Component', () => {
       isAuthenticated: true,
       user: mockUser,
     });
-    fetchUserDetails.mockResolvedValue({ channelName: 'User One' });
-    getReplies.mockResolvedValue({ success: true, data: mockComments[0].replies });
+    fetchUserDetails.mockResolvedValue({ channelName: "User One" });
+    getReplies.mockResolvedValue({
+      success: true,
+      data: mockComments[0].replies,
+    });
     deleteCommentApi.mockResolvedValue({ success: true });
     deleteReply.mockResolvedValue({ success: true });
     useNavigate.mockReturnValue(mockedNavigate);
@@ -118,440 +129,571 @@ describe('Comments Component', () => {
     jest.restoreAllMocks();
   });
 
-  const renderWithRouter = (ui, { route = '/' } = {}) => {
-    window.history.pushState({}, 'Test page', route);
+  const renderWithRouter = (ui, { route = "/" } = {}) => {
+    window.history.pushState({}, "Test page", route);
 
     return render(ui, { wrapper: MemoryRouter });
   };
 
-  test('renders comments and replies', async () => {
+  test("renders comments and replies", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
-    expect(screen.getByText('0 Comments')).toBeInTheDocument();
+    expect(screen.getByText("0 Comments")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
-      expect(screen.getByText('Second comment')).toBeInTheDocument();
-      expect(screen.getByText('User One')).toBeInTheDocument();
-      expect(screen.getByText('User Two')).toBeInTheDocument();
+    expect(screen.getByText("Second comment")).toBeInTheDocument();
+    expect(screen.getByText("User One")).toBeInTheDocument();
+    expect(screen.getByText("User Two")).toBeInTheDocument();
 
     expect(fetchComments).toHaveBeenCalledWith("123");
 
-    fireEvent.click(screen.getByTestId('reply-toggle-comment-1'));
+    fireEvent.click(screen.getByTestId("reply-toggle-comment-1"));
 
     await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
     });
-    expect(screen.getByText('User One')).toBeInTheDocument();
+    expect(screen.getByText("User One")).toBeInTheDocument();
     expect(getReplies).toHaveBeenCalled();
   });
 
-  test('logs error when fetch comments API response is not in expected format', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+  test("logs error when fetch comments API response is not in expected format", async () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
     fetchComments.mockResolvedValue({ success: false });
-
-    render(<Comments videoId="123"/>);
-
-    await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('API response is not in the expected format:', { success: false });
-    });
-    consoleErrorSpy.mockRestore();
-  });
-
-  test('handles fetch comments error', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    fetchComments.mockRejectedValueOnce(new Error('Fetch failed'));
-
-    render(<Comments videoId="123"/>);
-
-    await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith('/error');
-    });
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Error fetching data:', expect.any(Error));
-    consoleErrorSpy.mockRestore();
-  });
-
-  test('logs error when fetch reply API response is not in expected format', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-    getReplies.mockResolvedValue({ success: false });
-
-    render(<Comments videoId="123"/>);
-
-    await waitFor(() => {
-      expect(consoleErrorSpy).toHaveBeenCalledWith('API response is not in the expected format:', { success: false });
-    });
-    consoleErrorSpy.mockRestore();
-  });
-
-  test('handles fetch replies error', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    getReplies.mockRejectedValueOnce(new Error('Fetch failed'));
 
     render(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith('/error');
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "API response is not in the expected format:",
+        { success: false }
+      );
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to fetch replies:', expect.any(Error));
     consoleErrorSpy.mockRestore();
   });
 
-  test('adds a new comment', async () => {
+  test("handles fetch comments error", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    fetchComments.mockRejectedValueOnce(new Error("Fetch failed"));
+
+    render(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith("/error");
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error fetching data:",
+      expect.any(Error)
+    );
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("logs error when fetch reply API response is not in expected format", async () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+    getReplies.mockResolvedValue({ success: false });
+
+    render(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "API response is not in the expected format:",
+        { success: false }
+      );
+    });
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("handles fetch replies error", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    getReplies.mockRejectedValueOnce(new Error("Fetch failed"));
+
+    render(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith("/error");
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Failed to fetch replies:",
+      expect.any(Error)
+    );
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("adds a new comment", async () => {
     createCommentsApi.mockResolvedValue({
       success: true,
       data: {
-        id: '3',
-        text: 'New comment',
+        id: "3",
+        text: "New comment",
         userId: mockUser,
         createdAt: new Date(),
       },
     });
     renderWithRouter(<Comments videoId="123" />);
 
-    fireEvent.change(screen.getByPlaceholderText('Add a public comment...'), {
-      target: { value: 'New comment' },
+    fireEvent.change(screen.getByPlaceholderText("Add a public comment..."), {
+      target: { value: "New comment" },
     });
 
-    fireEvent.click(screen.getByText('COMMENT'));
+    fireEvent.click(screen.getByText("COMMENT"));
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('New comment')).toBeInTheDocument();
+      expect(screen.getByDisplayValue("New comment")).toBeInTheDocument();
     });
   });
 
-  test('Handle Api error while creating a comment', async () => {
+  test("Handle Api error while creating a comment", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
-    fireEvent.change(screen.getByPlaceholderText('Add a public comment...'), {
-      target: { value: 'New comment' },
+    fireEvent.change(screen.getByPlaceholderText("Add a public comment..."), {
+      target: { value: "New comment" },
     });
 
-    fireEvent.click(screen.getByText('COMMENT'));
+    fireEvent.click(screen.getByText("COMMENT"));
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('New comment')).toBeInTheDocument();
+      expect(screen.getByDisplayValue("New comment")).toBeInTheDocument();
     });
   });
 
-  test('shows dropdown menu for comments owner', async () => {
+  test("shows dropdown menu for comments owner", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
-    const dropdownIcon = screen.getByTestId('dropdown-icon-1');
+    const dropdownIcon = screen.getByTestId("dropdown-icon-1");
     fireEvent.click(dropdownIcon);
 
-    expect(screen.getByTestId('dropdown-edit')).toBeInTheDocument();
-    expect(screen.getByTestId('dropdown-delete')).toBeInTheDocument();
+    expect(screen.getByTestId("dropdown-edit")).toBeInTheDocument();
+    expect(screen.getByTestId("dropdown-delete")).toBeInTheDocument();
   });
-  
-  test('does not show edit options to non-owners of the comment', async () => {
+
+  test("does not show edit options to non-owners of the comment", async () => {
     useAuth.mockReturnValue({
-        isAuthenticated: true,
-        user: { id: 'user3', channelName: 'User Three' },
-    });
-  
-    renderWithRouter(<Comments videoId="123" />);
-  
-    await waitFor(() => {
-        expect(screen.getByText('First comment')).toBeInTheDocument();
+      isAuthenticated: true,
+      user: { id: "user3", channelName: "User Three" },
     });
 
-    const dropdownIcon = screen.getByTestId('dropdown-icon-1');
+    renderWithRouter(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("First comment")).toBeInTheDocument();
+    });
+
+    const dropdownIcon = screen.getByTestId("dropdown-icon-1");
     fireEvent.click(dropdownIcon);
 
-    expect(screen.queryByTestId('dropdown-edit')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('dropdown-delete')).not.toBeInTheDocument();
+    expect(screen.queryByTestId("dropdown-edit")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("dropdown-delete")).not.toBeInTheDocument();
   });
-  
-  test('should close comment dropdown when clicking outside', async () => {
+
+  test("should close comment dropdown when clicking outside", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
+    fireEvent.click(screen.getByTestId("dropdown-icon-1"));
 
-    expect(screen.getByText('Edit')).toBeInTheDocument();
+    expect(screen.getByText("Edit")).toBeInTheDocument();
     fireEvent.mouseDown(document);
     await waitFor(() => {
-      expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+      expect(screen.queryByText("Edit")).not.toBeInTheDocument();
     });
   });
 
-  test('edits a comment', async () => {
+  test("edits a comment", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
-    fireEvent.click(screen.getByTestId('dropdown-edit'));
+    fireEvent.click(screen.getByTestId("dropdown-icon-1"));
+    fireEvent.click(screen.getByTestId("dropdown-edit"));
 
-    fireEvent.change(screen.getByDisplayValue('First comment'), {
-      target: { value: 'Updated comment' },
+    fireEvent.change(screen.getByDisplayValue("First comment"), {
+      target: { value: "Updated comment" },
     });
 
-    fireEvent.click(screen.getByText('Save'));
+    fireEvent.click(screen.getByText("Save"));
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('Updated comment')).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Updated comment")).toBeInTheDocument();
     });
   });
 
-  test('deletes a comment', async () => {
+  test("deletes a comment", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
-    fireEvent.click(screen.getByTestId('dropdown-delete'));
+    fireEvent.click(screen.getByTestId("dropdown-icon-1"));
+    fireEvent.click(screen.getByTestId("dropdown-delete"));
 
     await waitFor(() => {
-      expect(screen.queryByText('First comment')).not.toBeInTheDocument();
+      expect(screen.queryByText("First comment")).not.toBeInTheDocument();
     });
   });
 
-  test('logs error if delete comment API response format is incorrect', async () => {
-    deleteCommentApi.mockResolvedValueOnce({ success: false, message: 'Error' });
-  
+  test("logs error if delete comment API response format is incorrect", async () => {
+    deleteCommentApi.mockResolvedValueOnce({
+      success: false,
+      message: "Error",
+    });
+
     renderWithRouter(<Comments videoId="123" />);
-    
+
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
-    fireEvent.click(screen.getByTestId('dropdown-delete'));
-  
+    fireEvent.click(screen.getByTestId("dropdown-icon-1"));
+    fireEvent.click(screen.getByTestId("dropdown-delete"));
+
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith('API response is not in the expected format:', 'Error');
+      expect(console.error).toHaveBeenCalledWith(
+        "API response is not in the expected format:",
+        "Error"
+      );
     });
   });
 
-  test('should call console.error and navigate to /error on API failure', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    deleteCommentApi.mockRejectedValueOnce(new Error('API failure'));
+  test("should call console.error and navigate to /error on API failure", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    deleteCommentApi.mockRejectedValueOnce(new Error("API failure"));
 
-    render(<Comments videoId="123"/>);
-
-    await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
-    });
-    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
-    fireEvent.click(screen.getByTestId('dropdown-delete'));
+    render(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith('/error');
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
-    expect(consoleErrorSpy).toHaveBeenCalledWith('Failed to delete comment:', expect.any(Error));
+    fireEvent.click(screen.getByTestId("dropdown-icon-1"));
+    fireEvent.click(screen.getByTestId("dropdown-delete"));
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith("/error");
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Failed to delete comment:",
+      expect.any(Error)
+    );
     consoleErrorSpy.mockRestore();
   });
 
-  test('adds a reply', async () => {
+  test("adds a reply", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
     // Find the specific reply button for the first comment
-    const firstCommentReplyButton = screen.getAllByTestId('reply-button')[0];
+    const firstCommentReplyButton = screen.getAllByTestId("reply-button")[0];
 
     fireEvent.click(firstCommentReplyButton);
 
-    fireEvent.change(screen.getAllByPlaceholderText('Add a reply...')[0], {
-      target: { value: 'New reply' },
+    fireEvent.change(screen.getAllByPlaceholderText("Add a reply...")[0], {
+      target: { value: "New reply" },
     });
 
-    fireEvent.click(screen.getAllByText('Reply')[0]);
+    fireEvent.click(screen.getAllByText("Reply")[0]);
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('New reply')).toBeInTheDocument();
+      expect(screen.getByDisplayValue("New reply")).toBeInTheDocument();
     });
   });
 
-  test('only shows edit options to the owner of the reply', async () => {
+  test("only shows edit options to the owner of the reply", async () => {
     render(<Comments videoId="123" />);
 
     await waitFor(() => {
-        expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText(/1 reply/));
 
     await waitFor(() => {
-        expect(screen.getByText('First reply')).toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId('dropdown-icon-reply-reply1')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('dropdown-icon-reply-reply1'));
+    expect(
+      screen.getByTestId("dropdown-icon-reply-reply1")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
 
-    expect(await screen.findByTestId('dropdown-reply-edit')).toBeInTheDocument();
-    fireEvent.click(await screen.findByTestId('dropdown-reply-edit'));
+    expect(
+      await screen.findByTestId("dropdown-reply-edit")
+    ).toBeInTheDocument();
+    fireEvent.click(await screen.findByTestId("dropdown-reply-edit"));
 
-    fireEvent.change(screen.getByDisplayValue('First reply'), {
-      target: { value: 'Updated reply' },
+    fireEvent.change(screen.getByDisplayValue("First reply"), {
+      target: { value: "Updated reply" },
     });
 
-    fireEvent.click(screen.getByText('Save'));
+    fireEvent.click(screen.getByText("Save"));
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('Updated reply')).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Updated reply")).toBeInTheDocument();
     });
-});
+  });
 
-test('does not show edit options to non-owners of the reply', async () => {
-  useAuth.mockReturnValue({
+  test("does not show edit options to non-owners of the reply", async () => {
+    useAuth.mockReturnValue({
       isAuthenticated: true,
-      user: { id: 'user3', channelName: 'User Three' },
-  });
+      user: { id: "user3", channelName: "User Three" },
+    });
 
-  render(<Comments videoId="123" />);
-
-  await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getByText(/1 reply/));
-
-  await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
-  });
-
-  
-  expect(screen.getByTestId('dropdown-icon-reply-reply1')).toBeInTheDocument();
-  fireEvent.click(screen.getByTestId('dropdown-icon-reply-reply1'));
-
-  expect(screen.queryByTestId('dropdown-reply-edit')).not.toBeInTheDocument();
-});
-
-  test('deletes a reply', async () => {
-    renderWithRouter(<Comments videoId="123" />);
+    render(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText(/1 reply/));
-  
-    await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
-    });
-
-    expect(screen.getByTestId('dropdown-icon-reply-reply1')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('dropdown-icon-reply-reply1'));
-    fireEvent.click(screen.getByTestId('dropdown-reply-delete'));
 
     await waitFor(() => {
-      expect(screen.queryByText('First reply')).not.toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
     });
+
+    expect(
+      screen.getByTestId("dropdown-icon-reply-reply1")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+
+    expect(screen.queryByTestId("dropdown-reply-edit")).not.toBeInTheDocument();
   });
 
-  test('toggles comment dropdown menu', async () => {
+  test("deletes a reply", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('dropdown-icon-1'));
+    fireEvent.click(screen.getByText(/1 reply/));
 
     await waitFor(() => {
-      expect(screen.getByTestId('dropdown-edit')).toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
     });
-    expect(screen.getByTestId('dropdown-delete')).toBeInTheDocument();
+
+    expect(
+      screen.getByTestId("dropdown-icon-reply-reply1")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+    fireEvent.click(screen.getByTestId("dropdown-reply-delete"));
+
+    await waitFor(() => {
+      expect(screen.queryByText("First reply")).not.toBeInTheDocument();
+    });
   });
 
-  test('toggles replies visibility', async () => {
+  test("logs error if delete reply API response format is incorrect", async () => {
+    deleteReply.mockResolvedValueOnce({
+      success: false,
+      message: "Error",
+    });
+
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
-
-    fireEvent.click(screen.getByTestId('reply-toggle-comment-1'));
+    fireEvent.click(screen.getByText(/1 reply/));
 
     await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByTestId("dropdown-icon-reply-reply1")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+    fireEvent.click(screen.getByTestId("dropdown-reply-delete"));
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalledWith(
+        "API response is not in the expected format:",
+        "Error"
+      );
     });
   });
 
-  test('shows dropdown menu for reply owner', async () => {
+  test("should call console.error and navigate to /error on API failure when error occurs in deleting a reply", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    deleteReply.mockRejectedValueOnce(new Error("API failure"));
+
+    render(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("First comment")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText(/1 reply/));
+
+    await waitFor(() => {
+      expect(screen.getByText("First reply")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByTestId("dropdown-icon-reply-reply1")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+    fireEvent.click(screen.getByTestId("dropdown-reply-delete"));
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith("/error");
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Failed to delete reply:",
+      expect.any(Error)
+    );
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("should not call deleteReply API when user is not authenticated", async () => {
+    useAuth.mockReturnValue({
+      isAuthenticated: false
+    });
+
+    // deleteReply.mockResolvedValue({ success: true });
+
+    render(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("First comment")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText(/1 reply/));
+
+    await waitFor(() => {
+      expect(screen.getByText("First reply")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("dropdown-reply-delete")
+      ).not.toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(deleteReply).not.toHaveBeenCalled();
+    });
+  });
+
+  test("toggles comment dropdown menu", async () => {
+    renderWithRouter(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("First comment")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId("dropdown-icon-1"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("dropdown-edit")).toBeInTheDocument();
+    });
+    expect(screen.getByTestId("dropdown-delete")).toBeInTheDocument();
+  });
+
+  test("toggles replies visibility", async () => {
+    renderWithRouter(<Comments videoId="123" />);
+
+    await waitFor(() => {
+      expect(screen.getByText("First comment")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId("reply-toggle-comment-1"));
+
+    await waitFor(() => {
+      expect(screen.getByText("First reply")).toBeInTheDocument();
+    });
+  });
+
+  test("shows dropdown menu for reply owner", async () => {
     render(<Comments videoId="123" />, { wrapper: MemoryRouter });
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('reply-toggle-comment-1'));
+    fireEvent.click(screen.getByTestId("reply-toggle-comment-1"));
 
     await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
     });
 
-    const dropdownIcon = screen.getByTestId('dropdown-icon-reply-reply1');
+    const dropdownIcon = screen.getByTestId("dropdown-icon-reply-reply1");
     fireEvent.click(dropdownIcon);
 
-    expect(screen.getByTestId('dropdown-reply-edit')).toBeInTheDocument();
-    expect(screen.getByTestId('dropdown-reply-delete')).toBeInTheDocument();
+    expect(screen.getByTestId("dropdown-reply-edit")).toBeInTheDocument();
+    expect(screen.getByTestId("dropdown-reply-delete")).toBeInTheDocument();
   });
 
-  test('should close reply dropdown when clicking outside', async () => {
+  test("should close reply dropdown when clicking outside", async () => {
     render(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
-  });
-
-  fireEvent.click(screen.getByText(/1 reply/));
-
-    await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId('dropdown-icon-reply-reply1')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('dropdown-icon-reply-reply1'));
-    expect(screen.getByText('Edit')).toBeInTheDocument();
+    fireEvent.click(screen.getByText(/1 reply/));
+
+    await waitFor(() => {
+      expect(screen.getByText("First reply")).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByTestId("dropdown-icon-reply-reply1")
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+    expect(screen.getByText("Edit")).toBeInTheDocument();
 
     fireEvent.mouseDown(document);
 
     await waitFor(() => {
-      expect(screen.queryByText('Edit')).not.toBeInTheDocument();
+      expect(screen.queryByText("Edit")).not.toBeInTheDocument();
     });
   });
 
-  test.skip('handleUpdateReplyAdded updates reply text and channel name', async () => {
+  test.skip("handleUpdateReplyAdded updates reply text and channel name", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
-      expect(screen.getByText('First comment')).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByText(/1 reply/));
 
     await waitFor(() => {
-      expect(screen.getByText('First reply')).toBeInTheDocument();
+      expect(screen.getByText("First reply")).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByTestId('dropdown-icon-reply-reply1'));
-    fireEvent.click(screen.getByTestId('dropdown-reply-edit'));
+    fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
+    fireEvent.click(screen.getByTestId("dropdown-reply-edit"));
 
-    const updateReplyComponent = await screen.findByTestId('update-reply-component');
+    const updateReplyComponent = await screen.findByTestId(
+      "update-reply-component"
+    );
     console.log(updateReplyComponent.innerHTML); // Debugging: Print the inner HTML of the update reply component
 
-    const updateReplyInput = screen.getByTestId('update-reply-input');
-    fireEvent.change(updateReplyInput, { target: { value: 'Updated text' } });
-    fireEvent.click(screen.getByTestId('update-reply-save'));
+    const updateReplyInput = screen.getByTestId("update-reply-input");
+    fireEvent.change(updateReplyInput, { target: { value: "Updated text" } });
+    fireEvent.click(screen.getByTestId("update-reply-save"));
 
     await waitFor(() => {
-      expect(screen.getByText('Updated text')).toBeInTheDocument();
+      expect(screen.getByText("Updated text")).toBeInTheDocument();
     });
   });
-  
 });

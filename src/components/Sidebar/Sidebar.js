@@ -19,12 +19,12 @@ import tom from "../../assets/tom.png";
 import { useAuth } from "../../util/AuthContext";
 import { Link, useLocation } from "react-router-dom";
 
-const Sidebar = ({ sidebar, setSidebar }) => {
+const Sidebar = ({ sidebar, setSidebar, page }) => {
   const location = useLocation();
   // const isVideoPage = page === 'video';
   const { isAuthenticated } = useAuth();
   const [activePage, setActivePage] = useState(location.pathname);
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1300);
+  // const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1300);
   const [forceSmallSidebar, setForceSmallSidebar] = useState(
     window.innerWidth <= 1300
   );
@@ -36,7 +36,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 1300);
+      // setIsSmallScreen(window.innerWidth <= 1300);
       setForceSmallSidebar(window.innerWidth <= 1300);
     };
     window.addEventListener("resize", handleResize);
@@ -54,13 +54,15 @@ const Sidebar = ({ sidebar, setSidebar }) => {
     setSidebar(!sidebar);
   };
 
-  //   useEffect(() => {
-  //     if (isVideoPage && sidebar) {
-  //         document.body.style.overflow = 'hidden'; // Prevent scrolling when sidebar is open on video page
-  //     } else {
-  //         document.body.style.overflow = 'auto'; // Enable scrolling when sidebar is closed
-  //     }
-  // }, [isVideoPage, sidebar]);
+  const isVideoPage = page === "video";
+
+  useEffect(() => {
+    if (isVideoPage && sidebar) {
+      document.body.style.overflow = "hidden"; // Prevent scrolling when sidebar is open on video page
+    } else {
+      document.body.style.overflow = "auto"; // Enable scrolling when sidebar is closed
+    }
+  }, [isVideoPage, sidebar]);
 
   const handleProtectedLinkClick = (e, path) => {
     if (!isAuthenticated) {
@@ -74,20 +76,32 @@ const Sidebar = ({ sidebar, setSidebar }) => {
 
   return (
     <div
-      className={`sidebar ${
+      className={`sidebar ${isVideoPage ? "video-sidebar" : ""} ${
         forceSmallSidebar ? "small-sidebar" : sidebar ? "" : "small-sidebar"
       }`}
       data-testid="sidebar"
     >
-      {/* <div className='menu-icon-containers' >
-            <img
-            className='menu-icon'
+      {isVideoPage && (
+        <div className="menu-icon-containers">
+          <img
+            className="menu-icon"
             onClick={handleVideoSidebarToggle}
             src={menuIcon}
-            alt='menu'
-            data-testid='menu-icon'/>
-            {!isSmallScreen && <Link to='/'><img className='logo' src={logo} alt='logo' data-testid='youtube-logo'/></Link>}
-        </div> */}
+            alt="menu"
+            data-testid="menu-icon"
+          />
+          {/* {!isSmallScreen && ( */}
+          <Link to="/">
+            <img
+              className="logo"
+              src={logo}
+              alt="logo"
+              data-testid="youtube-logo"
+            />
+          </Link>
+          {/* )} */}
+        </div>
+      )}
       <div className="shortcut-links">
         <Link to={"/"} className="linked-icons specific-link">
           <div
