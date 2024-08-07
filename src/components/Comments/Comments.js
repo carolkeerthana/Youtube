@@ -195,9 +195,21 @@ const Comments = ({ videoId }) => {
   };
   console.log(comments);
 
+  // to handle edit for a comment
+  const handleEditComment = (index, text) => {
+    setEditCommentIndex(index);
+    setEditCommentText(text);
+    setCommentDropdownIndex(null);
+  };
+
+  // to cancel editing a comment
+  const handleCancelEditComment = () => {
+    setEditCommentIndex(null);
+    setEditCommentText("");
+  };
+
   // to handle updating a comment after edit
   const handleUpdateCommentAdded = (updateComment) => {
-    // Update the comment in state
     setComments((prevComments) =>
       prevComments.map((comment) =>
         comment.id === updateComment.id
@@ -206,23 +218,6 @@ const Comments = ({ videoId }) => {
       )
     );
     // Exit edit mode after updating comment
-    setEditCommentIndex(null);
-    setEditCommentText("");
-  };
-
-  // to handle initiating edit mode for a comment
-  const handleEditComment = (index, text) => {
-    // Set edit mode for the specified comment index
-    setEditCommentIndex(index);
-    // Set initial text for editing
-    setEditCommentText(text);
-    // Close dropdown if open
-    setCommentDropdownIndex(null);
-  };
-
-  // to cancel editing a comment
-  const handleCancelEditComment = () => {
-    // Exit edit mode and reset edit comment text
     setEditCommentIndex(null);
     setEditCommentText("");
   };

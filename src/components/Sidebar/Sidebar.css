@@ -122,8 +122,9 @@ a.specific-link {
 .small-video-sidebar {
   width: 7%;
   overflow: hidden;
-  padding-left: 0;
+  padding-right: 10px;
   padding-top: 90px;
+  /* margin-right: 10px; */
 }
 .small-sidebar .side-link,
 .small-video-sidebar .side-link {

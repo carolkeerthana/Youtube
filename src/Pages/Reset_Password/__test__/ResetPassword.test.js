@@ -18,9 +18,12 @@ import { AuthProvider } from "../../../util/AuthContext";
 import notificationReducer, {
   showNotification,
 } from "../../../components/Notification/notificationSlice";
-import rootReducer from "../../../components/Notification/rootReducer";
+// import rootReducer from "../../../components/Notification/rootReducer";
 import LoginPage from "../../Login/LoginPage";
 
+const rootReducer = {
+  notification: notificationReducer,
+};
 const store = configureStore({
   reducer: rootReducer,
 });
@@ -50,16 +53,10 @@ const FormInputsWrapper = ({
     />
   </>
 );
-
-jest.mock("react-router-dom", () => {
-  const actual = jest.requireActual("react-router-dom");
-  return {
-    ...actual,
-    useNavigate: () => jest.fn(), // Default mock function
-    useParams: () => ({ token: "mock-token" }),
-  };
-});
-
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: jest.fn(),
+}));
 // Mock resetPassword function
 jest.mock("../ResetPasswordApi", () => ({
   resetPassword: jest.fn(),
@@ -78,20 +75,57 @@ const renderWithProviders = (ui) => {
 };
 
 describe("ResetPassword", () => {
-  let mockNavigate;
+  const mockNavigate = jest.fn();
 
   beforeEach(() => {
-    mockNavigate = jest.fn();
-    jest.mock("react-router-dom", () => ({
-      ...jest.requireActual("react-router-dom"),
-      useNavigate: () => mockNavigate,
-      useParams: () => ({ token: "mock-token" }),
-    }));
+    require("react-router-dom").useNavigate.mockReturnValue(mockNavigate);
     jest.clearAllMocks();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  test("should dispatch notification and redirect to login page on successful password reset", async () => {
+    resetPassword.mockResolvedValue({
+      success: true,
+      token: "mock-token",
+    });
+
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <Routes>
+            <Route path="/" element={<ResetPassword />} />
+            <Route path="/signin" element={<LoginPage />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
+
+    fireEvent.change(screen.getByTestId("password"), {
+      target: { value: "NewPassword@123" },
+    });
+    fireEvent.change(screen.getByTestId("confirmPassword"), {
+      target: { value: "NewPassword@123" },
+    });
+
+    fireEvent.click(screen.getByText("Reset Password"));
+
+    await waitFor(() => {
+      console.log("showNotification calls:", showNotification.mock.calls);
+      console.log("mockNavigate calls:", mockNavigate.mock.calls);
+
+      expect(showNotification).toHaveBeenCalledWith(
+        "Your password has been reset successfully. Please sign in with your new password."
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/signin");
+    });
+
+    expect(screen.getByText("Sign In")).toBeInTheDocument();
   });
 
   test("renders reset password form", () => {
@@ -185,48 +219,6 @@ describe("ResetPassword", () => {
     fireEvent.click(screen.getByRole("button", { name: "Reset Password" }));
 
     expect(screen.getByText(/Passwords do not match/i)).toBeInTheDocument();
-  });
-
-  test("should dispatch notification and redirect to login page on successful password reset", async () => {
-    resetPassword.mockResolvedValue({
-      success: true,
-      token: "mock-token",
-    });
-
-    render(
-      <Provider store={store}>
-        <MemoryRouter initialEntries={["/"]}>
-          <Routes>
-            <Route path="/" element={<ResetPassword />} />
-            <Route path="/signin" element={<LoginPage />} />
-          </Routes>
-        </MemoryRouter>
-      </Provider>
-    );
-
-    fireEvent.change(screen.getByTestId("password"), {
-      target: { value: "NewPassword@123" },
-    });
-    fireEvent.change(screen.getByTestId("confirmPassword"), {
-      target: { value: "NewPassword@123" },
-    });
-
-    fireEvent.click(screen.getByText("Reset Password"));
-
-    await waitFor(() => {
-      console.log("showNotification calls:", showNotification.mock.calls);
-      console.log("mockNavigate calls:", mockNavigate.mock.calls);
-
-      expect(showNotification).toHaveBeenCalledWith(
-        "Your password has been reset successfully. Please sign in with your new password."
-      );
-    });
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/signin");
-    });
-
-    expect(screen.getByText("Sign In")).toBeInTheDocument();
   });
 
   test("if reset password fails, it should redirect to error page and shows error message", async () => {

@@ -18,13 +18,13 @@ import { fetchUserDetails } from "../../User/UserProfile/UserDetailsApi";
 import UpdateReply from "../../Replies/UpdateReply";
 import { deleteReply } from "../../Replies/Api/DeleteReplyApi";
 import { createCommentsApi } from "../Apis/CreateCommentsApi";
+import UpdateComment from "../Update/UpdateComment";
+import { updateComment } from "../Apis/UpdateCommentApi";
 
-// Mock the useAuth hook
 jest.mock("../../../util/AuthContext", () => ({
   useAuth: jest.fn(),
 }));
 
-// Mock API calls
 jest.mock("../Apis/GetCommentsApi", () => ({
   fetchComments: jest.fn(),
 }));
@@ -50,6 +50,9 @@ jest.mock("../../Replies/Api/DeleteReplyApi.js", () => ({
 }));
 jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
+}));
+jest.mock("../Apis/UpdateCommentApi", () => ({
+  updateComment: jest.fn(),
 }));
 
 // jest.mock('../../Replies/UpdateReply', () => ({ replyId, reply, channelName, onUpdateReply, cancelEdit }) => (
@@ -309,7 +312,55 @@ describe("Comments Component", () => {
     });
   });
 
-  test("edits a comment", async () => {
+  test('edits a comment', async () => {
+    // Mock the API response
+    const mockUpdateComment = jest.fn().mockResolvedValue({
+      success: true,
+      data: { id: 'comment-id', text: 'Updated comment' }, // Mocked response
+    });
+    updateComment.mockImplementation(mockUpdateComment);
+  
+    // Create a mock function for handleUpdateCommentAdded
+    const handleUpdateCommentAdded = jest.fn();
+    const cancelEdit = jest.fn(); // Assuming you have this function too
+  
+    // Render the component with the mock function passed as props
+    render(<Comments videoId="123" handleUpdateCommentAdded={handleUpdateCommentAdded} cancelEdit={cancelEdit} />);
+  
+    // Ensure the initial comment is present
+    await waitFor(() => {
+      expect(screen.getByText("First comment")).toBeInTheDocument();
+    });
+  
+    // Simulate editing the comment
+    fireEvent.click(screen.getByTestId("dropdown-icon-1")); // Open the dropdown
+    fireEvent.click(screen.getByTestId("dropdown-edit")); // Click edit
+  
+    fireEvent.change(screen.getByDisplayValue("First comment"), {
+      target: { value: "Updated comment" },
+    });
+  
+    fireEvent.click(screen.getByText("Save")); // Save the changes
+  
+    // Verify the comment was updated
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Updated comment")).toBeInTheDocument();
+    });
+  
+    // Check that the old comment is not present
+    expect(screen.queryByDisplayValue("First comment")).not.toBeInTheDocument();
+  
+    // Verify handleUpdateCommentAdded was called with the correct arguments
+    expect(handleUpdateCommentAdded).toHaveBeenCalledWith({
+      id: "comment-id", // Match the mock comment ID
+      text: "Updated comment",
+    });
+  
+    // Optionally, check that save button is no longer visible
+    expect(screen.queryByText("Save")).not.toBeInTheDocument();
+  });
+
+  test("cancels editing a comment", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
     await waitFor(() => {
@@ -322,11 +373,10 @@ describe("Comments Component", () => {
     fireEvent.change(screen.getByDisplayValue("First comment"), {
       target: { value: "Updated comment" },
     });
-
-    fireEvent.click(screen.getByText("Save"));
+    fireEvent.click(screen.getByText("Cancel"));
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue("Updated comment")).toBeInTheDocument();
+      expect(screen.getByText("First comment")).toBeInTheDocument();
     });
   });
 
@@ -564,7 +614,7 @@ describe("Comments Component", () => {
 
   test("should not call deleteReply API when user is not authenticated", async () => {
     useAuth.mockReturnValue({
-      isAuthenticated: false
+      isAuthenticated: false,
     });
 
     // deleteReply.mockResolvedValue({ success: true });

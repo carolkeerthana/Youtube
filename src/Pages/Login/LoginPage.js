@@ -4,11 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaExclamationCircle } from "react-icons/fa";
 import { loginUser } from "./LoginApi";
 import { useAuth } from "../../util/AuthContext";
-import CustomNotification from "../Register/CustomNotification";
 import FormInput from "../../util/FormInput";
 import validateAllFields from "../../util/ValidationForm";
 import { useDispatch, useSelector } from "react-redux";
-import { hideNotification } from "../../components/Notification/notificationSlice";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -42,15 +40,15 @@ function LoginPage() {
     },
   ];
 
-  useEffect(() => {
-    if (notification.visible) {
-      const timer = setTimeout(() => {
-        dispatch(hideNotification());
-      }, 3000);
+  // useEffect(() => {
+  //   if (notification.visible) {
+  //     const timer = setTimeout(() => {
+  //       dispatch(hideNotification());
+  //     }, 3000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [notification.visible, dispatch]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [notification.visible, dispatch]);
 
   const validateForm = () => {
     const errors = validateAllFields({ email, password });
@@ -112,7 +110,7 @@ function LoginPage() {
   return (
     <div className="login">
       <div className="login-container">
-        {notification.visible && <CustomNotification />}
+        {/* {notification.visible && <CustomNotification />} */}
         <div className="login-LeftSide">
           <span data-testid="utube-text" className="login-heading-1">
             UTube

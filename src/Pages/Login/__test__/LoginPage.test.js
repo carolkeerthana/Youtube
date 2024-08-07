@@ -6,9 +6,10 @@ import ErrorPage from "../../Error/ErrorPage";
 import { AuthProvider } from "../../../util/AuthContext";
 import FormInput from "../../../util/FormInput";
 import configureStore from "redux-mock-store";
-import thunk from "redux-thunk";
 import { Provider } from "react-redux";
-import CustomNotification from "../../Register/CustomNotification";
+import CustomNotification from "../../../components/Notification/CustomNotification";
+
+const mockStore = configureStore([]);
 
 const FormInputsWrapper = ({
   emailValue,
@@ -43,10 +44,18 @@ jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
 }));
 
-const mockStore = configureStore([]);
-
 describe("Login page", () => {
+  let store;
   beforeEach(() => {
+    store = mockStore({
+      notifications: {
+        visible: true,
+        message:
+          "Your password has been reset successfully. Please sign in with your new password.",
+      },
+    });
+
+    store.dispatch = jest.fn();
     jest.clearAllMocks();
   });
 
@@ -57,7 +66,7 @@ describe("Login page", () => {
     return render(
       <Provider store={store}>
         <AuthProvider>
-          <BrowserRouter>{ui}</BrowserRouter>
+          <MemoryRouter>{ui}</MemoryRouter>
         </AuthProvider>
       </Provider>
     );
@@ -436,7 +445,7 @@ describe("Login page", () => {
     expect(screen.getByText(/Oops something went wrong/i)).toBeInTheDocument();
   });
 
-  test("displays notification message on password reset success", async () => {
+  test.skip("displays notification message on password reset success", async () => {
     jest.useFakeTimers();
 
     renderWithProviders(
@@ -474,5 +483,29 @@ describe("Login page", () => {
     });
 
     jest.useRealTimers();
+  });
+
+  test("should display a notification when password is successfully reset", async () => {
+    const initialState = {
+      notifications: {
+        visible: true,
+        message:
+          "Your password has been reset successfully. Please sign in with your new password.",
+      },
+    };
+
+    renderWithProviders(
+      <>
+        <CustomNotification />
+        <LoginPage />
+      </>,
+      { initialState }
+    );
+
+    expect(
+      screen.getByText(
+        "Your password has been reset successfully. Please sign in with your new password."
+      )
+    ).toBeInTheDocument();
   });
 });

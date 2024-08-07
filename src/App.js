@@ -11,7 +11,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Video from "./Pages/Video/Video";
 import { AuthProvider } from "./util/AuthContext";
 import Trending from "./components/Trending/Trending";
-import CustomNotification from "./Pages/Register/CustomNotification";
+import CustomNotification from "./components/Notification/CustomNotification";
 
 function App() {
   const [sidebar, setSidebar] = useState(true);
