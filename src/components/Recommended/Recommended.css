@@ -1,59 +1,59 @@
-.recommended{
-    flex-basis: 33%;
+.recommended {
+  flex-basis: 33%;
 }
-.recommended hr{
-    border: 0;
-    height: 1px;
-    background: #ccc;
-    margin-bottom: 15px;
+.recommended hr {
+  border: 0;
+  height: 1px;
+  background: #ccc;
+  margin-bottom: 15px;
 }
-.recommended .next{
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 20px;
+.recommended .next {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
-.side-video-list{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    cursor: pointer;
-    flex-wrap: wrap;
+.side-video-list {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  cursor: pointer;
+  flex-wrap: wrap;
 }
-.side-video-list img{
-    flex-basis: 49%;
-    width: 50%;
-    margin-bottom: 10px;
+.side-video-list img {
+  flex-basis: 49%;
+  width: 50%;
+  margin-bottom: 10px;
 }
-.vid-info{
-    flex-basis: 47%;
-    padding-bottom: 30px;
+.vid-info {
+  flex-basis: 47%;
+  padding-bottom: 30px;
 }
-.vid-info span{
-    font-size: 16px;
-    font-weight: bold;
-    letter-spacing: 0.3px;
-    /* margin-bottom: 10px; */
-    padding-bottom: 20px;
+.vid-info span {
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  line-height: 25px;
+  word-break: break-word;
 }
-.vid-info p{
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #5a5a5a;
+.vid-info p {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #5a5a5a;
 }
 @media (max-width: 1023px) {
-    .recommended {
-      flex-basis: 100%;
-      order: 3;
-      margin-top: 20px;
-    }  
+  .recommended {
+    flex-basis: 100%;
+    order: 3;
+    margin-top: 20px;
   }
+}
 @media (min-width: 768px) {
-    .side-video-list {
-        flex-wrap: nowrap; /* Prevent wrapping on larger screens */
-    }
+  .side-video-list {
+    flex-wrap: nowrap; /* Prevent wrapping on larger screens */
+  }
 
-    .vid-info {
-        flex: 1; /* Make video info take the remaining width */
-        padding-left: 10px; /* Add padding between image and info */
-    }
+  .vid-info {
+    flex: 1; /* Make video info take the remaining width */
+    padding-left: 10px; /* Add padding between image and info */
+  }
 }

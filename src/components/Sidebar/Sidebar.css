@@ -26,6 +26,7 @@
   padding-top: 25px;
   overflow: scroll;
   transition: transform 0.3s ease-in-out;
+  word-break: break-word;
   /* transform: translateX(-100%); */
 }
 .sidebar.hidden-sidebar,
@@ -87,6 +88,7 @@ a.specific-link {
 }
 .side-link p {
   color: black;
+  /* word-break: break-word; */
 }
 .side-link.active {
   background-color: rgb(227, 227, 223);
@@ -294,7 +296,7 @@ h3 {
 }
 @media (max-width: 550px) {
   .sidebar {
-    display: none;
+    /* display: none; */
   }
   .small-sidebar {
     position: fixed;

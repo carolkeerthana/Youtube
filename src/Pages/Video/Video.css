@@ -5,6 +5,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   flex-grow: 1;
+  overflow-x: hidden;
 }
 .video-page-container {
   display: flex;

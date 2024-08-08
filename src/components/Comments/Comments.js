@@ -303,10 +303,10 @@ const Comments = ({ videoId }) => {
     }
   };
   // Handle cancel reply
-  const handleCancelReply = () => {
-    setShowReplyInput(false); // Hide reply input on cancel
-    setFocusedReplyIndex(null); // Reset focused reply index
-  };
+  // const handleCancelReply = () => {
+  //   setShowReplyInput(false); // Hide reply input on cancel
+  //   setFocusedReplyIndex(null); // Reset focused reply index
+  // };
 
   const toggleRepliesVisibility = (commentId) => {
     setVisibleReplies((prevVisibleReplies) =>
@@ -345,7 +345,11 @@ const Comments = ({ videoId }) => {
         const isVisible = visibleReplies.includes(comment.id);
         const isOwner = isAuthenticated && comment.userId?._id === user?.id;
         return (
-          <div key={comment.id} className="comment">
+          <div
+            key={comment.id}
+            data-testid={`comment-item-${index}`}
+            className="comment"
+          >
             <img src={userProfile} alt="" />
             <div className="comments-detail">
               <div className="comment-header">

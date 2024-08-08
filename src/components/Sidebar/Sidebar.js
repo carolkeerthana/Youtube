@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import menuIcon from "../../assets/menu.png";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.svg";
 import home from "../../assets/home.png";
-import trending from "../../assets/trending-topic.png";
+import trending from "../../assets/trending.svg";
 import subscriptions from "../../assets/subscribe.png";
-import history from "../../assets/history.png";
+import history from "../../assets/History.svg";
 import like from "../../assets/like.png";
 import gameIcon from "../../assets/game_icon.png";
-import live from "../../assets/live.png";
-import settings from "../../assets/settings.png";
+import live from "../../assets/live.svg";
+import settings from "../../assets/settings.svg";
 import report from "../../assets/report.png";
-import help from "../../assets/help.png";
-import feedback from "../../assets/feedback.png";
+import help from "../../assets/help.svg";
+import feedback from "../../assets/feedback.svg";
 import youtube from "../../assets/youtube.png";
-import jack from "../../assets/jack.png";
-import tom from "../../assets/tom.png";
+import jack from "../../assets/jack.svg";
+import tom from "../../assets/tom.svg";
 import { useAuth } from "../../util/AuthContext";
 import { Link, useLocation } from "react-router-dom";
 
@@ -26,7 +26,7 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
   const [activePage, setActivePage] = useState(location.pathname);
   // const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1300);
   const [forceSmallSidebar, setForceSmallSidebar] = useState(
-    window.innerWidth <= 1300
+    window.innerWidth <= 1300 && page !== "video"
   );
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
   useEffect(() => {
     const handleResize = () => {
       // setIsSmallScreen(window.innerWidth <= 1300);
-      setForceSmallSidebar(window.innerWidth <= 1300);
+      setForceSmallSidebar(window.innerWidth <= 1300 && page !== "video");
     };
     window.addEventListener("resize", handleResize);
 
@@ -77,7 +77,13 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
   return (
     <div
       className={`sidebar ${isVideoPage ? "video-sidebar" : ""} ${
-        forceSmallSidebar ? "small-sidebar" : sidebar ? "" : "small-sidebar"
+        isVideoPage
+          ? ""
+          : forceSmallSidebar
+          ? "small-sidebar"
+          : sidebar
+          ? ""
+          : "small-sidebar"
       }`}
       data-testid="sidebar"
     >

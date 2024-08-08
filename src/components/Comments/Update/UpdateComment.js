@@ -96,7 +96,7 @@ const UpdateComment = ({
         onBlur={() => !editComment && setFocused(false)}
       />
       <div className={`comment-buttons ${focused ? "visible" : ""}`}>
-        <button onClick={handleCancel}>Cancel</button>
+        <button data-testid="comment-edit-cancel-button" onClick={handleCancel}>Cancel</button>
         <button onClick={handleCommentSubmit}>Save</button>
       </div>
     </div>

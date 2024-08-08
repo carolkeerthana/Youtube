@@ -92,7 +92,7 @@ const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) 
             onBlur={()=>!editReply && setFocused(false)}
         />
         <div className={`update-reply-buttons ${focused ? 'visible' : ''}`}>
-            <button onClick={handleCancel}>Cancel</button>
+            <button data-testid="reply-edit-cancel-button" onClick={handleCancel}>Cancel</button>
             <button onClick={handleReplySubmit} data-testid='save-reply'>Save</button>
         </div>
     </div>
