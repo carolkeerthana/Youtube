@@ -103,7 +103,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
           >
             Cancel
           </button>
-          <button onClick={handleCommentSubmit}>Comment</button>
+          <button data-testid="comment-save-button" onClick={handleCommentSubmit}>Comment</button>
         </div>
       </div>
     </div>

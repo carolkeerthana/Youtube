@@ -117,7 +117,10 @@ const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
             onFocus={handleFocus}
             onBlur={handleBlur}
           />
-          <div className={`reply-buttons ${focused ? "visible" : ""}`}>
+          <div
+            className={`reply-buttons ${focused ? "visible" : ""}`}
+            data-testid="reply-buttons"
+          >
             <button
               data-testid="reply-cancel-button"
               onClick={() => {

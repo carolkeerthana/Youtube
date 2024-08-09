@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Trending.css";
 import { fetchVideos } from "../Feed/GetVideosApi";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
 const Trending = () => {
   const [videos, setVideos] = useState([]);
@@ -35,21 +36,27 @@ const Trending = () => {
         videos.map(
           (video) =>
             video && (
-              <div key={video.id} className="trending-result-item flex-div">
-                <img
-                  src={`https://apps.rubaktechie.me/uploads/thumbnails/${video.thumbnailUrl}`}
-                  alt={video.title}
-                />
-                <div className="result-details">
-                  <span className="trending-video-name">{video.title}</span>
-                  <p className="channel-name">{video.userId.channelName}</p>
-                  <p className="views-time">
-                    {video.views} views &bull;{" "}
-                    {moment(video.createdAt).fromNow()}
-                  </p>
-                  <p className="description">{video.description}</p>
+              <Link
+                to={`/watch/${video._id}`} // Add Link component wrapping each video item
+                className="trending-result-item flex-div"
+                key={video.id}
+              >
+                <div key={video.id} className="trending-result-item flex-div">
+                  <img
+                    src={`https://apps.rubaktechie.me/uploads/thumbnails/${video.thumbnailUrl}`}
+                    alt={video.title}
+                  />
+                  <div className="result-details">
+                    <span className="trending-video-name">{video.title}</span>
+                    <p className="channel-name">{video.userId.channelName}</p>
+                    <p className="views-time">
+                      {video.views} views &bull;{" "}
+                      {moment(video.createdAt).fromNow()}
+                    </p>
+                    <p className="description">{video.description}</p>
+                  </div>
                 </div>
-              </div>
+              </Link>
             )
         )
       ) : (

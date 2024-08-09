@@ -224,9 +224,9 @@ const Comments = ({ videoId }) => {
 
   // to handle delete reply Api
   const handleDeleteReply = async (replyId) => {
-    if (!isAuthenticated) {
-      return;
-    }
+    // if (!isAuthenticated) {
+    //   return;
+    // }
     try {
       const response = await deleteReply(replyId);
       if (response.success) {
