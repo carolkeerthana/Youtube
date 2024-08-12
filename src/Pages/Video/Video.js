@@ -4,8 +4,6 @@ import PlayVideo from "../../components/PlayVideo/PlayVideo";
 import Recommended from "../../components/Recommended/Recommended";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import menuIcon from "../../assets/menu.png";
-import VideoSidebar from "./VideoSidebar";
 
 const Video = ({ sidebar, setSidebar }) => {
   const { videoId, categoryId } = useParams();

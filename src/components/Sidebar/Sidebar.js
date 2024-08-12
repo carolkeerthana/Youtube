@@ -21,7 +21,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = ({ sidebar, setSidebar, page }) => {
   const location = useLocation();
-  // const isVideoPage = page === 'video';
+  const isVideoPage = page === "video";
   const { isAuthenticated } = useAuth();
   const [activePage, setActivePage] = useState(location.pathname);
   // const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 1300);
@@ -53,8 +53,6 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
   const handleVideoSidebarToggle = () => {
     setSidebar(!sidebar);
   };
-
-  const isVideoPage = page === "video";
 
   useEffect(() => {
     if (isVideoPage && sidebar) {
