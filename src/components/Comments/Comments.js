@@ -23,22 +23,19 @@ const Comments = ({ videoId }) => {
   const [replies, setReplies] = useState(comments.replies || []);
   const [showReplyInput, setShowReplyInput] = useState(false); //visibility of reply input
   const [focusedReplyIndex, setFocusedReplyIndex] = useState(null);
+  const replyInputRefs = useRef([]);
   const [visibleReplies, setVisibleReplies] = useState([]);
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
   const [commentDropdownIndex, setCommentDropdownIndex] = useState(null);
-  const [dropdownIndex, setDropdownIndex] = useState(null);
   const [editCommentIndex, setEditCommentIndex] = useState(null);
   const [editCommentText, setEditCommentText] = useState("");
   const [editReplyId, setEditReplyId] = useState(null);
   const [replyDropdownIndex, setReplyDropdownIndex] = useState(null);
   const [editReplyIndex, setEditReplyIndex] = useState(null);
   const [editReplyText, setEditReplyText] = useState("");
-  const [userDetails, setUserDetails] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRefs = useRef([]);
   const replyDropdownRefs = useRef([]);
-  const [focusInput, setFocusInput] = useState(false);
 
   useEffect(() => {
     // fetch comments fom GET Api
@@ -239,7 +236,7 @@ const Comments = ({ videoId }) => {
             reply.id === replyId ? { ...reply, dropdownOpen: false } : reply
           )
         );
-      } else {
+      } else {  
         console.error(
           "API response is not in the expected format:",
           response.message
@@ -292,6 +289,7 @@ const Comments = ({ videoId }) => {
 
     setReplies([...replies, newReplyWithUser]);
     setShowReplyInput(false); // Hide reply input after adding reply
+    setFocusedReplyIndex(null);
   };
 
   const handleReplyFocus = (index) => {
@@ -302,6 +300,16 @@ const Comments = ({ videoId }) => {
       setFocusedReplyIndex(index);
     }
   };
+
+  useEffect(() => {
+    if (
+      focusedReplyIndex !== null &&
+      replyInputRefs.current[focusedReplyIndex]
+    ) {
+      replyInputRefs.current[focusedReplyIndex].focus();
+    }
+  }, [focusedReplyIndex]);
+
   // Handle cancel reply
   // const handleCancelReply = () => {
   //   setShowReplyInput(false); // Hide reply input on cancel
@@ -429,6 +437,7 @@ const Comments = ({ videoId }) => {
                     >
                       {showReplyInput && focusedReplyIndex === index && (
                         <CreateReply
+                          ref={(el) => (replyInputRefs.current[index] = el)}
                           commentId={comment.id}
                           onReplyAdded={handleReplyAdded}
                           onCancel={() => {

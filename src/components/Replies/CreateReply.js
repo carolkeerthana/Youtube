@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import "./CreateReply.css";
 import userProfile from "../../assets/user_profile.jpg";
 import moment from "moment";
@@ -9,11 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { createReply } from "./Api/CreateReplyApi";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 
-const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
+const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
   const [newReply, setNewReply] = useState("");
   const { isAuthenticated } = useAuth();
   const [userDetails, setUserDetails] = useState(null);
-
   const [focused, setFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const inputRef = useRef(null);
@@ -52,7 +51,6 @@ const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
 
     if (!userDetails) {
       console.error("User details not available");
-      // Handle error or display message to the user
       return;
     }
 
@@ -102,14 +100,15 @@ const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
         alt=""
         className={`reply-img ${focused ? "visible" : "hidden"}`}
         onClick={() => {
-          inputRef.current.focus();
+          ref.current.focus();
         }}
       />
       <div className="reply-detail">
         <div className="reply-field">
           <input
             className={`input-field ${focused ? "visible" : ""}`}
-            autoFocus
+            // autoFocus
+            ref={ref}
             type="text"
             placeholder="Add a reply..."
             value={newReply}
@@ -137,6 +136,6 @@ const CreateReply = ({ commentId, onReplyAdded, onCancel }) => {
       </div>
     </div>
   );
-};
+});
 
 export default CreateReply;
