@@ -130,7 +130,9 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
             >
               Cancel
             </button>
-            <button onClick={handleReplySubmit}>Reply</button>
+            <button data-testid="reply-save-button" onClick={handleReplySubmit}>
+              Reply
+            </button>
           </div>
         </div>
       </div>

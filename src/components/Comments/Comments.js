@@ -8,11 +8,9 @@ import { useAuth } from "../../util/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical";
 import { deleteCommentApi } from "./Apis/DeleteCommentApi";
-import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 import { fetchComments } from "./Apis/GetCommentsApi";
 import UpdateComment from "./Update/UpdateComment";
 import { getReplies } from "../Replies/Api/GetRepliesApi";
-import Reply from "../Replies/CreateReply";
 import CreateReply from "../Replies/CreateReply";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import UpdateReply from "../Replies/UpdateReply";
@@ -89,6 +87,10 @@ const Comments = ({ videoId }) => {
     fetchCommentsData();
     fetchRepliesData();
   }, [videoId, navigate]);
+
+  useEffect(() => {
+    console.log("Updated comments:", comments);
+  }, [comments]);
 
   // to add a new comment
   const handleCommentAdded = (newComment) => {
@@ -236,7 +238,7 @@ const Comments = ({ videoId }) => {
             reply.id === replyId ? { ...reply, dropdownOpen: false } : reply
           )
         );
-      } else {  
+      } else {
         console.error(
           "API response is not in the expected format:",
           response.message
@@ -362,10 +364,15 @@ const Comments = ({ videoId }) => {
             <div className="comments-detail">
               <div className="comment-header">
                 {editCommentIndex !== index ? (
-                  <h3 className="comment-channel-name">
-                    {comment.channelName}{" "}
-                    <span>{moment(comment.createdAt).fromNow()}</span>
-                  </h3>
+                  <div>
+                    <span className="comment-channel-name">
+                      {" "}
+                      {comment.channelName}{" "}
+                    </span>
+                    <span className="comment-moments">
+                      {moment(comment.createdAt).fromNow()}
+                    </span>
+                  </div>
                 ) : null}
                 <div className="comment-actions">
                   {/* {console.log('editCommentIndex:', editCommentIndex)} */}
@@ -469,10 +476,14 @@ const Comments = ({ videoId }) => {
                         <div className="reply-detail">
                           <div className="reply-header">
                             {editReplyIndex !== index ? (
-                              <h3 className="reply-channel-name">
-                                {reply.channelName}{" "}
-                                <span>{moment(reply.createdAt).fromNow()}</span>
-                              </h3>
+                              <div>
+                                <span className="reply-channel-name">
+                                  {reply.channelName}{" "}
+                                </span>
+                                <span className="reply-moments">
+                                  {moment(reply.createdAt).fromNow()}
+                                </span>
+                              </div>
                             ) : null}
                             <div className="reply-actions">
                               {editReplyIndex !== index && (

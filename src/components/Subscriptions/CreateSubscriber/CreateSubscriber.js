@@ -1,50 +1,52 @@
-import React, { useState } from 'react'
-import './CreateSubscriber.css'
-import SignInPopup from '../../Feelings/SignInPopup ';
-import { useAuth } from '../../../util/AuthContext';
-import { CreateSubscriberApi } from './CreateSubscriberApi';
+import React, { useState } from "react";
+import "./CreateSubscriber.css";
+import SignInPopup from "../../Feelings/SignInPopup ";
+import { useAuth } from "../../../util/AuthContext";
+import { CreateSubscriberApi } from "./CreateSubscriberApi";
 
-const CreateSubscriber = ({channelId, isSubscribed, setIsSubscribed }) => {
-  const {isAuthenticated} = useAuth();
-  const [error, setError] = useState('')
+const CreateSubscriber = ({ channelId, isSubscribed, setIsSubscribed }) => {
+  const { isAuthenticated } = useAuth();
+  const [error, setError] = useState("");
   const [showSignIn, setShowSignIn] = useState(false);
   const [action, setAction] = useState(null);
 
-  const handleSubscribeToggle = async() => {
-
-    if(!isAuthenticated){
+  const handleSubscribeToggle = async () => {
+    if (!isAuthenticated) {
       setShowSignIn(true);
-      setAction('subscribe');
+      setAction("subscribe");
       return;
     }
     try {
-      const response = await CreateSubscriberApi({channelId});
-      console.log('API response:', response);
-      if(response.success){
+      const response = await CreateSubscriberApi({ channelId });
+      console.log("API response:", response);
+      if (response.success) {
         setIsSubscribed(!isSubscribed);
-      }else{
+      } else {
         setError(response.error);
       }
     } catch (error) {
-      console.error('Error processing subscription', error);
-      setError('Error processing subscription');
+      console.error("Error processing subscription", error);
+      setError("Error processing subscription");
     }
-  }
+  };
 
-  console.log(isSubscribed)
+  console.log(isSubscribed);
   return (
-    <div className='subscribe-button'>
+    <div className="subscribe-button">
       {showSignIn && (
-                <div className='feelings-overlay' onClick={() => setShowSignIn(false)}>
-                    <SignInPopup action={action}/>
-                </div>
-            )}
-        <button onClick={handleSubscribeToggle} className={`button ${isSubscribed ? 'active' : ''}`}>
-        {isSubscribed ? 'SUBSCRIBED' : 'SUBSCRIBE'}
-        </button>
-        {error && <p className='error-message'>{error}</p>}
+        <div className="feelings-overlay" onClick={() => setShowSignIn(false)}>
+          <SignInPopup action={action} />
+        </div>
+      )}
+      <button
+        onClick={handleSubscribeToggle}
+        className={`button ${isSubscribed ? "active" : ""}`}
+      >
+        {isSubscribed ? "SUBSCRIBED" : "SUBSCRIBE"}
+      </button>
+      {error && <p className="error-message">{error}</p>}
     </div>
-  )
-}
+  );
+};
 
-export default CreateSubscriber
+export default CreateSubscriber;

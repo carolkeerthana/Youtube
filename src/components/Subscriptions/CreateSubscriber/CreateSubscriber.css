@@ -1,30 +1,30 @@
 .button {
-    background: rgb(223, 11, 11);
-    color: #fff;
-    padding: 12px 30px;
-    border: 0;
-    outline: 0;
-    border-radius: 4px;
-    cursor: pointer;
-    letter-spacing: 0.1rem;
-  }
-.subscribe-button{
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  background: rgb(223, 11, 11);
+  color: #fff;
+  padding: 12px 30px;
+  border: 0;
+  outline: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.1rem;
 }
-  
-  .button.active{
-    background-color: rgb(219, 208, 208); /* Color when subscribed */
-    color: black;  
+.subscribe-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
+
+.button.active {
+  background-color: rgb(219, 208, 208); /* Color when subscribed */
+  color: black;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+@media (max-width: 480px) {
+  .button {
+    padding: 8px 10px;
   }
-  @media (max-width: 480px) {
-    .button {
-      padding: 8px 10px;
-    }
-  }
+}

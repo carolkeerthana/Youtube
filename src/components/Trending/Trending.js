@@ -37,7 +37,7 @@ const Trending = () => {
           (video) =>
             video && (
               <Link
-                to={`/watch/${video._id}`} // Add Link component wrapping each video item
+                to={`/watch/${video._id}`}
                 className="trending-result-item flex-div"
                 key={video.id}
               >

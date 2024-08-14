@@ -30,7 +30,7 @@
   position: relative;
   cursor: pointer;
 }
-.comment-header span {
+.comment-header .comment-moments {
   font-size: 14px;
   color: #888;
   margin-left: 10px;
@@ -71,9 +71,10 @@
 .dropdown-menu button:hover {
   background-color: #f0f0f0;
 }
-.comment h3 {
+.comment .comment-channel-name {
   font-size: 15px;
   margin-bottom: 2px;
+  font-weight: bold;
 }
 .comment-channel-name {
   margin-top: 5px;
@@ -91,12 +92,16 @@
   margin: 10px 0;
   font-size: 15px;
 }
-.reply-channel-name {
+.reply-header .reply-channel-name {
   margin-top: 5px;
-}
-.reply-header h3 {
   font-size: 15px;
   margin-bottom: 2px;
+  font-weight: bold;
+}
+.reply-header .reply-moments {
+  font-size: 14px;
+  color: #888;
+  margin-left: 10px;
 }
 .reply-detail > div {
   /* margin-bottom: 12px; */

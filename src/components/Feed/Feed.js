@@ -53,9 +53,11 @@ const Feed = () => {
                 src={`https://apps.rubaktechie.me/uploads/avatars/${item.userId.photoUrl}`}
                 alt={item.userId.channelName}
               />
-              <div>
-                <h2>{item.title}</h2>
-                <h3>{item.userId.channelName}</h3>
+              <div className="feed-description">
+                <span className="feed-title">{item.title}</span>
+                <span className="feed-channel-name">
+                  {item.userId.channelName}
+                </span>
                 <p>
                   {item.views} views &bull; {getDaysAgo(item.createdAt)} day ago
                 </p>
