@@ -34,6 +34,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submit handler called");
 
     if (!isAuthenticated) {
       navigate("/signin");
@@ -61,7 +62,10 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
           ...response.data,
           channelName: userDetails ? userDetails.channelName : "Unknown",
         };
+        console.log("About to call onCommentAdded with:", commentWithChannel);
+        console.log("Calling onCommentAdded...");
         onCommentAdded(commentWithChannel);
+
         setNewComment("");
         setFocused(false);
       } else {
