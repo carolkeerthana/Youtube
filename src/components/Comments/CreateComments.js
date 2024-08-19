@@ -7,6 +7,8 @@ import { createCommentsApi } from "./Apis/CreateCommentsApi";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 
 const CreateComments = ({ videoId, onCommentAdded }) => {
+  // console.log("CreateComments component rendered");
+
   const [focused, setFocused] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [userDetails, setUserDetails] = useState(null);
@@ -34,12 +36,14 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit handler called");
+    console.log("handleCommentSubmit triggered");
 
     if (!isAuthenticated) {
+      console.log("not authenticated");
       navigate("/signin");
       return;
     } else {
+      console.log("authenticated");
       setFocused(true);
     }
 
@@ -100,6 +104,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
         />
         <div className={`comment-buttons ${focused ? "visible" : ""}`}>
           <button
+            data-testid="comment-cancel-button"
             onClick={() => {
               setNewComment("");
               setFocused(false);
@@ -109,7 +114,10 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
           </button>
           <button
             data-testid="comment-save-button"
-            onClick={handleCommentSubmit}
+            onClick={(e) => {
+              console.log("Comment button clicked");
+              handleCommentSubmit(e);
+            }}
           >
             Comment
           </button>
