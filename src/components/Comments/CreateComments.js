@@ -7,7 +7,9 @@ import { createCommentsApi } from "./Apis/CreateCommentsApi";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 
 const CreateComments = ({ videoId, onCommentAdded }) => {
-  // console.log("CreateComments component rendered");
+  console.log("CreateComments component rendered");
+  console.log("Initial videoId:", videoId);
+  console.log("Props:", { videoId, onCommentAdded });
 
   const [focused, setFocused] = useState(false);
   const [newComment, setNewComment] = useState("");
@@ -16,9 +18,14 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
+    console.log("State updated:", { videoId, newComment });
+  }, [videoId, newComment]);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       try {
         const user = await fetchUserDetails();
+        console.log("Fetched user details:", user);
         setUserDetails(user);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
@@ -26,12 +33,16 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
     };
 
     if (isAuthenticated) {
+      console.log("User is authenticated, fetching user details...");
       fetchUserData();
+    } else {
+      console.log("User is not authenticated, not fetching user details.");
     }
   }, [isAuthenticated]);
 
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
+    console.log("New comment text:", e.target.value);
   };
 
   const handleCommentSubmit = async (e) => {
@@ -39,26 +50,27 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
     console.log("handleCommentSubmit triggered");
 
     if (!isAuthenticated) {
-      console.log("not authenticated");
+      console.log("User is not authenticated, redirecting to /signin");
       navigate("/signin");
       return;
     } else {
-      console.log("authenticated");
+      console.log("User is authenticated");
       setFocused(true);
     }
 
     if (!userDetails) {
-      console.error("User details not available");
+      console.error("User details not available, cannot submit comment");
       return;
     }
-
+    console.log("Submitting comment with videoId:", videoId);
     const commentsData = {
       videoId: videoId,
       text: newComment,
     };
-    console.log(commentsData);
+    console.log("Comment data to be submitted:", commentsData);
 
     try {
+      console.log("Before API call");
       const response = await createCommentsApi(commentsData);
       console.log("create comments", response);
       if ((response.success || response.sucess) && response.data) {
@@ -67,11 +79,11 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
           channelName: userDetails ? userDetails.channelName : "Unknown",
         };
         console.log("About to call onCommentAdded with:", commentWithChannel);
-        console.log("Calling onCommentAdded...");
         onCommentAdded(commentWithChannel);
 
         setNewComment("");
         setFocused(false);
+        console.log("Simulated API response success");
       } else {
         console.error("API response is not in the expected format:", response);
       }
@@ -79,12 +91,15 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
       console.error("Error in creating comment:", error);
       navigate("/error");
     }
+    console.log("After API call");
   };
 
   const handleFocus = () => {
     if (!isAuthenticated) {
+      console.log("User is not authenticated, redirecting to /signin");
       navigate("/signin");
     } else {
+      console.log("Input field focused");
       setFocused(true);
     }
   };
@@ -108,6 +123,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
             onClick={() => {
               setNewComment("");
               setFocused(false);
+              console.log("Comment cancelled, input cleared");
             }}
           >
             Cancel
