@@ -296,9 +296,9 @@ const Comments = ({ videoId }) => {
 
   const handleReplyFocus = (index) => {
     if (!isAuthenticated) {
-      navigate("/signin"); // Redirect to sign-in page if the user is not authenticated
+      navigate("/signin");
     } else {
-      setShowReplyInput(true); // Show reply input if authenticated
+      setShowReplyInput(true);
       setFocusedReplyIndex(index);
     }
   };
@@ -434,6 +434,17 @@ const Comments = ({ videoId }) => {
                   Reply
                 </button>
 
+                {showReplyInput && focusedReplyIndex === index && (
+                  <CreateReply
+                    ref={(el) => (replyInputRefs.current[index] = el)}
+                    commentId={comment.id}
+                    onReplyAdded={handleReplyAdded}
+                    onCancel={() => {
+                      setShowReplyInput(false);
+                      setFocusedReplyIndex(null);
+                    }}
+                  />
+                )}
                 <div>
                   <br />
                   {hasReplies && (
@@ -442,17 +453,6 @@ const Comments = ({ videoId }) => {
                       onClick={() => toggleRepliesVisibility(comment.id)}
                       data-testid="toggle-replies"
                     >
-                      {showReplyInput && focusedReplyIndex === index && (
-                        <CreateReply
-                          ref={(el) => (replyInputRefs.current[index] = el)}
-                          commentId={comment.id}
-                          onReplyAdded={handleReplyAdded}
-                          onCancel={() => {
-                            setShowReplyInput(false);
-                            setFocusedReplyIndex(null);
-                          }}
-                        />
-                      )}
                       <FontAwesomeIcon
                         data-testid={`reply-toggle-comment-${comment.id}`}
                         icon={isVisible ? faChevronUp : faChevronDown}
@@ -472,7 +472,7 @@ const Comments = ({ videoId }) => {
                       isAuthenticated && reply.userId?._id === user?.id;
                     return (
                       <div key={reply.id} className="reply">
-                        <img src={userProfile} alt="" />
+                        <img src={userProfile} className="reply-image" alt="" />
                         <div className="reply-detail">
                           <div className="reply-header">
                             {editReplyIndex !== index ? (

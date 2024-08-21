@@ -16,6 +16,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
   const [userDetails, setUserDetails] = useState(null);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [isFetchingUserDetails, setIsFetchingUserDetails] = useState(true);
 
   useEffect(() => {
     console.log("State updated:", { videoId, newComment });
@@ -29,6 +30,8 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
         setUserDetails(user);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
+      } finally {
+        setIsFetchingUserDetails(false); // Fetching completed
       }
     };
 
@@ -49,19 +52,26 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
     e.preventDefault();
     console.log("handleCommentSubmit triggered");
 
-    if (!isAuthenticated) {
-      console.log("User is not authenticated, redirecting to /signin");
-      navigate("/signin");
-      return;
-    } else {
-      console.log("User is authenticated");
-      setFocused(true);
-    }
+    // if (!isAuthenticated) {
+    //   console.log("User is not authenticated, redirecting to /signin");
+    //   navigate("/signin");
+    //   return;
+    // } else {
+    //   console.log("User is authenticated");
+    //   setFocused(true);
+    // }
+
+    // if (isFetchingUserDetails) {
+    //   console.log("Still fetching user details, cannot submit comment");
+    //   return;
+    // }
 
     if (!userDetails) {
       console.error("User details not available, cannot submit comment");
       return;
     }
+    console.log("User details:", userDetails);
+
     console.log("Submitting comment with videoId:", videoId);
     const commentsData = {
       videoId: videoId,
@@ -76,9 +86,9 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
       if ((response.success || response.sucess) && response.data) {
         const commentWithChannel = {
           ...response.data,
-          channelName: userDetails ? userDetails.channelName : "Unknown",
+          channelName: userDetails.channelName,
         };
-        console.log("About to call onCommentAdded with:", commentWithChannel);
+        console.log("Comment submitted:", commentWithChannel);
         onCommentAdded(commentWithChannel);
 
         setNewComment("");
@@ -134,6 +144,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
               console.log("Comment button clicked");
               handleCommentSubmit(e);
             }}
+            // disabled={!userDetails || !newComment.trim()}
           >
             Comment
           </button>

@@ -1,11 +1,12 @@
 {
-    "cSpell.words": [
-        "datas",
-        "forgotpassword",
-        "signin",
-        "testgmail",
-        "testid",
-        "utube"
-    ],
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "cSpell.words": [
+    "datas",
+    "forgotpassword",
+    "Keerthana",
+    "signin",
+    "testgmail",
+    "testid",
+    "utube"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
