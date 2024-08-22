@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import userProfile from "../../../assets/user_profile.jpg";
 import { useAuth } from "../../../util/AuthContext";
 import { fetchUserDetails } from "../../User/UserProfile/UserDetailsApi";
-import { updateComment } from "../Apis/UpdateCommentApi";
+import { updateComment, updateCommentApi } from "../Apis/UpdateCommentApi";
 
 const UpdateComment = ({
   commentId,
@@ -14,7 +14,7 @@ const UpdateComment = ({
 }) => {
   const [editComment, setEditComment] = useState(comment.text || "");
   const [focused, setFocused] = useState(true);
-  const [userDetails, setUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -36,7 +36,7 @@ const UpdateComment = ({
 
   // to handle comment text change
   const handleCommentChange = (e) => {
-    setEditComment(e.target.value);                             
+    setEditComment(e.target.value);
   };
 
   // to submit updated comment
@@ -56,7 +56,7 @@ const UpdateComment = ({
     try {
       console.log({ text: editComment });
       console.log(commentId);
-      const response = await updateComment({ text: editComment }, commentId);
+      const response = await updateCommentApi({ text: editComment }, commentId);
       if ((response.success || response.sucess) && response.data) {
         console.log("update comment:", response.data);
         updateCommentAdded(response.data);
@@ -96,7 +96,9 @@ const UpdateComment = ({
         onBlur={() => !editComment && setFocused(false)}
       />
       <div className={`comment-buttons ${focused ? "visible" : ""}`}>
-        <button data-testid="comment-edit-cancel-button" onClick={handleCancel}>Cancel</button>
+        <button data-testid="comment-edit-cancel-button" onClick={handleCancel}>
+          Cancel
+        </button>
         <button onClick={handleCommentSubmit}>Save</button>
       </div>
     </div>

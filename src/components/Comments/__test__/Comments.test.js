@@ -24,7 +24,7 @@ import UpdateReply from "../../Replies/UpdateReply";
 import { deleteReply } from "../../Replies/Api/DeleteReplyApi";
 import { createCommentsApi } from "../Apis/CreateCommentsApi";
 import UpdateComment from "../Update/UpdateComment";
-import { updateComment } from "../Apis/UpdateCommentApi";
+import { updateComment, updateCommentApi } from "../Apis/UpdateCommentApi";
 import CreateComments from "../CreateComments";
 import CreateReply from "../../Replies/CreateReply";
 
@@ -40,6 +40,7 @@ jest.mock("../../Replies/Api/GetRepliesApi", () => ({
   getReplies: jest.fn(),
 }));
 
+// jest.mock("../CreateComments.js");
 console.log("createCommentsApi before mock:", createCommentsApi);
 jest.mock("../Apis/CreateCommentsApi.js", () => ({
   createCommentsApi: jest.fn(),
@@ -63,12 +64,8 @@ jest.mock("react-router-dom", () => ({
   useNavigate: jest.fn(),
 }));
 jest.mock("../Apis/UpdateCommentApi", () => ({
-  updateComment: jest.fn(),
+  updateCommentApi: jest.fn(),
 }));
-updateComment.mockResolvedValue({
-  success: true,
-  data: { id: "comment-id", text: "Updated comment" },
-});
 
 // jest.mock('../../Replies/UpdateReply', () => ({ replyId, reply, channelName, onUpdateReply, cancelEdit }) => (
 //   <div data-testid="update-reply-component">
@@ -142,6 +139,10 @@ describe("Comments Component", () => {
       success: true,
       data: mockComments[0].replies,
     });
+    updateCommentApi.mockResolvedValue({
+      success: true,
+      data: { id: "comment-id", text: "Updated comment" },
+    });
     deleteCommentApi.mockResolvedValue({ success: true });
     deleteReply.mockResolvedValue({ success: true });
     useNavigate.mockReturnValue(mockedNavigate);
@@ -167,7 +168,6 @@ describe("Comments Component", () => {
 
     return render(ui, { wrapper: MemoryRouter });
   };
-
   test("renders comments and replies", async () => {
     renderWithRouter(<Comments videoId="123" />);
 
@@ -371,80 +371,121 @@ describe("Comments Component", () => {
 
     fireEvent.click(screen.getByTestId("comment-save-button"));
     expect(screen.getByDisplayValue("New comment")).toBeInTheDocument();
-
-    // expect(
-    //   screen.queryByPlaceholderText("Add a public comment...")
-    // ).not.toBeInTheDocument();
   });
 
-  /* eslint-disable testing-library/no-debugging-utils */
-
-  describe("CreateComments Component", () => {
-    it("should render and display the component", () => {
-      render(<CreateComments videoId="video123" onCommentAdded={jest.fn()} />);
-
-      screen.debug(); // This prints the current DOM structure to the console
+  test("handleCommentAdded should add a comment with user details and update the comments state", async () => {
+    fetchUserDetails.mockResolvedValue({
+      _id: "66504919905aa75e4ab9c575",
+      channelName: "Keerthana",
+      email: "keerthana.s@e2infosystems.com",
+      photoUrl: "no-photo.jpg",
+      role: "user",
     });
-  });
-  /* eslint-enable testing-library/no-debugging-utils */
 
-  it.only("should render and allow user to submit a comment", async () => {
-    const mockComment = {
-      videoId: "video123",
-      text: "New comment",
-    };
-    createCommentsApi.mockResolvedValue({
+    createCommentsApi.mockResolvedValueOnce({
       success: true,
       data: {
-        videoId: "video123",
-        text: "New comment",
+        text: "test comment",
+        videoId: "66430b7749bcf61f8a043d3e",
       },
     });
-    const onCommentAdded = jest.fn();
 
-    // console.log("Rendering CreateComments component...");
-    render(
-      <CreateComments videoId="video123" onCommentAdded={onCommentAdded} />
-    );
+    render(<Comments videoId="66430b7749bcf61f8a043d3e" />);
 
-    // console.log("Simulating input field change...");
-    const inputElement = screen.getByPlaceholderText("Add a public comment...");
-    fireEvent.change(inputElement, {
-      target: { value: "This is a test comment" },
-    });
+    const input = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.change(input, { target: { value: "test comment" } });
 
-    // console.log("Input value after change:", inputElement.value);
-    expect(inputElement.value).toBe("This is a test comment");
-
-    // console.log("Simulating comment button click...");
     const commentButton = screen.getByTestId("comment-save-button");
     fireEvent.click(commentButton);
 
-    // console.log("Waiting for the API call to finish...");
     await waitFor(() => {
-      console.log("Waiting for the API call to be triggered...");
-      expect(createCommentsApi).toHaveBeenCalledTimes(1);
+      expect(fetchUserDetails).toHaveBeenCalled();
     });
-    console.log("API was called with:", createCommentsApi.mock.calls[0][0]);
-    // await waitFor(() => {
-    //   console.log("Checking if onCommentAdded was called...");
-    //   expect(onCommentAdded).toHaveBeenCalled();
-    //   console.log("onCommentAdded calls:", onCommentAdded.mock.calls);
-    // });
 
-    // console.log("Checking if onCommentAdded was called with correct data...");
-    // expect(onCommentAdded).toHaveBeenCalledWith(
-    //   expect.objectContaining({
-    //     text: "This is a test comment",
-    //     videoId: "video123",
-    //     channelName: "User One",
-    //   })
-    // );
+    await waitFor(() => {
+      expect(createCommentsApi).toHaveBeenCalled();
+    });
 
-    console.log("Test completed successfully.");
+    await waitFor(() => {
+      const newCommentElement = screen.getByText("test comment");
+      expect(newCommentElement).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      const commentElement = screen.getByText("test comment");
+      expect(commentElement).toBeInTheDocument();
+    });
   });
 
-  it("should render CreateComments component", () => {
+  test("should add a comment with user details when the API call is successful", async () => {
+    fetchUserDetails.mockImplementation(() => {
+      console.log("fetchUserDetails mock called");
+      return Promise.resolve({
+        _id: "66504919905aa75e4ab9c575",
+        channelName: "Keerthana",
+        email: "keerthana.s@e2infosystems.com",
+        photoUrl: "no-photo.jpg",
+        role: "user",
+      });
+    });
+
+    createCommentsApi.mockResolvedValueOnce({
+      success: true,
+      data: {
+        createdAt: "2024-08-21T07:22:49.938Z",
+        id: "66c595c9511c2896e940c25c",
+        text: "test",
+        updatedAt: "2024-08-21T07:22:49.938Z",
+        userId: "66504919905aa75e4ab9c575",
+        videoId: "66430b7749bcf61f8a043d3e",
+        __v: 0,
+        _id: "66c595c9511c2896e940c25c",
+      },
+    });
+    render(
+      <CreateComments
+        videoId="66430b7749bcf61f8a043d3e"
+        onCommentAdded={mockOnCommentAdded}
+      />
+    );
+
+    const input = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.change(input, { target: { value: "test" } });
+
+    const commentButton = screen.getByTestId("comment-save-button");
+    fireEvent.click(commentButton);
+
+    await waitFor(() => {
+      expect(fetchUserDetails).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(createCommentsApi).toHaveBeenCalled();
+    });
+
+    await waitFor(() => expect(fetchUserDetails).toHaveBeenCalled());
+    await waitFor(() => {
+      expect(createCommentsApi).toHaveBeenCalledWith({
+        videoId: "66430b7749bcf61f8a043d3e",
+        text: "test",
+      });
+    });
+    await waitFor(() => {
+      console.log("mock mockOnCommentAdded:", mockOnCommentAdded);
+      expect(mockOnCommentAdded).toHaveBeenCalledWith({
+        createdAt: "2024-08-21T07:22:49.938Z",
+        id: "66c595c9511c2896e940c25c",
+        text: "test",
+        updatedAt: "2024-08-21T07:22:49.938Z",
+        userId: "66504919905aa75e4ab9c575",
+        videoId: "66430b7749bcf61f8a043d3e",
+        __v: 0,
+        _id: "66c595c9511c2896e940c25c",
+      });
+    });
+    expect(input.value).toBe("");
+  });
+
+  test("should render CreateComments component", () => {
     render(<CreateComments videoId="video123" onCommentAdded={jest.fn()} />);
     console.log("Component rendered");
 
@@ -454,7 +495,7 @@ describe("Comments Component", () => {
     expect(screen.getByTestId("comment-save-button")).toBeInTheDocument();
   });
 
-  test("should call handleCommentAdded with new comment and user ID", async () => {
+  test.skip("should call handleCommentAdded with new comment and user ID", async () => {
     const onCommentAdded = jest.fn();
     const newComment = { text: "This is a test comment", videoId: "video123" };
 
@@ -531,28 +572,6 @@ describe("Comments Component", () => {
   //   expect(screen.getByText("New Comment")).toBeInTheDocument();
   //   // );
   // });
-
-  it.skip("should add a new comment when submitted", async () => {
-    const mockOnCommentAdded = jest.fn();
-    const mockNavigate = jest.fn();
-    useAuth.mockReturnValue({ isAuthenticated: true });
-    fetchUserDetails.mockResolvedValue({ channelName: "Test Channel" });
-    createCommentsApi.mockResolvedValue({
-      success: true,
-      data: { commentId: 1, text: "Test Comment" },
-    });
-
-    const { getByPlaceholderText, getByTestId } = render(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    fireEvent.focus(screen.getByPlaceholderText("Add a public comment..."));
-    fireEvent.change(screen.getByPlaceholderText("Add a public comment..."), {
-      target: { value: "Test Comment" },
-    });
-    fireEvent.click(screen.getByTestId("comment-save-button"));
-    await waitFor(() => expect(mockOnCommentAdded).toHaveBeenCalledTimes(1));
-  });
 
   test("Handle Api error while creating a comment", async () => {
     renderWithRouter(<Comments videoId="123" />);
@@ -954,9 +973,15 @@ describe("Comments Component", () => {
     expect(
       screen.getByTestId("dropdown-icon-reply-reply1")
     ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("reply-dropdown-reply1")
+    ).not.toBeInTheDocument();
+
     fireEvent.click(screen.getByTestId("dropdown-icon-reply-reply1"));
 
     expect(screen.getByTestId("reply-dropdown-reply1")).toBeInTheDocument();
+    deleteReply.mockResolvedValue({ success: true });
+
     fireEvent.click(screen.getByTestId("dropdown-reply-delete"));
 
     await waitFor(() => {
@@ -966,6 +991,20 @@ describe("Comments Component", () => {
     expect(deleteReply).toHaveBeenCalledWith("reply1");
     const dropdownMenu = screen.queryByTestId("reply-dropdown-reply1");
     expect(dropdownMenu).toBeNull();
+    expect(
+      screen.queryByTestId("reply-dropdown-reply1")
+    ).not.toBeInTheDocument();
+
+    expect(mockSetReplies).toHaveBeenCalled();
+    const stateUpdateFunction = mockSetReplies.mock.calls[0][0];
+
+    const previousReplies = [
+      { id: "reply1", dropdownOpen: true },
+      { id: "reply2", dropdownOpen: false },
+    ];
+    const updatedReplies = stateUpdateFunction(previousReplies);
+
+    expect(updatedReplies).toEqual([{ id: "reply2", dropdownOpen: false }]);
   });
 
   test.skip("should set dropdownOpen to false for the deleted reply", async () => {
@@ -1282,5 +1321,171 @@ describe("create Comments Component", () => {
     const input = screen.getByPlaceholderText("Add a public comment...");
     fireEvent.focus(input);
     expect(navigate).toHaveBeenCalledWith("/signin");
+  });
+
+  it("should render and allow user to submit a comment", async () => {
+    const mockComment = {
+      videoId: "video123",
+      text: "New comment",
+    };
+    createCommentsApi.mockResolvedValue({
+      success: true,
+      data: {
+        videoId: "video123",
+        text: "New comment",
+      },
+    });
+    const onCommentAdded = jest.fn();
+
+    // console.log("Rendering CreateComments component...");
+    render(
+      <CreateComments videoId="video123" onCommentAdded={onCommentAdded} />
+    );
+
+    // console.log("Simulating input field change...");
+    const inputElement = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.change(inputElement, {
+      target: { value: "This is a test comment" },
+    });
+
+    // console.log("Input value after change:", inputElement.value);
+    expect(inputElement.value).toBe("This is a test comment");
+
+    // console.log("Simulating comment button click...");
+    const commentButton = screen.getByTestId("comment-save-button");
+    fireEvent.click(commentButton);
+
+    // console.log("Waiting for the API call to finish...");
+    await waitFor(() => {
+      console.log("Waiting for the API call to be triggered...");
+      expect(createCommentsApi).toHaveBeenCalledTimes(1);
+    });
+    console.log("API was called with:", createCommentsApi.mock.calls[0][0]);
+    // await waitFor(() => {
+    //   console.log("Checking if onCommentAdded was called...");
+    //   expect(onCommentAdded).toHaveBeenCalled();
+    //   console.log("onCommentAdded calls:", onCommentAdded.mock.calls);
+    // });
+
+    // console.log("Checking if onCommentAdded was called with correct data...");
+    // expect(onCommentAdded).toHaveBeenCalledWith(
+    //   expect.objectContaining({
+    //     text: "This is a test comment",
+    //     videoId: "video123",
+    //     channelName: "User One",
+    //   })
+    // );
+
+    console.log("Test completed successfully.");
+  });
+
+  it("should add a new comment when submitted", async () => {
+    const mockOnCommentAdded = jest.fn();
+    const mockNavigate = jest.fn();
+    useAuth.mockReturnValue({ isAuthenticated: true });
+    fetchUserDetails.mockResolvedValue({ channelName: "Test Channel" });
+    createCommentsApi.mockResolvedValue({
+      success: true,
+      data: { commentId: 1, text: "Test Comment" },
+    });
+
+    const { getByPlaceholderText, getByTestId } = render(
+      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
+    );
+
+    fireEvent.focus(screen.getByPlaceholderText("Add a public comment..."));
+    fireEvent.change(screen.getByPlaceholderText("Add a public comment..."), {
+      target: { value: "Test Comment" },
+    });
+    fireEvent.click(screen.getByTestId("comment-save-button"));
+    await waitFor(() => expect(mockOnCommentAdded).toHaveBeenCalledTimes(1));
+  });
+});
+
+describe("UpdateComment", () => {
+  const mockUpdateCommentAdded = jest.fn();
+  const mockCancelEdit = jest.fn();
+
+  beforeEach(() => {
+    fetchUserDetails.mockResolvedValue({
+      _id: "66504919905aa75e4ab9c575",
+      channelName: "Keerthana",
+      email: "keerthana.s@e2infosystems.com",
+      photoUrl: "no-photo.jpg",
+
+      role: "user",
+    });
+
+    useAuth.mockReturnValue({
+      isAuthenticated: true,
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should update the comment with user details when the API call is successful", async () => {
+    const mockComment = {
+      _id: "66c595c9511c2896e940c25c",
+      text: "Original comment",
+    };
+
+    updateCommentApi.mockResolvedValueOnce({
+      success: true,
+      data: {
+        createdAt: "2024-08-21T07:22:49.938Z",
+        id: "66c595c9511c2896e940c25c",
+        text: "Updated comment",
+        updatedAt: "2024-08-21T07:22:49.938Z",
+        userId: "66504919905aa75e4ab9c575",
+        videoId: "66430b7749bcf61f8a043d3e",
+        __v: 0,
+        _id: "66c595c9511c2896e940c25c",
+      },
+    });
+
+    render(
+      // <MemoryRouter>
+      <UpdateComment
+        commentId="66c595c9511c2896e940c25c"
+        comment={mockComment}
+        updateCommentAdded={mockUpdateCommentAdded}
+        cancelEdit={mockCancelEdit}
+      />
+      // </MemoryRouter>
+    );
+
+    const input = screen.getByPlaceholderText("Original comment");
+    fireEvent.change(input, { target: { value: "Updated comment" } });
+
+    const saveButton = screen.getByText("Save");
+    fireEvent.click(saveButton);
+
+    await waitFor(() => {
+      expect(fetchUserDetails).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(updateCommentApi).toHaveBeenCalledWith(
+        { text: "Updated comment" },
+        "66c595c9511c2896e940c25c"
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockUpdateCommentAdded).toHaveBeenCalledWith({
+        createdAt: "2024-08-21T07:22:49.938Z",
+        id: "66c595c9511c2896e940c25c",
+        text: "Updated comment",
+        updatedAt: "2024-08-21T07:22:49.938Z",
+        userId: "66504919905aa75e4ab9c575",
+        videoId: "66430b7749bcf61f8a043d3e",
+        __v: 0,
+        _id: "66c595c9511c2896e940c25c",
+      });
+    });
+
+    expect(input.value).toBe("Updated comment");
   });
 });

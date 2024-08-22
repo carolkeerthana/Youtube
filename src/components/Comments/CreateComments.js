@@ -13,7 +13,7 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
 
   const [focused, setFocused] = useState(false);
   const [newComment, setNewComment] = useState("");
-  const [userDetails, setUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [isFetchingUserDetails, setIsFetchingUserDetails] = useState(true);
@@ -52,21 +52,22 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
     e.preventDefault();
     console.log("handleCommentSubmit triggered");
 
-    // if (!isAuthenticated) {
-    //   console.log("User is not authenticated, redirecting to /signin");
-    //   navigate("/signin");
-    //   return;
-    // } else {
-    //   console.log("User is authenticated");
-    //   setFocused(true);
-    // }
+    if (!isAuthenticated) {
+      console.log("User is not authenticated, redirecting to /signin");
+      navigate("/signin");
+      return;
+    } else {
+      console.log("User is authenticated");
+      setFocused(true);
+    }
 
     // if (isFetchingUserDetails) {
     //   console.log("Still fetching user details, cannot submit comment");
     //   return;
     // }
 
-    if (!userDetails) {
+    if (userDetails.success) {
+      console.log("User details not available", userDetails);
       console.error("User details not available, cannot submit comment");
       return;
     }
