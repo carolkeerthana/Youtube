@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import userProfile from '../../assets/user_profile.jpg'
 import { useAuth } from '../../util/AuthContext';
 import { fetchUserDetails } from '../User/UserProfile/UserDetailsApi';
-import { updateReply } from './Api/UpdateReplyApi';
+import { updateReply, updateReplyApi } from './Api/UpdateReplyApi';
 
 const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) => {
     const [editReply, setEditReply] = useState(reply.text || '');
@@ -51,7 +51,7 @@ const UpdateReply = ({replyId, reply, channelName, onUpdateReply, cancelEdit }) 
         try {
             console.log({text: editReply})
             console.log(replyId)
-            const response = await updateReply({text: editReply}, replyId);
+            const response = await updateReplyApi({text: editReply}, replyId);
             console.log(response)
             if ((response.success || response.sucess) && response.data) {
                 const updatedReply = { ...response.data, channelName: reply.channelName };

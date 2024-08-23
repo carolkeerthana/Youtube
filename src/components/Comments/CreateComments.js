@@ -16,7 +16,6 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
   const [userDetails, setUserDetails] = useState([]);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [isFetchingUserDetails, setIsFetchingUserDetails] = useState(true);
 
   useEffect(() => {
     console.log("State updated:", { videoId, newComment });
@@ -30,13 +29,10 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
         setUserDetails(user);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
-      } finally {
-        setIsFetchingUserDetails(false); // Fetching completed
       }
     };
 
     if (isAuthenticated) {
-      console.log("User is authenticated, fetching user details...");
       fetchUserData();
     } else {
       console.log("User is not authenticated, not fetching user details.");
@@ -45,43 +41,30 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
 
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
-    console.log("New comment text:", e.target.value);
   };
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    console.log("handleCommentSubmit triggered");
 
-    if (!isAuthenticated) {
-      console.log("User is not authenticated, redirecting to /signin");
-      navigate("/signin");
-      return;
-    } else {
-      console.log("User is authenticated");
-      setFocused(true);
-    }
-
-    // if (isFetchingUserDetails) {
-    //   console.log("Still fetching user details, cannot submit comment");
+    // if (!isAuthenticated) {
+    //   navigate("/signin");
     //   return;
+    // } else {
+    //   console.log("User is authenticated");
+    //   setFocused(true);
     // }
 
-    if (userDetails.success) {
-      console.log("User details not available", userDetails);
+    if (!userDetails) {
       console.error("User details not available, cannot submit comment");
       return;
     }
-    console.log("User details:", userDetails);
 
-    console.log("Submitting comment with videoId:", videoId);
     const commentsData = {
       videoId: videoId,
       text: newComment,
     };
-    console.log("Comment data to be submitted:", commentsData);
 
     try {
-      console.log("Before API call");
       const response = await createCommentsApi(commentsData);
       console.log("create comments", response);
       if ((response.success || response.sucess) && response.data) {
@@ -89,12 +72,10 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
           ...response.data,
           channelName: userDetails.channelName,
         };
-        console.log("Comment submitted:", commentWithChannel);
         onCommentAdded(commentWithChannel);
 
         setNewComment("");
         setFocused(false);
-        console.log("Simulated API response success");
       } else {
         console.error("API response is not in the expected format:", response);
       }
@@ -102,15 +83,12 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
       console.error("Error in creating comment:", error);
       navigate("/error");
     }
-    console.log("After API call");
   };
 
   const handleFocus = () => {
     if (!isAuthenticated) {
-      console.log("User is not authenticated, redirecting to /signin");
       navigate("/signin");
     } else {
-      console.log("Input field focused");
       setFocused(true);
     }
   };
@@ -142,10 +120,8 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
           <button
             data-testid="comment-save-button"
             onClick={(e) => {
-              console.log("Comment button clicked");
               handleCommentSubmit(e);
             }}
-            // disabled={!userDetails || !newComment.trim()}
           >
             Comment
           </button>

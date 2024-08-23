@@ -1,27 +1,26 @@
 import React, { forwardRef, useEffect, useRef, useState } from "react";
 import "./CreateReply.css";
 import userProfile from "../../assets/user_profile.jpg";
-import moment from "moment";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons/faEllipsisVertical";
 import { useAuth } from "../../util/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { createReply } from "./Api/CreateReplyApi";
+import { createReplyApi } from "./Api/CreateReplyApi";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 
 const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
+  console.log("entered create reply");
   const [newReply, setNewReply] = useState("");
   const { isAuthenticated } = useAuth();
-  const [userDetails, setUserDetails] = useState(null);
+  const [userDetails, setUserDetails] = useState([]);
   const [focused, setFocused] = useState(false);
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
-  const inputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        console.log("Attempting to fetch user details...");
         const user = await fetchUserDetails();
+        console.log("Fetched reply user details:", user);
         setUserDetails(user);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
@@ -43,6 +42,7 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
 
   const handleReplySubmit = async (e) => {
     e.preventDefault();
+    console.log("entered submit fnc");
 
     if (!isAuthenticated) {
       navigate("/signin");
@@ -50,6 +50,7 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
     }
 
     if (!userDetails) {
+      console.log("User details not available", userDetails);
       console.error("User details not available");
       return;
     }
@@ -59,14 +60,19 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
       text: newReply,
     };
     console.log(replyData);
-
+    console.log("Submitting reply with data:", replyData);
     try {
-      const response = await createReply(replyData);
+      const response = await createReplyApi(replyData);
+      console.log("User Details before adding reply:", userDetails);
       if ((response.success || response.sucess) && response.data) {
         const replyWithChannel = {
           ...response.data,
           channelName: userDetails.channelName,
         };
+        console.log(
+          "Final reply data being passed to onReplyAdded:",
+          replyWithChannel
+        );
         onReplyAdded(replyWithChannel);
         setNewReply("");
         setFocused(false);

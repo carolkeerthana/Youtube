@@ -1,57 +1,187 @@
+import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import {
-  BrowserRouter,
-  MemoryRouter,
-  BrowserRouter as Router,
-} from "react-router-dom";
-import { AuthContext, AuthProvider, useAuth } from "../../../util/AuthContext";
-import CreateComments from "../CreateComments";
-import userEvent from "@testing-library/user-event";
+import "@testing-library/jest-dom/extend-expect";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../util/AuthContext";
 import { fetchUserDetails } from "../../User/UserProfile/UserDetailsApi";
-import { commentsApi, createCommentsApi } from "../Apis/CreateCommentsApi";
-import { act } from "react-dom/test-utils";
-import * as apiModule from "../Apis/CreateCommentsApi";
-import { fetchComments } from "../Apis/GetCommentsApi";
+import { createCommentsApi } from "../Apis/CreateCommentsApi";
+import CreateComments from "../CreateComments";
 
-jest.mock("../../../util/AuthContext.js", () => ({
+jest.mock("../../../util/AuthContext", () => ({
   useAuth: jest.fn(),
 }));
 
-jest.mock("../../User/UserProfile/UserDetailsApi", () => ({
-  fetchUserDetails: jest.fn(),
-}));
-
-jest.mock("../Apis/CreateCommentsApi", () => ({
-  createCommentsApi: jest.fn(),
-}));
 jest.mock("../Apis/GetCommentsApi", () => ({
   fetchComments: jest.fn(),
 }));
 
-const mockNavigate = jest.fn();
-
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
+jest.mock("../Apis/CreateCommentsApi.js", () => ({
+  createCommentsApi: jest.fn(),
 }));
 
-const renderWithRouter = (ui, { route = "/" } = {}) => {
-  window.history.pushState({}, "Test page", route);
+jest.mock("../../User/UserProfile/UserDetailsApi", () => ({
+  fetchUserDetails: jest.fn().mockResolvedValue({
+    channelName: "User One",
+    userId: "user123",
+  }),
+}));
 
-  return render(ui, { wrapper: MemoryRouter });
-};
+jest.mock("react-router-dom", () => ({
+  useNavigate: jest.fn(),
+}));
 
-describe("CreateComments", () => {
+describe("create Comments Component", () => {
   const mockOnCommentAdded = jest.fn();
-  // const videoId = "12345";
-  beforeEach(() => {
-    jest.clearAllMocks();
+  const videoId = "123";
+  const mockedNavigate = jest.fn();
 
+  beforeEach(() => {
     useAuth.mockReturnValue({
       isAuthenticated: true,
-      // user: { id: "66504919905aa75e4ab9c575", channelName: "Keerthana" },
     });
 
+    jest.clearAllMocks();
+    createCommentsApi.mockResolvedValue({
+      success: true,
+      data: {
+        id: "1",
+        text: "This is a comment",
+        userId: { channelName: "User Channel" },
+        createdAt: new Date().toISOString(),
+      },
+    });
+    useNavigate.mockReturnValue(mockedNavigate);
+  });
+
+  test("renders CreateComments component", () => {
+    render(
+      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
+    );
+
+    expect(
+      screen.getByPlaceholderText("Add a public comment...")
+    ).toBeInTheDocument();
+  });
+
+  test("fetches user details when authenticated", async () => {
+    const mockUserDetails = { channelName: "Test Channel" };
+    fetchUserDetails.mockResolvedValue(mockUserDetails);
+
+    render(
+      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
+    );
+
+    expect(fetchUserDetails).toHaveBeenCalledTimes(1);
+    expect(
+      screen.getByPlaceholderText("Add a public comment...")
+    ).toBeInTheDocument();
+  });
+
+  test("does not fetch user details when not authenticated", () => {
+    useAuth.mockReturnValue({ isAuthenticated: false });
+
+    render(
+      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
+    );
+
+    expect(fetchUserDetails).not.toHaveBeenCalled();
+  });
+
+  test("handles error when fetching user details", async () => {
+    const mockError = new Error("Network error");
+    fetchUserDetails.mockRejectedValue(mockError);
+
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    render(
+      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
+    );
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "Failed to fetch user details:",
+        mockError
+      );
+    });
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("sets focused to false when input is empty onBlur", () => {
+    render(
+      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
+    );
+    const inputField = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.focus(inputField);
+
+    expect(inputField).toHaveClass("visible");
+
+    fireEvent.blur(inputField);
+    expect(inputField).not.toHaveClass("visible");
+  });
+
+  test("should redirect to sign-in if not authenticated", async () => {
+    useAuth.mockReturnValue({
+      isAuthenticated: false,
+    });
+
+    render(
+      <CreateComments videoId={videoId} onCommentAdded={mockOnCommentAdded} />
+    );
+
+    const input = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.focus(input);
+    expect(mockedNavigate).toHaveBeenCalledWith("/signin");
+  });
+
+  test("handles case when userDetails is null or undefined", async () => {
+    fetchUserDetails.mockResolvedValue(null);
+
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+    render(<CreateComments videoId="123" onCommentAdded={jest.fn()} />);
+
+    await waitFor(() => {
+      expect(fetchUserDetails).toHaveBeenCalled();
+    });
+
+    const input = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.change(input, { target: { value: "This is a test comment" } });
+
+    const commentButton = screen.getByTestId("comment-save-button");
+    fireEvent.click(commentButton);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "User details not available, cannot submit comment"
+      );
+    });
+
+    expect(createCommentsApi).not.toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("should create a comment when the user is authenticated and the comment is submitted", async () => {
+    render(
+      <CreateComments videoId={videoId} onCommentAdded={mockOnCommentAdded} />
+    );
+    const inputElement = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.focus(inputElement);
+
+    fireEvent.change(inputElement, {
+      target: { value: "This is a test comment" },
+    });
+
+    const saveButton = screen.getByTestId("comment-save-button");
+    fireEvent.click(saveButton);
+
+    expect(
+      screen.getByPlaceholderText("Add a public comment...")
+    ).toBeInTheDocument();
+  });
+
+  test("should add a comment with user details when the API call is successful", async () => {
     fetchUserDetails.mockImplementation(() => {
       console.log("fetchUserDetails mock called");
       return Promise.resolve({
@@ -76,188 +206,6 @@ describe("CreateComments", () => {
         _id: "66c595c9511c2896e940c25c",
       },
     });
-
-    jest.spyOn(console, "error").mockImplementation(() => {});
-  });
-
-  test("renders correctly", () => {
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-    expect(
-      screen.getByPlaceholderText("Add a public comment...")
-    ).toBeInTheDocument();
-  });
-
-  test("updates input value on change", () => {
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-    const input = screen.getByPlaceholderText("Add a public comment...");
-    userEvent.type(input, "Test Comment");
-    expect(input).toHaveValue("Test Comment");
-  });
-
-  test("navigates to signin when not authenticated and trying to focus", () => {
-    useAuth.mockReturnValue({
-      isAuthenticated: false,
-    });
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-    const input = screen.getByPlaceholderText("Add a public comment...");
-    userEvent.click(input);
-    expect(mockNavigate).toHaveBeenCalledWith("/signin");
-  });
-
-  test("sets focused to false when input is empty onBlur", () => {
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    const inputField = screen.getByPlaceholderText("Add a public comment...");
-    fireEvent.focus(inputField);
-
-    expect(inputField).toHaveClass("visible");
-
-    fireEvent.blur(inputField);
-    expect(inputField).not.toHaveClass("visible");
-  });
-
-  test("keeps focused true when input is not empty onBlur", () => {
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    const inputField = screen.getByPlaceholderText("Add a public comment...");
-    fireEvent.focus(inputField);
-
-    expect(inputField).toHaveClass("visible");
-
-    fireEvent.change(inputField, { target: { value: "Test comment" } });
-    fireEvent.blur(inputField);
-
-    expect(inputField).toHaveClass("visible");
-  });
-
-  test("handles fetch failure", async () => {
-    fetchUserDetails.mockRejectedValueOnce(new Error("Fetch failed"));
-
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith(
-        "Failed to fetch user details:",
-        expect.any(Error)
-      );
-    });
-
-    console.error.mockRestore();
-  });
-
-  test("does not submit comment when userDetails is not available", async () => {
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    const input = screen.getByPlaceholderText("Add a public comment...");
-    fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: "Test comment" } });
-
-    const commentButton = screen.getByTestId("comment-save-button");
-    fireEvent.click(commentButton);
-
-    expect(console.error).toHaveBeenCalledWith(
-      "User details not available, cannot submit comment"
-    );
-    expect(createCommentsApi).not.toHaveBeenCalled();
-    expect(input.value).toBe("Test comment");
-
-    console.error.mockRestore();
-  });
-
-  test.skip("fetches user details and handles comment submission", async () => {
-    fetchUserDetails.mockResolvedValue({
-      _id: "userId",
-      channelName: "testChannel",
-    });
-
-    createCommentsApi.mockResolvedValue({
-      success: true,
-      data: {
-        text: "Test Comment",
-        createdAt: "2024-07-09T00:00:00Z",
-      },
-    });
-
-    const onCommentAdded = jest.fn();
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    const input = screen.getByPlaceholderText("Add a public comment...");
-    userEvent.type(input, "Test Comment");
-    const commentButton = screen.getByText("Comment");
-
-    userEvent.click(commentButton);
-
-    await waitFor(() =>
-      expect(onCommentAdded).toHaveBeenCalledWith(
-        expect.objectContaining({
-          text: "Test Comment",
-          channelName: "testChannel",
-        })
-      )
-    );
-  });
-
-  test("cancels a comment while creating comment", async () => {
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    fireEvent.change(screen.getByPlaceholderText("Add a public comment..."), {
-      target: { value: "New comment" },
-    });
-
-    fireEvent.click(screen.getByTestId("comment-cancel-button"));
-    expect(screen.queryByText("New comment")).not.toBeInTheDocument();
-  });
-
-  test.skip("logs error if create comment API response format is incorrect", async () => {
-    createCommentsApi.mockResolvedValueOnce({
-      success: false,
-      message: "Error",
-    });
-
-    console.error = jest.fn();
-
-    renderWithRouter(
-      <CreateComments videoId="123" onCommentAdded={mockOnCommentAdded} />
-    );
-
-    const input = screen.getByPlaceholderText("Add a public comment...");
-    fireEvent.focus(input);
-    fireEvent.change(input, { target: { value: "Test comment" } });
-
-    const commentButton = screen.getByTestId("comment-save-button");
-    fireEvent.click(commentButton);
-
-    await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith(
-        "API response is not in the expected format:",
-        expect.anything()
-      );
-    });
-
-    expect(screen.queryByText("Test comment")).not.toBeInTheDocument();
-
-    console.error.mockRestore();
-  });
-
-  test.only("should add a comment with user details when the API call is successful", async () => {
     render(
       <CreateComments
         videoId="66430b7749bcf61f8a043d3e"
@@ -299,5 +247,87 @@ describe("CreateComments", () => {
       });
     });
     expect(input.value).toBe("");
+  });
+
+  test("cancels a comment while creating comment", async () => {
+    render(
+      <CreateComments
+        videoId="66430b7749bcf61f8a043d3e"
+        onCommentAdded={mockOnCommentAdded}
+      />
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Add a public comment..."), {
+      target: { value: "New comment" },
+    });
+
+    fireEvent.click(screen.getByTestId("comment-cancel-button"));
+    expect(screen.queryByText("New comment")).not.toBeInTheDocument();
+  });
+
+  test("handles case when API response is not in the expected format", async () => {
+    fetchUserDetails.mockResolvedValue({
+      success: true,
+      channelName: "Test Channel",
+    });
+    createCommentsApi.mockResolvedValue({ success: false, message: "Error" });
+
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+
+    render(
+      <CreateComments
+        videoId="66430b7749bcf61f8a043d3e"
+        onCommentAdded={mockOnCommentAdded}
+      />
+    );
+
+    await waitFor(() => {
+      expect(fetchUserDetails).toHaveBeenCalled();
+    });
+
+    const input = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.change(input, { target: { value: "This is a test comment" } });
+
+    const commentButton = screen.getByTestId("comment-save-button");
+    fireEvent.click(commentButton);
+
+    await waitFor(() => {
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        "API response is not in the expected format:",
+        { success: false, message: "Error" }
+      );
+    });
+
+    expect(consoleErrorSpy).toHaveBeenCalled();
+    consoleErrorSpy.mockRestore();
+  });
+
+  test("should call console.error and navigate to /error on API failure when error occurs in creating a comment", async () => {
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    createCommentsApi.mockRejectedValueOnce(new Error("API failure"));
+
+    render(
+      <CreateComments
+        videoId="66430b7749bcf61f8a043d3e"
+        onCommentAdded={mockOnCommentAdded}
+      />
+    );
+
+    const input = screen.getByPlaceholderText("Add a public comment...");
+    fireEvent.change(input, { target: { value: "This is a test comment" } });
+
+    const commentButton = screen.getByTestId("comment-save-button");
+    fireEvent.click(commentButton);
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith("/error");
+    });
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error in creating comment:",
+      expect.any(Error)
+    );
+    consoleErrorSpy.mockRestore();
   });
 });

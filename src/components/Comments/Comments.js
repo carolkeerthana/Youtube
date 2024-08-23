@@ -237,7 +237,7 @@ const Comments = ({ videoId }) => {
           prevReplies.map((reply) =>
             reply.id === replyId ? { ...reply, dropdownOpen: false } : reply
           )
-        );
+        ); 
       } else {
         console.error(
           "API response is not in the expected format:",

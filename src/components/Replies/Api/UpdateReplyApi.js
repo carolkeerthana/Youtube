@@ -1,4 +1,4 @@
-export const updateReply = async (updateData, id) => {
+export const updateReplyApi = async (updateData, id) => {
 
     const token = localStorage.getItem('token');
     if(!token){
