@@ -23,10 +23,10 @@
   display: none;
   margin-left: 10px;
 }
-.input-field.visible{
-  border-bottom: 2px solid #007BFF;
+.input-field.visible {
+  border-bottom: 2px solid #007bff;
 }
-.reply-buttons.visible{
+.reply-buttons.visible {
   display: flex;
   align-items: center;
 }
@@ -38,16 +38,16 @@
   cursor: pointer;
 }
 .reply-buttons button:last-child {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border-radius: 4px;
 }
 .reply-buttons button:first-child:hover {
   background-color: #ebebe3;
-}  
+}
 .reply-buttons button:last-child:hover {
   background-color: #1481f6;
-}  
+}
 /* .reply-avatar {
   width: 40px;
   height: 40px;

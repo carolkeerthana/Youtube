@@ -1,5 +1,5 @@
 // SidebarContext.js
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react";
 
 const SidebarContext = createContext();
 
@@ -7,7 +7,7 @@ const SidebarProvider = ({ children }) => {
   const [sidebar, setSidebar] = useState(true);
 
   const toggleSidebar = () => {
-    setSidebar(prev => !prev);
+    setSidebar((prev) => !prev);
   };
 
   return (

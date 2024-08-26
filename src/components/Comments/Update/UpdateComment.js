@@ -1,4 +1,4 @@
-import "./UpdateComment.css";
+// import "./UpdateComment.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userProfile from "../../../assets/user_profile.jpg";
@@ -43,10 +43,10 @@ const UpdateComment = ({
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
 
-    if (!isAuthenticated) {
-      navigate("/signin");
-      return;
-    }
+    // if (!isAuthenticated) {
+    //   navigate("/signin");
+    //   return;
+    // }
 
     if (!userDetails) {
       console.error("User details not available");
@@ -71,11 +71,11 @@ const UpdateComment = ({
   };
 
   const handleFocus = (e) => {
-    if (!isAuthenticated) {
-      navigate("/signin");
-    } else {
-      setFocused(true);
-    }
+    // if (!isAuthenticated) {
+    //   navigate("/signin");
+    // } else {
+    setFocused(true);
+    // }
   };
 
   // to handle canceling edit

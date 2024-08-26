@@ -14,11 +14,9 @@ import FormInput from "../../../util/FormInput";
 import { configureStore, createStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { AuthProvider } from "../../../util/AuthContext";
-// import store from "../../../components/Notification/store";
 import notificationReducer, {
   showNotification,
 } from "../../../components/Notification/notificationSlice";
-// import rootReducer from "../../../components/Notification/rootReducer";
 import LoginPage from "../../Login/LoginPage";
 
 const rootReducer = {
@@ -57,7 +55,7 @@ jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
   useNavigate: jest.fn(),
 }));
-// Mock resetPassword function
+
 jest.mock("../ResetPasswordApi", () => ({
   resetPassword: jest.fn(),
 }));
@@ -69,7 +67,9 @@ jest.mock("../../../components/Notification/notificationSlice", () => ({
 const renderWithProviders = (ui) => {
   return render(
     <Provider store={store}>
-      <MemoryRouter>{ui}</MemoryRouter>
+      <AuthProvider>
+        <MemoryRouter>{ui}</MemoryRouter>
+      </AuthProvider>
     </Provider>
   );
 };
@@ -390,7 +390,6 @@ describe("ResetPassword", () => {
     const passwordInput = screen.getByTestId("password");
     const confirmPasswordInput = screen.getByTestId("confirmPassword");
 
-    // Initial state
     expect(passwordInput.value).toBe("");
     expect(confirmPasswordInput.value).toBe("");
     expect(
@@ -400,7 +399,6 @@ describe("ResetPassword", () => {
       screen.queryByText("Passwords do not match")
     ).not.toBeInTheDocument();
 
-    // Simulate error state
     fireEvent.change(passwordInput, {
       target: { name: "password", value: "short" },
     });
@@ -408,11 +406,9 @@ describe("ResetPassword", () => {
       target: { name: "confirmPassword", value: "mismatch" },
     });
 
-    // Simulate the presence of errors by triggering blur
     fireEvent.blur(passwordInput);
     fireEvent.blur(confirmPasswordInput);
 
-    // Simulate the presence of error messages
     fireEvent.change(passwordInput, {
       target: { name: "password", value: "InvalidPass" },
     });
@@ -420,7 +416,6 @@ describe("ResetPassword", () => {
       target: { name: "confirmPassword", value: "MismatchPass" },
     });
 
-    // Clear errors by changing values again
     fireEvent.change(passwordInput, {
       target: { name: "password", value: "NewPassword1!" },
     });

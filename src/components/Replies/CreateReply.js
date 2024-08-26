@@ -32,9 +32,9 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
     }
   }, [isAuthenticated]);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  // const toggleDropdown = () => {
+  //   setDropdownOpen(!dropdownOpen);
+  // };
 
   const handleReplyChange = (e) => {
     setNewReply(e.target.value);
@@ -44,13 +44,12 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
     e.preventDefault();
     console.log("entered submit fnc");
 
-    if (!isAuthenticated) {
-      navigate("/signin");
-      return;
-    }
+    // if (!isAuthenticated) {
+    //   navigate("/signin");
+    //   return;
+    // }
 
     if (!userDetails) {
-      console.log("User details not available", userDetails);
       console.error("User details not available");
       return;
     }
@@ -60,26 +59,22 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
       text: newReply,
     };
     console.log(replyData);
-    console.log("Submitting reply with data:", replyData);
+
     try {
       const response = await createReplyApi(replyData);
-      console.log("User Details before adding reply:", userDetails);
       if ((response.success || response.sucess) && response.data) {
         const replyWithChannel = {
           ...response.data,
           channelName: userDetails.channelName,
         };
-        console.log(
-          "Final reply data being passed to onReplyAdded:",
-          replyWithChannel
-        );
         onReplyAdded(replyWithChannel);
         setNewReply("");
         setFocused(false);
       } else {
         console.error("API response is not in the expected format:", response);
       }
-    } catch {
+    } catch (error) {
+      console.error("Error in creating reply:", error);
       navigate("/error");
     }
   };

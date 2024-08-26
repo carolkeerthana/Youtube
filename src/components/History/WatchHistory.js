@@ -1,4 +1,4 @@
-import "./WatchHistory.css";
+// import "./WatchHistory.css";
 import { fetchHistories } from "./HistoryApi/GetHistoryApi";
 import "./History.css";
 import React, { useEffect, useState } from "react";

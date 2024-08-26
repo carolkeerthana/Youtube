@@ -229,15 +229,17 @@ const Comments = ({ videoId }) => {
     try {
       const response = await deleteReply(replyId);
       if (response.success) {
-        // Remove the deleted comment from state
-        setReplies((prevComments) =>
-          prevComments.filter((reply) => reply.id !== replyId)
-        );
         setReplies((prevReplies) =>
-          prevReplies.map((reply) =>
-            reply.id === replyId ? { ...reply, dropdownOpen: false } : reply
-          )
-        ); 
+          prevReplies.filter((reply) => reply.id !== replyId)
+        );
+        // setReplies((prevComments) =>
+        //   prevComments.filter((reply) => reply.id !== replyId)
+        // );
+        // setReplies((prevReplies) =>
+        //   prevReplies.map((reply) =>
+        //     reply.id === replyId ? { ...reply, dropdownOpen: false } : reply
+        //   )
+        // );
       } else {
         console.error(
           "API response is not in the expected format:",

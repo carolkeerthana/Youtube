@@ -64,12 +64,13 @@ const ResetPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("entered submit");
     if (validateForm()) {
       try {
         const response = await resetPassword(token, password);
 
         if (response.success) {
+          console.log("entered success");
           dispatch(
             showNotification(
               "Your password has been reset successfully. Please sign in with your new password."
