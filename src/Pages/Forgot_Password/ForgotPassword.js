@@ -29,7 +29,6 @@ const ForgotPassword = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Clear fieldError when the user starts typing in the email field
     if (fieldError[name]) {
       setFieldError({ ...fieldError, [name]: "" });
     }

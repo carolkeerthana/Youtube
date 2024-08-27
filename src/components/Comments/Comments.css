@@ -191,12 +191,12 @@
 .edit-buttons button:last-child:hover {
   background-color: #1481f6;
 }
-.update-reply-container {
+/* .update-reply-container {
   display: flex;
   align-items: center;
   margin-top: 20px;
   margin-bottom: 20px;
-}
+} */
 .update-reply-container img {
   display: none;
 }

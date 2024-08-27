@@ -1,6 +1,7 @@
 .update-reply-container {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  flex-direction: column;
   margin-top: 20px;
   margin-bottom: 20px;
 }
@@ -13,13 +14,14 @@
 }
 
 .update-reply-input {
+  width: 100%;
   flex: 1;
   border: none;
   border-bottom: 1px solid #ccc;
-  padding: 5px;
+  padding: 6px 10px;
   outline: none;
   margin-bottom: 15px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .update-reply-input.visible {

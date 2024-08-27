@@ -1,4 +1,4 @@
-// import "./UpdateComment.css";
+import "./UpdateComment.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userProfile from "../../../assets/user_profile.jpg";
@@ -84,7 +84,7 @@ const UpdateComment = ({
   };
 
   return (
-    <div className="new-comment">
+    <div className="update-comment">
       <input
         className={`input-field ${focused ? "visible" : ""}`}
         type="text"
@@ -95,7 +95,7 @@ const UpdateComment = ({
         onFocus={handleFocus}
         onBlur={() => !editComment && setFocused(false)}
       />
-      <div className={`comment-buttons ${focused ? "visible" : ""}`}>
+      <div className={`update-comment-buttons ${focused ? "visible" : ""}`}>
         <button data-testid="comment-edit-cancel-button" onClick={handleCancel}>
           Cancel
         </button>

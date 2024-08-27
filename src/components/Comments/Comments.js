@@ -480,7 +480,7 @@ const Comments = ({ videoId }) => {
                             {editReplyIndex !== index ? (
                               <div>
                                 <span className="reply-channel-name">
-                                  {reply.channelName}{" "}
+                                  {reply.channelName}
                                 </span>
                                 <span className="reply-moments">
                                   {moment(reply.createdAt).fromNow()}

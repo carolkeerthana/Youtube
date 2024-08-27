@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import './UpdateReply.css'
+import "./UpdateReply.css";
 import { useNavigate } from "react-router-dom";
 import userProfile from "../../assets/user_profile.jpg";
 import { useAuth } from "../../util/AuthContext";
@@ -87,7 +87,7 @@ const UpdateReply = ({
 
   return (
     <div className="update-reply-container">
-      <img src={userProfile} alt="" />
+      {/* <img src={userProfile} alt="" /> */}
       <input
         className={`update-reply-input ${focused ? "visible" : ""}`}
         type="text"

@@ -113,7 +113,7 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
             onClick={() => handleActivePageClick("/")}
             data-testid="home-link"
           >
-            <img src={home} alt="" />
+            <img src={home} style={{ width: "20px", height: "20px" }} alt="" />
             <p>Home</p>
           </div>
         </Link>
@@ -250,7 +250,7 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
               onClick={() => handleActivePageClick("send feedback")}
               data-testid="send-feedback-link"
             >
-              <img src={feedback} alt="" />
+              <img src={feedback} width={20} height={20} alt="" />
               <p>Send feedback</p>
             </div>
           </div>

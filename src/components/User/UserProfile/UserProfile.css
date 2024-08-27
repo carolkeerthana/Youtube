@@ -2,7 +2,7 @@
   position: absolute;
   top: 55px;
   right: 20px;
-  width: 250px;
+  width: 300px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -35,13 +35,13 @@
 .user-name {
   font-weight: bold;
   color: #545454;
-  font-size: 18px;
+  font-size: 15px;
   margin: 0;
 }
 
 .user-email {
   color: #888;
-  font-size: 18px;
+  font-size: 14px;
   margin: 0;
 }
 
@@ -70,3 +70,19 @@
   font-size: 20px;
   color: #555;
 }
+@media screen and (max-width: 1297px) and (max-height: 738px) {
+  .user-profile {
+    width: 300px;
+  }
+  .user-info {
+    font-size: 14px;
+  }
+}
+/* @media (max-width: 800px) and (max-height: 1300px){
+  .user-info {
+    font-size: 14px;
+  }
+  .user-profile {
+    width: 300px;
+  }
+} */

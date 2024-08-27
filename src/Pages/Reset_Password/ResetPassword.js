@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./ResetPassword.css";
-import { FaExclamationCircle } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { resetPassword } from "./ResetPasswordApi";
 import validateAllFields from "../../util/ValidationForm";
@@ -11,8 +10,6 @@ import { showNotification } from "../../components/Notification/notificationSlic
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordFocused, setPasswordFocused] = useState(false);
-  const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState(null);
   const [error, setError] = useState(null);
@@ -50,7 +47,6 @@ const ResetPassword = () => {
       setConfirmPassword(value);
     }
 
-    // Clear fieldError when the user starts typing in the field
     if (fieldErrors[name]) {
       setFieldErrors({ ...fieldErrors, [name]: "" });
     }
@@ -79,7 +75,7 @@ const ResetPassword = () => {
           setFieldErrors({});
           setPassword("");
           setConfirmPassword("");
-          navigate("/signin"); // Pass success message as query parameter
+          navigate("/signin");
         } else {
           console.log("Reset failed");
           setError("Password reset failed. Please try again.");

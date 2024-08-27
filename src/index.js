@@ -10,7 +10,8 @@ import store from "./components/Notification/store";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <BrowserRouter basename="/training/keerthana">
+    <BrowserRouter>
+      {/* <BrowserRouter basename="/training/keerthana"> */}
       <AuthProvider>
         <App />
       </AuthProvider>

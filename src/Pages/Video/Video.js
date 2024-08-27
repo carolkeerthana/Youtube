@@ -25,9 +25,9 @@ const Video = ({ sidebar, setSidebar }) => {
     };
   }, [sidebar]);
 
-  const handleVideoSidebarToggle = () => {
-    setSidebar((prevSidebar) => !prevSidebar);
-  };
+  // const handleVideoSidebarToggle = () => {
+  //   setSidebar((prevSidebar) => !prevSidebar);
+  // };
 
   console.log(videoId);
 
@@ -48,7 +48,7 @@ const Video = ({ sidebar, setSidebar }) => {
       <div className="main-content">
         <div className={`play-container ${sidebar ? "" : "large-container"}`}>
           <PlayVideo videoId={videoId} />
-          <Recommended videoId={videoId} categoryId={categoryId} />
+          <Recommended videoId={videoId} />
         </div>
       </div>
       {sidebar && (
