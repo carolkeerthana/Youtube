@@ -1,8 +1,8 @@
 .update-reply-container {
   display: flex;
-  /* align-items: center; */
+  align-items: flex-end;
   flex-direction: column;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 20px;
 }
 

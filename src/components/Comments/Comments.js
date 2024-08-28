@@ -377,7 +377,6 @@ const Comments = ({ videoId }) => {
                   </div>
                 ) : null}
                 <div className="comment-actions">
-                  {/* {console.log('editCommentIndex:', editCommentIndex)} */}
                   {editCommentIndex !== index && (
                     <div className="icon-circle">
                       <span>
@@ -390,9 +389,6 @@ const Comments = ({ videoId }) => {
                       </span>
                     </div>
                   )}
-                  {/* {console.log('isOwner:', isOwner)}
-                                    {console.log('commentDropdownIndex:', commentDropdownIndex)}
-                                    {console.log('index:', index)} */}
 
                   {isOwner && commentDropdownIndex === index && (
                     <div
@@ -472,12 +468,13 @@ const Comments = ({ videoId }) => {
                   {commentReplies.map((reply) => {
                     const isReplyOwner =
                       isAuthenticated && reply.userId?._id === user?.id;
+                    const isEditingReply = editReplyId === reply.id;
                     return (
                       <div key={reply.id} className="reply">
                         <img src={userProfile} className="reply-image" alt="" />
                         <div className="reply-detail">
                           <div className="reply-header">
-                            {editReplyIndex !== index ? (
+                            {!isEditingReply && (
                               <div>
                                 <span className="reply-channel-name">
                                   {reply.channelName}
@@ -486,9 +483,10 @@ const Comments = ({ videoId }) => {
                                   {moment(reply.createdAt).fromNow()}
                                 </span>
                               </div>
-                            ) : null}
+                            )}
+                            {/* // ) : null} */}
                             <div className="reply-actions">
-                              {editReplyIndex !== index && (
+                              {!isEditingReply && (
                                 <div className="icon-circle">
                                   <span>
                                     <FontAwesomeIcon

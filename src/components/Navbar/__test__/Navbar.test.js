@@ -8,7 +8,6 @@ import notificationIcon from "../../../assets/notification.png";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { useAuth } from "../../../util/AuthContext";
 import { searchText } from "../../Search/SearchApi";
-import App from "../../../App";
 
 const setSidebarMock = jest.fn();
 const mockNavigate = jest.fn();

@@ -123,13 +123,11 @@ const PlayVideo = ({ videoId }) => {
             <p>{videoData.userId.channelName}</p>
             <span>{videoData.userId.subscribers} subscribers</span>
           </div>
-          {/* <button> */}
           <CreateSubscriber
             channelId={videoData.userId.id}
             isSubscribed={isSubscribed}
             setIsSubscribed={setIsSubscribed}
           />
-          {/* </button> */}
         </div>
       )}
       <div className="vid-description">

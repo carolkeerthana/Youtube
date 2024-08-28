@@ -82,6 +82,8 @@ const UpdateReply = ({
   };
 
   const handleCancel = () => {
+    setEditReply("");
+    setFocused(false);
     cancelEdit();
   };
 

@@ -47,11 +47,11 @@ describe("WatchHistory", () => {
       success: true,
       data: mockHistory,
       totalPages: 1,
-    }); // Mock the fetchHistories function
+    });
   });
 
   afterEach(() => {
-    jest.clearAllMocks(); // Clear mocks after each test
+    jest.clearAllMocks();
   });
 
   test("should renders watch history text", () => {
@@ -65,7 +65,11 @@ describe("WatchHistory", () => {
   });
 
   test("renders watch history", async () => {
-    render(<WatchHistory history={mockHistory} setHistory={setHistory} />);
+    render(
+      <BrowserRouter>
+        <WatchHistory history={mockHistory} setHistory={setHistory} />
+      </BrowserRouter>
+    );
 
     await waitFor(() => {
       expect(fetchHistories).toHaveBeenCalledWith(1, "watch");
@@ -76,7 +80,11 @@ describe("WatchHistory", () => {
   });
 
   test("sets correct state on successful fetch", async () => {
-    render(<WatchHistory history={mockHistory} setHistory={setHistory} />);
+    render(
+      <BrowserRouter>
+        <WatchHistory history={mockHistory} setHistory={setHistory} />
+      </BrowserRouter>
+    );
 
     await waitFor(() => expect(fetchHistories).toHaveBeenCalled());
 
@@ -95,39 +103,6 @@ describe("WatchHistory", () => {
     });
     expect(setHistory).toHaveBeenCalledWith([]);
   });
-
-  // test('fetchHistoryVideos - handles fetch failure', async () => {
-  //     fetchHistories.mockRejectedValueOnce(new Error('Failed to fetch histories'));
-
-  //     render(
-  //     <WatchHistory history={[]} setHistory={setHistory} />);
-
-  //     await waitFor(() => {
-  //         expect(screen.getByText('Error fetching data')).toBeInTheDocument();
-  //     });
-
-  //     await waitFor(() => {
-  //         expect(fetchHistories).toHaveBeenCalledWith(1, 'watch');
-  //     });
-
-  //     await waitFor(() => {
-  //         expect(screen.queryByText('Video Title1')).not.toBeInTheDocument();
-  //     });
-  // });
-
-  // test('handles fetch error', async () => {
-  //     fetchHistories.mockRejectedValueOnce(new Error('Failed to fetch histories'));
-
-  //     render(<WatchHistory history={[]} setHistory={jest.fn()} />);
-
-  //     await waitFor(() => {
-  //         expect(screen.getByText('Error fetching data')).toBeInTheDocument();
-  //     });
-
-  //     await waitFor(() => {
-  //         expect(screen.queryByText('Video Title1')).not.toBeInTheDocument(); // Ensure no history cards are rendered
-  //     });
-  // });
 
   test.skip("handles delete history", async () => {
     const setHistoryMock = jest.fn();
@@ -160,7 +135,6 @@ describe("WatchHistory", () => {
 
     let localHistory = [...mockHistory];
 
-    // Mock implementation of setHistory to update localHistory
     setHistory.mockImplementation((update) => {
       if (typeof update === "function") {
         localHistory = update(localHistory);
@@ -187,7 +161,6 @@ describe("WatchHistory", () => {
 
     expect(setHistory).toHaveBeenCalledWith(expect.any(Function));
 
-    // Ensure that the deleted history item is not in the state anymore
     await waitFor(() => {
       expect(localHistory).toEqual([
         {
@@ -207,7 +180,11 @@ describe("WatchHistory", () => {
   });
 
   test("displays notification after deleting history", async () => {
-    render(<WatchHistory history={mockHistory} setHistory={jest.fn()} />);
+    render(
+      <BrowserRouter>
+        <WatchHistory history={mockHistory} setHistory={jest.fn()} />
+      </BrowserRouter>
+    );
 
     deleteHistory.mockResolvedValueOnce({ success: true });
 
@@ -224,7 +201,7 @@ describe("WatchHistory", () => {
       () => {
         expect(
           screen.queryByText("History Deleted Successfully")
-        ).not.toBeInTheDocument(); // Ensure notification disappears after 3 seconds
+        ).not.toBeInTheDocument();
       },
       { timeout: 3500 }
     );

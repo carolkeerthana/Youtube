@@ -1,10 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
-import notificationReducer, {
-  showNotification,
-  hideNotification,
-} from "../notificationSlice";
+import notificationReducer from "../notificationSlice";
 import CustomNotification from "../CustomNotification";
 
 const renderWithProviders = (ui, { initialState } = {}) => {
@@ -34,5 +31,5 @@ test("should hide the notification after 3 seconds", async () => {
       expect(screen.queryByText("Test notification")).toBeNull();
     },
     { timeout: 3500 }
-  ); // Wait a bit longer than the timeout to ensure it's been cleared
+  );
 });
