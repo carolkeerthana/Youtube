@@ -2,4 +2,6 @@
   width: 70%;
   flex-direction: column;
   height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

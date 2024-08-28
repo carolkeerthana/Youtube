@@ -489,7 +489,7 @@ describe("Sidebar", () => {
     expect(screen.getByTestId("overlay")).toBeInTheDocument();
   });
 
-  test.skip("should close sidebar when overlay is clicked", () => {
+  test("should close sidebar when overlay is clicked", async () => {
     const setSidebar = setup("video", true);
     render(
       <BrowserRouter>
@@ -501,8 +501,34 @@ describe("Sidebar", () => {
     const overlay = screen.getByTestId("overlay");
     fireEvent.click(overlay);
 
-    expect(document.body.style.overflow).toBe("auto");
+    await waitFor(() => {
+      expect(document.body.style.overflow).toBe("auto");
+    });
     expect(setSidebar).toHaveBeenCalledWith(false);
+  });
+
+  test("should show sidebar when `sidebar` prop is true", () => {
+    render(
+      <BrowserRouter>
+        <Video sidebar={true} setSidebar={jest.fn()} />
+      </BrowserRouter>
+    );
+
+    // Check if the sidebar has the 'active' class, which indicates it's open
+    const sidebarElement = screen.getByTestId("sidebar");
+    expect(sidebarElement).toHaveClass("active");
+  });
+
+  test("should hide sidebar when `sidebar` prop is false", () => {
+    render(
+      <BrowserRouter>
+        <Video sidebar={false} setSidebar={jest.fn()} />
+      </BrowserRouter>
+    );
+
+    // Check if the sidebar does not have the 'active' class, indicating it's closed
+    const sidebarElement = screen.getByTestId("sidebar");
+    expect(sidebarElement).not.toHaveClass("active");
   });
 
   test("prevents scrolling when sidebar is open on video page", () => {

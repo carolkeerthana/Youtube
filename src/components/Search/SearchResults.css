@@ -3,6 +3,7 @@
   flex-direction: column;
   padding: 20px;
   width: 100%;
+  height: 100vh;
 }
 
 .search-result-item {
@@ -46,4 +47,8 @@
 .description {
   font-size: 16px;
   color: #606060;
+}
+.not-found{
+  display: flex;
+  align-items: center;
 }

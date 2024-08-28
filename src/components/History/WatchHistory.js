@@ -3,17 +3,19 @@ import { fetchHistories } from "./HistoryApi/GetHistoryApi";
 import "./History.css";
 import React, { useEffect, useState } from "react";
 import closeIcon from "../../assets/close.png";
-import xMark from "../../assets/x-mark.png";
 import { deleteHistory } from "./HistoryApi/DeleteHistoryApi";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../Notification/notificationSlice";
+import CustomNotification from "../Notification/CustomNotification";
 
 const WatchHistory = ({ history, setHistory }) => {
   // const [histories, setHistories] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [notification, setNotification] = useState("");
+  // const [notification, setNotification] = useState("");
+  const dispatch = useDispatch();
 
   const fetchHistoryVideos = async (page) => {
     try {
@@ -36,15 +38,15 @@ const WatchHistory = ({ history, setHistory }) => {
   //     setCurrentPage(page)
   // }
 
-  const handleDeleteHistory = async (historyId) => {
+  const handleDeleteHistory = async (historyId, event) => {
+    event.stopPropagation();
     try {
       const response = await deleteHistory(historyId);
       if (response.success) {
         setHistory((prevHistories) =>
           prevHistories.filter((history) => history._id !== historyId)
         );
-        setNotification("History Deleted Successfully");
-        setTimeout(() => setNotification(""), 3000); // Hide notification after 3 seconds
+        dispatch(showNotification("History Deleted Successfully"));
       }
     } catch (error) {
       console.error("Error deleting history:", error);
@@ -59,33 +61,36 @@ const WatchHistory = ({ history, setHistory }) => {
       ) : history && history.length > 0 ? (
         <>
           {history.map((history) => (
-            <Link to={`/watch/${history.videoId._id}`} className="history-link">
-              <div className="history-card" key={history._id}>
-                <div className="history-image">
+            <div className="history-card" key={history._id}>
+              <div className="history-image">
+                <Link
+                  to={`/watch/${history.videoId._id}`}
+                  className="history-link"
+                >
                   <img
                     src={`https://apps.rubaktechie.me/uploads/thumbnails/${history.videoId.thumbnailUrl}`}
                     alt={history.videoId.title}
                   />
-                </div>
-                <div className="history-details">
-                  <div className="title-header">
-                    <p className="history-title">{history.videoId.title}</p>
-                    <button
-                      className="delete-button"
-                      data-testid={`history-delete-${history._id}`}
-                      onClick={() => handleDeleteHistory(history._id)}
-                    >
-                      <img src={closeIcon} alt="close-icon" />
-                    </button>
-                  </div>
-                  <p className="title-p">
-                    {history.userId.channelName} &nbsp; &bull; &nbsp;{" "}
-                    {history.videoId.views} views
-                  </p>
-                  <p className="title-p">{history.videoId.description}</p>
-                </div>
+                </Link>
               </div>
-            </Link>
+              <div className="history-details">
+                <div className="title-header">
+                  <p className="history-title">{history.videoId.title}</p>
+                  <button
+                    className="delete-button"
+                    data-testid={`history-delete-${history._id}`}
+                    onClick={(event) => handleDeleteHistory(history._id, event)}
+                  >
+                    <img src={closeIcon} alt="close-icon" />
+                  </button>
+                </div>
+                <p className="title-p">
+                  {history.userId.channelName} &nbsp; &bull; &nbsp;{" "}
+                  {history.videoId.views} views
+                </p>
+                <p className="title-p">{history.videoId.description}</p>
+              </div>
+            </div>
           ))}
           {/* <Pagination
                   currentPage = {currentPage}
@@ -95,7 +100,8 @@ const WatchHistory = ({ history, setHistory }) => {
       ) : (
         <p>No watch history yet.</p>
       )}
-      {notification && <div className="notification">{notification}</div>}
+      {/* {notification && <div className="notification">{notification}</div>} */}
+      <CustomNotification />
     </div>
   );
 };

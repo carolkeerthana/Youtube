@@ -5,6 +5,7 @@
   overflow-x: hidden;
   padding-right: -60px;
   margin: 15px;
+  height: 100vh;
 }
 .left-side-history {
   width: 70%;
@@ -34,7 +35,7 @@ h2 {
 .history-details .title-p {
   margin-bottom: 10px;
   color: #5a5a5a;
-  font-size: 18px;
+  font-size: 16px;
 }
 .history-card {
   display: flex;
@@ -53,7 +54,7 @@ h2 {
 .history-card h2,
 .history-card p {
   width: 100%;
-  margin: 0; /* Reset margin to avoid extra spacing */
+  margin: 0;
 }
 .history-card p {
   margin-top: 5px;
@@ -141,11 +142,7 @@ h2 {
   background-color: rgb(231, 229, 229);
 }
 .right-side-history div.active {
-  background-color: rgb(
-    209,
-    209,
-    209
-  ); /* Example: change background color on hover */
+  background-color: rgb(209, 209, 209);
 }
 
 .right-side-history span {
@@ -165,14 +162,14 @@ h2 {
   width: 17px;
 }
 .search-text .delete-button {
-  position: absolute;
+  position: relative;
   width: 50px;
   height: 50px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  top: 0;
-  right: -30%;
+  justify-content: space-between;
+  /* top: 0; */
+  right: 30%;
   background: none;
   border: none;
   /* font-size: 1.5rem; */

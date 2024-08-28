@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import WatchHistory from "./WatchHistory";
 import SearchHistory from "./SearchHistory";
 import { deleteAllHistory } from "./HistoryApi/DeleteHistoriesApi";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../Notification/notificationSlice";
 
 const History = () => {
   const [historyType, setHistoryType] = useState("watch");
   const [watchHistory, setWatchHistory] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
-  const [notification, setNotification] = useState("");
+  // const [notification, setNotification] = useState("");
+  const dispatch = useDispatch();
 
   const handleHistoryTypeChange = (event) => {
     setHistoryType(event.target.value);
@@ -20,15 +23,16 @@ const History = () => {
       if (response.success) {
         const historyTypeInUppercase =
           historyType.charAt(0).toUpperCase() + historyType.substring(1);
-        setNotification(
-          `${historyTypeInUppercase} Histories Deleted Successfully`
+        dispatch(
+          showNotification(
+            `${historyTypeInUppercase} Histories Deleted Successfully`
+          )
         );
         if (historyType === "watch") {
           setWatchHistory([]);
         } else {
           setSearchHistory([]);
         }
-        setTimeout(() => setNotification(""), 3000); // Hide notification after 3 seconds
       } else {
         console.error("Failed to delete histories:", response);
       }
@@ -85,11 +89,11 @@ const History = () => {
           CLEAR ALL {historyType.toUpperCase()} HISTORY
         </span>
       </div>
-      {notification && (
+      {/* {notification && (
         <div className="notification" data-testid="notify-delete">
           {notification}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

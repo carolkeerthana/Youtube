@@ -12,11 +12,6 @@
   position: relative;
   flex-direction: column;
 }
-/* .play-container {
-
-    padding-left: 20px;
-    padding-right: 20px;
-  } */
 .nav-menu {
   display: flex;
   transition: margin-left 0.3s;
@@ -28,15 +23,13 @@
   transform: translateX(-100%);
   transition: transform 0.3s ease;
 }
-.video-sidebar {
-  /* width: 300px; */
-}
 .main-content {
   flex-grow: 1;
 }
 .large-container {
   margin-left: 0;
   margin-right: 0;
+  height: 100vh;
 }
 .video-sidebar-overlay {
   position: fixed;
@@ -45,7 +38,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 10; /* Ensure the overlay is below the sidebar */
+  z-index: 10;
 }
 @media (max-width: 1023px) {
   .play-container {

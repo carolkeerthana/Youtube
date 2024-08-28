@@ -5,13 +5,16 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import closeIcon from "../../assets/close.png";
 import { deleteHistory } from "./HistoryApi/DeleteHistoryApi";
+import { useDispatch } from "react-redux";
+import { showNotification } from "../Notification/notificationSlice";
 
 const SearchHistory = ({ history, setHistory }) => {
   // const [histories, setHistories] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [notification, setNotification] = useState("");
+  // const [notification, setNotification] = useState("");
+  const dispatch = useDispatch();
 
   const fetchHistoryVideos = async (page) => {
     try {
@@ -30,10 +33,6 @@ const SearchHistory = ({ history, setHistory }) => {
     fetchHistoryVideos(currentPage);
   }, [currentPage]);
 
-  // const handlePageChange = (page) => {
-  //     setCurrentPage(page)
-  // }
-
   const handleDeleteHistory = async (historyId) => {
     try {
       const response = await deleteHistory(historyId);
@@ -41,8 +40,7 @@ const SearchHistory = ({ history, setHistory }) => {
         setHistory((prevHistories) =>
           prevHistories.filter((history) => history._id !== historyId)
         );
-        setNotification("History deleted successfully");
-        setTimeout(() => setNotification(""), 3000); // Hide notification after 3 seconds
+        dispatch(showNotification("History deleted successfully"));
       }
     } catch (error) {
       console.error("Error deleting history:", error);
@@ -62,6 +60,7 @@ const SearchHistory = ({ history, setHistory }) => {
                 <p>{history.searchText}</p>
                 <button
                   className="delete-button"
+                  data-testid={`search-history-delete-${history._id}`}
                   onClick={() => handleDeleteHistory(history._id)}
                 >
                   <img src={closeIcon} alt="" />
@@ -72,15 +71,11 @@ const SearchHistory = ({ history, setHistory }) => {
               </div>
             </div>
           ))}
-          {/* <Pagination
-                  currentPage = {currentPage}
-                  totalPages = {totalPages}
-                  onPageChange={handlePageChange}/>     */}
         </>
       ) : (
         <p>No search history yet.</p>
       )}
-      {notification && <div className="notification">{notification}</div>}
+      {/* {notification && <div className="notification">{notification}</div>} */}
     </div>
   );
 };

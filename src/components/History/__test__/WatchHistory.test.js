@@ -3,6 +3,8 @@ import { fetchHistories } from "../HistoryApi/GetHistoryApi";
 import WatchHistory from "../WatchHistory";
 import { BrowserRouter } from "react-router-dom";
 import { deleteHistory } from "../HistoryApi/DeleteHistoryApi";
+import { Provider } from "react-redux";
+import store from "../../Notification/store";
 
 jest.mock("../HistoryApi/GetHistoryApi.js", () => ({
   fetchHistories: jest.fn(),
@@ -56,9 +58,11 @@ describe("WatchHistory", () => {
 
   test("should renders watch history text", () => {
     render(
-      <BrowserRouter>
-        <WatchHistory history={[]} setHistory={jest.fn()} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <WatchHistory history={[]} setHistory={jest.fn()} />
+        </BrowserRouter>
+      </Provider>
     );
     const watchHistoryText = screen.getByText("Watch History");
     expect(watchHistoryText).toBeInTheDocument();
@@ -66,9 +70,11 @@ describe("WatchHistory", () => {
 
   test("renders watch history", async () => {
     render(
-      <BrowserRouter>
-        <WatchHistory history={mockHistory} setHistory={setHistory} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <WatchHistory history={mockHistory} setHistory={setHistory} />
+        </BrowserRouter>
+      </Provider>
     );
 
     await waitFor(() => {
@@ -81,9 +87,11 @@ describe("WatchHistory", () => {
 
   test("sets correct state on successful fetch", async () => {
     render(
-      <BrowserRouter>
-        <WatchHistory history={mockHistory} setHistory={setHistory} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <WatchHistory history={mockHistory} setHistory={setHistory} />
+        </BrowserRouter>
+      </Provider>
     );
 
     await waitFor(() => expect(fetchHistories).toHaveBeenCalled());
@@ -96,7 +104,11 @@ describe("WatchHistory", () => {
   test("displays error message on fetch failure", async () => {
     fetchHistories.mockRejectedValueOnce(new Error("Error fetching data"));
 
-    render(<WatchHistory history={[]} setHistory={setHistory} />);
+    render(
+      <Provider store={store}>
+        <WatchHistory history={[]} setHistory={setHistory} />
+      </Provider>
+    );
 
     await waitFor(() => {
       expect(screen.getByText("Error fetching data")).toBeInTheDocument();
@@ -107,11 +119,13 @@ describe("WatchHistory", () => {
   test.skip("handles delete history", async () => {
     const setHistoryMock = jest.fn();
     render(
-      <WatchHistory
-        history={mockHistory}
-        setHistory={setHistoryMock}
-        setError={jest.fn()}
-      />
+      <Provider store={store}>
+        <WatchHistory
+          history={mockHistory}
+          setHistory={setHistoryMock}
+          setError={jest.fn()}
+        />
+      </Provider>
     );
 
     deleteHistory.mockResolvedValueOnce({ success: true });
@@ -144,9 +158,11 @@ describe("WatchHistory", () => {
     });
 
     render(
-      <BrowserRouter>
-        <WatchHistory history={mockHistory} setHistory={setHistory} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <WatchHistory history={mockHistory} setHistory={setHistory} />
+        </BrowserRouter>
+      </Provider>
     );
 
     expect(screen.getByText("Video Title1")).toBeInTheDocument();
@@ -181,9 +197,11 @@ describe("WatchHistory", () => {
 
   test("displays notification after deleting history", async () => {
     render(
-      <BrowserRouter>
-        <WatchHistory history={mockHistory} setHistory={jest.fn()} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <WatchHistory history={mockHistory} setHistory={jest.fn()} />
+        </BrowserRouter>
+      </Provider>
     );
 
     deleteHistory.mockResolvedValueOnce({ success: true });
@@ -215,9 +233,11 @@ describe("WatchHistory", () => {
     deleteHistory.mockRejectedValueOnce(new Error("Failed to delete history"));
 
     render(
-      <BrowserRouter>
-        <WatchHistory history={mockHistory} setHistory={jest.fn()} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <WatchHistory history={mockHistory} setHistory={jest.fn()} />
+        </BrowserRouter>
+      </Provider>
     );
 
     const deleteButton = screen.getByTestId("history-delete-1");
@@ -238,7 +258,11 @@ describe("WatchHistory", () => {
   });
 
   test("displays no watch history message if history is empty", () => {
-    render(<WatchHistory history={[]} setHistory={setHistory} />);
+    render(
+      <Provider store={store}>
+        <WatchHistory history={[]} setHistory={setHistory} />
+      </Provider>
+    );
 
     expect(screen.getByText("No watch history yet.")).toBeInTheDocument();
   });

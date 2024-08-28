@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 const Video = ({ sidebar, setSidebar }) => {
-  const { videoId} = useParams();
+  const { videoId } = useParams();
 
   useEffect(() => {
     setSidebar(false);
