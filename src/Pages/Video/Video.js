@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 
 const Video = ({ sidebar, setSidebar }) => {
-  const { videoId, categoryId } = useParams();
+  const { videoId} = useParams();
 
   useEffect(() => {
     setSidebar(false);
@@ -18,16 +18,10 @@ const Video = ({ sidebar, setSidebar }) => {
     } else {
       document.body.style.overflow = "auto";
     }
-
-    // Clean up on component unmount
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [sidebar]);
-
-  // const handleVideoSidebarToggle = () => {
-  //   setSidebar((prevSidebar) => !prevSidebar);
-  // };
 
   console.log(videoId);
 
@@ -37,13 +31,6 @@ const Video = ({ sidebar, setSidebar }) => {
         sidebar ? "nav-menu active" : "nav-menu"
       }`}
     >
-      {/* <img 
-        className='menu-icon' 
-        onClick={handleVideoSidebarToggle } 
-        src={menuIcon} 
-        alt='menu' 
-        data-testid='menu-icon'
-      /> */}
       <Sidebar sidebar={sidebar} setSidebar={setSidebar} page="video" />
       <div className="main-content">
         <div className={`play-container ${sidebar ? "" : "large-container"}`}>

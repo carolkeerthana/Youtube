@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Sidebar from "../Sidebar";
 import { BrowserRouter } from "react-router-dom";
 import { useAuth } from "../../../util/AuthContext";
+import Video from "../Video";
 
 jest.mock("../../../util/AuthContext.js", () => ({
   useAuth: jest.fn(),
@@ -392,8 +393,15 @@ describe("Sidebar", () => {
     expect(document.body.style.overflow).toBe("hidden");
   });
 
+  
   test("allows scrolling when sidebar is closed on video page", () => {
-    setup("video", true);
+    const setSidebar = setup("video", true);
+
+    render(
+      <BrowserRouter>
+        <Video sidebar={true} setSidebar={setSidebar} />
+      </BrowserRouter>
+    );
 
     fireEvent.click(screen.getByTestId("overlay"));
     fireEvent.click(screen.getByTestId("overlay"));

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./PlayVideo.css";
-import like from "../../assets/like.png";
-import dislike from "../../assets/dislike.png";
 import share from "../../assets/share.png";
 import save from "../../assets/save.png";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +15,7 @@ import { CreateHistory } from "../History/HistoryApi/CreateHistoryApi";
 const PlayVideo = ({ videoId }) => {
   const [videoData, setVideoData] = useState(null);
   const [userFeeling, setUserFeeling] = useState(null);
-  const [isSubscribed, setIsSubscribed] = useState(false); //initial state of subscription
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -56,9 +56,9 @@ const Sidebar = ({ sidebar, setSidebar, page }) => {
 
   useEffect(() => {
     if (isVideoPage && sidebar) {
-      document.body.style.overflow = "hidden"; // Prevent scrolling when sidebar is open on video page
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto"; // Enable scrolling when sidebar is closed
+      document.body.style.overflow = "auto";
     }
   }, [isVideoPage, sidebar]);
 

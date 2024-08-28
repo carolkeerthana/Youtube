@@ -38,7 +38,7 @@ const Feelings = ({
           if (userFeeling === "dislike") setDislikes(dislikes - 1);
           setUserFeeling("like");
         } else {
-          console.error("Failed to update feelings:", response); // Log the actual response for debugging
+          console.error("Failed to update feelings:", response);
         }
       } catch (error) {
         console.error("Error updating feelings:", error);
@@ -61,7 +61,7 @@ const Feelings = ({
           if (userFeeling === "like") setLikes(likes - 1);
           setUserFeeling("dislike");
         } else {
-          console.error("Failed to update feelings:", response); // Log the actual response for debugging
+          console.error("Failed to update feelings:", response);
         }
       } catch (error) {
         console.error("Error updating feelings:", error);
