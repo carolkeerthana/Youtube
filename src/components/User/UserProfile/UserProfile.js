@@ -1,7 +1,7 @@
 import "./UserProfile.css";
 import { useAuth } from "../../../util/AuthContext";
 import { FaCog, FaSignOutAlt, FaUser } from "react-icons/fa";
-import { logoutUser } from "./LogoutApi";
+import { apiRequest } from "../../../util/Api";
 
 const UserProfile = ({ userInitialColor }) => {
   const { user, logout } = useAuth();
@@ -9,7 +9,11 @@ const UserProfile = ({ userInitialColor }) => {
 
   const handleLogout = async () => {
     try {
-      const response = await logoutUser();
+      const response = await apiRequest({
+        endpoint: "/auth/logout",
+        method: "POST",
+      });
+
       if (response.success) {
         logout(); // Call the logout function from context to handle local state and storage
       } else {

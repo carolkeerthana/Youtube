@@ -39,12 +39,12 @@ const Comments = ({ videoId }) => {
     // fetch comments fom GET Api
     const fetchCommentsData = async () => {
       try {
-        const response = await fetchComments(videoId);
+        const response = await fetchComments(videoId);  
         console.log("API response:", response);
         if ((response.success || response.sucess) && response.data) {
           const commentsWithChannel = response.data.map((comment) => ({
             ...comment,
-            channelName: comment.userId.channelName, // Adjust as per your API response structure
+            channelName: comment.userId.channelName,
           }));
           setComments(commentsWithChannel);
         } else {
@@ -67,7 +67,7 @@ const Comments = ({ videoId }) => {
         if (response.success) {
           const repliesWithChannel = response.data.map((reply) => ({
             ...reply,
-            channelName: reply.userId.channelName, // Adjust as per your API response structure
+            channelName: reply.userId.channelName,
           }));
           setReplies(repliesWithChannel);
         } else {
@@ -83,7 +83,6 @@ const Comments = ({ videoId }) => {
       }
     };
 
-    // Fetch comments and replies when component mounts or dependencies change
     fetchCommentsData();
     fetchRepliesData();
   }, [videoId, navigate]);
@@ -97,7 +96,7 @@ const Comments = ({ videoId }) => {
     console.log("New comment added:", newComment);
     const newCommentWithUser = {
       ...newComment,
-      userId: user, // Add the authenticated user information
+      userId: user,
     };
     setComments((prevComments) => [newCommentWithUser, ...prevComments]);
   };
@@ -121,12 +120,7 @@ const Comments = ({ videoId }) => {
   };
 
   useEffect(() => {
-    console.log("useEffect hook running");
     const handleClickOutside = (event) => {
-      console.log("Click event detected");
-
-      console.log("Event target:", event.target);
-      // Close comment dropdown if clicked outside
       if (
         commentDropdownIndex !== null &&
         dropdownRefs.current[commentDropdownIndex]
@@ -158,11 +152,9 @@ const Comments = ({ videoId }) => {
       }
     };
 
-    // Event listener setup on component mount
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      // Cleanup: remove event listener on component unmount
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [commentDropdownIndex, replies]);

@@ -9,11 +9,9 @@ import { useDispatch } from "react-redux";
 import { showNotification } from "../Notification/notificationSlice";
 
 const SearchHistory = ({ history, setHistory }) => {
-  // const [histories, setHistories] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  // const [notification, setNotification] = useState("");
   const dispatch = useDispatch();
 
   const fetchHistoryVideos = async (page) => {
@@ -75,7 +73,6 @@ const SearchHistory = ({ history, setHistory }) => {
       ) : (
         <p>No search history yet.</p>
       )}
-      {/* {notification && <div className="notification">{notification}</div>} */}
     </div>
   );
 };

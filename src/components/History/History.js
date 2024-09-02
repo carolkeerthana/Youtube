@@ -10,7 +10,6 @@ const History = () => {
   const [historyType, setHistoryType] = useState("watch");
   const [watchHistory, setWatchHistory] = useState([]);
   const [searchHistory, setSearchHistory] = useState([]);
-  // const [notification, setNotification] = useState("");
   const dispatch = useDispatch();
 
   const handleHistoryTypeChange = (event) => {
@@ -89,11 +88,6 @@ const History = () => {
           CLEAR ALL {historyType.toUpperCase()} HISTORY
         </span>
       </div>
-      {/* {notification && (
-        <div className="notification" data-testid="notify-delete">
-          {notification}
-        </div>
-      )} */}
     </div>
   );
 };

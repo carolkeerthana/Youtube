@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Trending.css";
-import { fetchVideos } from "../Feed/GetVideosApi";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { apiRequest } from "../../util/Api";
 
 const Trending = () => {
   const [videos, setVideos] = useState([]);
@@ -10,7 +10,10 @@ const Trending = () => {
 
   const fetchTrendingVideos = async () => {
     try {
-      const response = await fetchVideos();
+      const response = await apiRequest({
+        endpoint: "/videos/public",
+        method: "GET",
+      });
       console.log("API response:", response);
       if (response.success && Array.isArray(response.data)) {
         const sortedVideos = response.data.sort((a, b) => b.views - a.views);

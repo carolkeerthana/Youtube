@@ -8,18 +8,21 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../Notification/notificationSlice";
 import CustomNotification from "../Notification/CustomNotification";
+import { apiRequest } from "../../util/Api";
 
 const WatchHistory = ({ history, setHistory }) => {
-  // const [histories, setHistories] = useState([]);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  // const [notification, setNotification] = useState("");
   const dispatch = useDispatch();
 
   const fetchHistoryVideos = async (page) => {
     try {
-      const response = await fetchHistories(page, "watch");
+      const response = await apiRequest({
+        endpoint: "/histories?page=${page}&type=watch",
+        method: "GET",
+        auth: true,
+      });
       console.log("API response:", response);
       if (response.success && Array.isArray(response.data)) {
         setHistory(response.data);
@@ -34,19 +37,21 @@ const WatchHistory = ({ history, setHistory }) => {
     fetchHistoryVideos(currentPage);
   }, [currentPage]);
 
-  // const handlePageChange = (page) => {
-  //     setCurrentPage(page)
-  // }
-
   const handleDeleteHistory = async (historyId, event) => {
     event.stopPropagation();
     try {
-      const response = await deleteHistory(historyId);
+      const response = await apiRequest({
+        endpoint: "/histories/${historyId}",
+        method: "DELETE",
+        auth: true,
+      });
       if (response.success) {
         setHistory((prevHistories) =>
           prevHistories.filter((history) => history._id !== historyId)
         );
         dispatch(showNotification("History Deleted Successfully"));
+      } else {
+        console.error("Failed to delete history:", response.error);
       }
     } catch (error) {
       console.error("Error deleting history:", error);
@@ -92,15 +97,10 @@ const WatchHistory = ({ history, setHistory }) => {
               </div>
             </div>
           ))}
-          {/* <Pagination
-                  currentPage = {currentPage}
-                  totalPages = {totalPages}
-                  onPageChange={handlePageChange}/>     */}
         </>
       ) : (
         <p>No watch history yet.</p>
       )}
-      {/* {notification && <div className="notification">{notification}</div>} */}
       <CustomNotification />
     </div>
   );

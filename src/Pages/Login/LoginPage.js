@@ -7,6 +7,7 @@ import { useAuth } from "../../util/AuthContext";
 import FormInput from "../../util/FormInput";
 import validateAllFields from "../../util/ValidationForm";
 import { useDispatch, useSelector } from "react-redux";
+import { apiRequest } from "../../util/Api";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -80,7 +81,14 @@ function LoginPage() {
 
     if (validateForm()) {
       try {
-        const response = await loginUser({ email, password });
+        const response = await apiRequest({
+          endpoint: "/auth/user/login",
+          method: "POST",
+          body: {
+            email,
+            password,
+          },
+        });
         console.log(response);
         if (response.token) {
           localStorage.setItem("token", response.token);

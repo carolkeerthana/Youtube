@@ -4,6 +4,7 @@ import { useState } from "react";
 import { registerUser } from "./RegisterApi";
 import validateAllFields from "../../util/ValidationForm";
 import FormInput from "../../util/FormInput";
+import { apiRequest } from "../../util/Api";
 
 function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -71,11 +72,15 @@ function RegisterPage() {
 
     if (validateForm()) {
       try {
-        const response = await registerUser({
-          email,
-          channelName,
-          password,
-          confirmPassword,
+        const response = await apiRequest({
+          endpoint: "/auth/user/register",
+          method: "POST",
+          body: {
+            email,
+            channelName,
+            password,
+            confirmPassword,
+          },
         });
         localStorage.setItem("token", response.token);
         navigate("/signin");

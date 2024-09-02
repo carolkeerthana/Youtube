@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Subscriptions.css";
-import { fetchSubscriptions } from "./SubscriptionApi";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { apiRequest } from "../../util/Api";
 
 const Subscriptions = () => {
   const [subscriptions, setSubscriptions] = useState([]);
@@ -10,7 +10,11 @@ const Subscriptions = () => {
 
   const fetchSubscriptionVideos = async () => {
     try {
-      const response = await fetchSubscriptions();
+      const response = await apiRequest({
+        endpoint: "/subscriptions/videos",
+        method: "GET",
+        auth: true,
+      });
       console.log("API response:", response);
       if (response.success && Array.isArray(response.data)) {
         setSubscriptions(response.data);

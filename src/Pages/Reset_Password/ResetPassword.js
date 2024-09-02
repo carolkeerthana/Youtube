@@ -6,6 +6,7 @@ import validateAllFields from "../../util/ValidationForm";
 import FormInput from "../../util/FormInput";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../../components/Notification/notificationSlice";
+import { apiRequest } from "../../util/Api";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -63,7 +64,16 @@ const ResetPassword = () => {
     console.log("entered submit");
     if (validateForm()) {
       try {
-        const response = await resetPassword(token, password);
+        console.log("Token:", token);
+        console.log("Request payload:", { password });
+        const response = await apiRequest({
+          endpoint: `/auth/resetpassword/${token}`,
+          method: "PUT",
+          body: {
+            password,
+          },
+          auth: false,
+        });
 
         if (response.success) {
           console.log("entered success");

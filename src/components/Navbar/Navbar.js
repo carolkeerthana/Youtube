@@ -11,8 +11,8 @@ import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import { useAuth } from "../../util/AuthContext";
 import UserProfile from "../User/UserProfile/UserProfile";
 import { getRandomColor } from "../../util/Color";
-import { searchText } from "../Search/SearchApi";
 import { CreateHistory } from "../History/HistoryApi/CreateHistoryApi";
+import { apiRequest } from "../../util/Api";
 
 const Navbar = ({ setSidebar }) => {
   const location = useLocation();
@@ -51,17 +51,27 @@ const Navbar = ({ setSidebar }) => {
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      const results = await searchText({ text: searchInput });
+      const results = await apiRequest({
+        endpoint: "/search?limit=0",
+        method: "POST",
+        body: {
+          text: searchInput,
+        },
+      });
       if (results && results.data) {
         setSearchResults(results.data);
         navigate("/search-results", { state: { results: results.data } });
         console.log(results);
 
-        const historyData = {
-          searchText: searchInput,
-          type: "search",
-        };
-        const historyResponse = await CreateHistory(historyData);
+        const historyResponse = await apiRequest({
+          endpoint: "/histories",
+          method: "POST",
+          body: {
+            searchText: searchInput,
+            type: "search",
+          },
+          auth: true,
+        });
         console.log(historyResponse);
         setSearchInput("");
       }

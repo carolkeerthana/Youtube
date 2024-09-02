@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Feed.css";
-import { Link, useNavigate } from "react-router-dom";
-import { fetchVideos } from "./GetVideosApi";
+import { Link } from "react-router-dom";
+import { apiRequest } from "../../util/Api";
+import moment from "moment";
 
 const Feed = () => {
   const [data, setData] = useState([]);
@@ -10,7 +11,10 @@ const Feed = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchVideos();
+        const response = await apiRequest({
+          endpoint: "/videos/public",
+          method: "GET",
+        });
         console.log("API response:", response);
         if (response.success && Array.isArray(response.data)) {
           setData(response.data);
@@ -28,14 +32,6 @@ const Feed = () => {
     };
     fetchData();
   }, []);
-
-  const getDaysAgo = (dateString) => {
-    const createdAt = new Date(dateString); //creates date obj from createdAt
-    const now = new Date(); //creates date obj for the current date and tym
-    const differenceInTime = now - createdAt; //calculated in milliseconds
-    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24)); //divided by milliseconds in a day
-    return differenceInDays;
-  };
 
   return (
     <div className="feed">
@@ -59,7 +55,7 @@ const Feed = () => {
                   {item.userId.channelName}
                 </span>
                 <p>
-                  {item.views} views &bull; {getDaysAgo(item.createdAt)} day ago
+                  {item.views} views &bull; {moment(item.createdAt).fromNow()}
                 </p>
               </div>
             </div>

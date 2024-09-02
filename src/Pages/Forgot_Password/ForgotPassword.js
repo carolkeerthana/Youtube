@@ -5,6 +5,7 @@ import { forgotPasswordApi } from "./ForgotPasswordApi";
 import { Link, useNavigate } from "react-router-dom";
 import FormInput from "../../util/FormInput";
 import validateAllFields from "../../util/ValidationForm";
+import { apiRequest } from "../../util/Api";
 
 const ForgotPassword = () => {
   const [formData, setFormData] = useState({ email: "" });
@@ -42,7 +43,13 @@ const ForgotPassword = () => {
     if (Object.keys(errors).length > 0) return;
 
     try {
-      const response = await forgotPasswordApi(formData);
+      const response = await apiRequest({
+        endpoint: "/auth/forgotpassword",
+        method: "POST",
+        body: {
+          email: formData.email,
+        },
+      });
       console.log("res:", response);
 
       if (response.success === true) {

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import { getLikedVideos } from "./GetLikedVideosApi";
 import "./LikedVideos.css";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
+import { apiRequest } from "../../util/Api";
 
 const LikedVideos = () => {
   const [likedVideos, setLikedVideos] = useState([]);
@@ -10,7 +10,11 @@ const LikedVideos = () => {
 
   const fetchVideos = async () => {
     try {
-      const response = await getLikedVideos();
+      const response = await apiRequest({
+        endpoint: "/feelings/videos",
+        method: "GET",
+        auth: true,
+      });
       console.log("API response:", response);
       if (response.success && Array.isArray(response.data)) {
         setLikedVideos(response.data);
