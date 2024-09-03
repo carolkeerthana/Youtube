@@ -5,6 +5,7 @@ import dislike from "../../assets/dislike.png";
 import { updateFeelings } from "./FeelingsApi";
 import { useAuth } from "../../util/AuthContext";
 import SignInPopup from "./SignInPopup ";
+import { apiRequest } from "../../util/Api";
 
 const Feelings = ({
   videoId,
@@ -32,7 +33,15 @@ const Feelings = ({
 
     if (userFeeling !== "like") {
       try {
-        const response = await updateFeelings({ videoId, type: "like" });
+        const response = await apiRequest({
+          endpoint: "/feelings/",
+          method: "POST",
+          body: {
+            videoId,
+            type: "like",
+          },
+          auth: true,
+        });
         if (response && response.success) {
           setLikes(likes + 1);
           if (userFeeling === "dislike") setDislikes(dislikes - 1);
@@ -55,7 +64,15 @@ const Feelings = ({
 
     if (userFeeling !== "dislike") {
       try {
-        const response = await updateFeelings({ videoId, type: "dislike" });
+        const response = await apiRequest({
+          endpoint: "/feelings/",
+          method: "POST",
+          body: {
+            videoId,
+            type: "dislike",
+          },
+          auth: true,
+        });
         if (response.success) {
           setDislikes(dislikes + 1);
           if (userFeeling === "like") setLikes(likes - 1);

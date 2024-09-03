@@ -39,9 +39,10 @@ const WatchHistory = ({ history, setHistory }) => {
 
   const handleDeleteHistory = async (historyId, event) => {
     event.stopPropagation();
+
     try {
       const response = await apiRequest({
-        endpoint: "/histories/${historyId}",
+        endpoint: `/histories/${historyId}`,
         method: "DELETE",
         auth: true,
       });

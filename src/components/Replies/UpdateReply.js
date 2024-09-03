@@ -5,6 +5,7 @@ import userProfile from "../../assets/user_profile.jpg";
 import { useAuth } from "../../util/AuthContext";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 import { updateReplyApi } from "./Api/UpdateReplyApi";
+import { apiRequest } from "../../util/Api";
 
 const UpdateReply = ({
   replyId,
@@ -22,7 +23,11 @@ const UpdateReply = ({
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await fetchUserDetails();
+        const user = await apiRequest({
+          endpoint: "/auth/me",
+          method: "POST",
+          auth: true,
+        });
         setUserDetails(user);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
@@ -55,7 +60,13 @@ const UpdateReply = ({
     try {
       console.log({ text: editReply });
       console.log(replyId);
-      const response = await updateReplyApi({ text: editReply }, replyId);
+      const response = await apiRequest({
+        endpoint: `/replies/${replyId}`,
+        method: "PUT",
+        body: { text: editReply },
+        replyId,
+        auth: true,
+      });
       console.log(response);
       if ((response.success || response.sucess) && response.data) {
         const updatedReply = {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./CreateSubscriber.css";
 import SignInPopup from "../../Feelings/SignInPopup ";
 import { useAuth } from "../../../util/AuthContext";
-import { CreateSubscriberApi } from "./CreateSubscriberApi";
+import { apiRequest } from "../../../util/Api";
 
 const CreateSubscriber = ({ channelId, isSubscribed, setIsSubscribed }) => {
   const { isAuthenticated } = useAuth();
@@ -17,7 +17,12 @@ const CreateSubscriber = ({ channelId, isSubscribed, setIsSubscribed }) => {
       return;
     }
     try {
-      const response = await CreateSubscriberApi({ channelId });
+      const response = await apiRequest({
+        endpoint: "/subscriptions",
+        method: "POST",
+        body: channelId,
+        auth: true,
+      });
       console.log("API response:", response);
       if (response.success) {
         setIsSubscribed(!isSubscribed);

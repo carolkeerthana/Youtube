@@ -1,12 +1,11 @@
-import { fetchHistories } from "./HistoryApi/GetHistoryApi";
 import "./History.css";
 import "./SearchHistory.css";
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import closeIcon from "../../assets/close.png";
-import { deleteHistory } from "./HistoryApi/DeleteHistoryApi";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../Notification/notificationSlice";
+import { apiRequest } from "../../util/Api";
 
 const SearchHistory = ({ history, setHistory }) => {
   const [error, setError] = useState("");
@@ -16,7 +15,11 @@ const SearchHistory = ({ history, setHistory }) => {
 
   const fetchHistoryVideos = async (page) => {
     try {
-      const response = await fetchHistories(page, "search");
+      const response = await apiRequest({
+        endpoint: `/histories?page=${page}&type=search`,
+        method: "GET",
+        auth: true,
+      });
       console.log("API response:", response);
       if (response.success && Array.isArray(response.data)) {
         setHistory(response.data);
@@ -33,7 +36,11 @@ const SearchHistory = ({ history, setHistory }) => {
 
   const handleDeleteHistory = async (historyId) => {
     try {
-      const response = await deleteHistory(historyId);
+      const response = await apiRequest({
+        endpoint: `/histories/${historyId}`,
+        method: "DELETE",
+        auth: true,
+      });
       if (response.success) {
         setHistory((prevHistories) =>
           prevHistories.filter((history) => history._id !== historyId)

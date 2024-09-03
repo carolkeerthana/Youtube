@@ -15,6 +15,7 @@ import CreateReply from "../Replies/CreateReply";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import UpdateReply from "../Replies/UpdateReply";
 import { deleteReply } from "../Replies/Api/DeleteReplyApi";
+import { apiRequest } from "../../util/Api";
 
 const Comments = ({ videoId }) => {
   const [comments, setComments] = useState([]);
@@ -39,7 +40,10 @@ const Comments = ({ videoId }) => {
     // fetch comments fom GET Api
     const fetchCommentsData = async () => {
       try {
-        const response = await fetchComments(videoId);  
+        const response = await apiRequest({
+          endpoint: `/comments/${videoId}/videos`,
+          method: "GET",
+        });
         console.log("API response:", response);
         if ((response.success || response.sucess) && response.data) {
           const commentsWithChannel = response.data.map((comment) => ({
@@ -62,7 +66,10 @@ const Comments = ({ videoId }) => {
     // fetch replies fom GET Api
     const fetchRepliesData = async () => {
       try {
-        const response = await getReplies();
+        const response = await apiRequest({
+          endpoint: `/replies/`,
+          method: "GET",
+        });
         console.log("reply :", response);
         if (response.success) {
           const repliesWithChannel = response.data.map((reply) => ({
@@ -166,7 +173,11 @@ const Comments = ({ videoId }) => {
     //     return;
     // }
     try {
-      const response = await deleteCommentApi(commentId);
+      const response = await apiRequest({
+        endpoint: `/comments/${commentId}`,
+        method: "DELETE",
+        auth: true,
+      });
       if (response.success) {
         // Remove the deleted comment from state
         setComments((prevComments) =>
@@ -219,7 +230,11 @@ const Comments = ({ videoId }) => {
     //   return;
     // }
     try {
-      const response = await deleteReply(replyId);
+      const response = await apiRequest({
+        endpoint: `/replies/${replyId}`,
+        method: "DELETE",
+        auth: true,
+      });
       if (response.success) {
         setReplies((prevReplies) =>
           prevReplies.filter((reply) => reply.id !== replyId)
@@ -327,12 +342,6 @@ const Comments = ({ videoId }) => {
   //     }));
   // };
 
-  console.log("auth:", isAuthenticated);
-  console.log("user:", user);
-  console.log("comment.userId", comments.userId);
-  console.log("replyDropdownIndex:", replyDropdownIndex);
-  console.log("replyIndex:", replies);
-  console.log("comments", comments);
   return (
     <div>
       <h4>{comments.length} Comments</h4>

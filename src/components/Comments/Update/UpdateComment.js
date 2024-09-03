@@ -1,10 +1,8 @@
 import "./UpdateComment.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import userProfile from "../../../assets/user_profile.jpg";
 import { useAuth } from "../../../util/AuthContext";
-import { fetchUserDetails } from "../../User/UserProfile/UserDetailsApi";
-import { updateComment, updateCommentApi } from "../Apis/UpdateCommentApi";
+import { apiRequest } from "../../../util/Api";
 
 const UpdateComment = ({
   commentId,
@@ -22,8 +20,12 @@ const UpdateComment = ({
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await fetchUserDetails();
-        setUserDetails(user);
+        const user = await apiRequest({
+          endpoint: "/auth/me",
+          method: "POST",
+          auth: true,
+        });
+        setUserDetails(user.data);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
       }
@@ -56,7 +58,13 @@ const UpdateComment = ({
     try {
       console.log({ text: editComment });
       console.log(commentId);
-      const response = await updateCommentApi({ text: editComment }, commentId);
+      const response = await apiRequest({
+        endpoint: `/comments/${commentId}`,
+        method: "PUT",
+        body: { text: editComment },
+        commentId,
+        auth: true,
+      });
       if ((response.success || response.sucess) && response.data) {
         console.log("update comment:", response.data);
         updateCommentAdded(response.data);

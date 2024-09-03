@@ -11,6 +11,7 @@ import CreateSubscriber from "../Subscriptions/CreateSubscriber/CreateSubscriber
 import { checkSubscription } from "../Subscriptions/CheckSubscriptionApi";
 import { fetchVideosById } from "./GetVideoApi";
 import { CreateHistory } from "../History/HistoryApi/CreateHistoryApi";
+import { apiRequest } from "../../util/Api";
 
 const PlayVideo = ({ videoId }) => {
   const [videoData, setVideoData] = useState(null);
@@ -21,7 +22,10 @@ const PlayVideo = ({ videoId }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetchVideosById(videoId);
+        const response = await apiRequest({
+          endpoint: `/videos/${videoId}`,
+          method: "GET",
+        });
         console.log("API response:", response);
 
         if ((response.success || response.sucess) && response.data) {
@@ -30,18 +34,28 @@ const PlayVideo = ({ videoId }) => {
 
           // Check subscription status
           const channelId = { channelId: response.data.userId.id };
-          const subscriptionResponse = await checkSubscription(channelId);
+          const subscriptionResponse = await apiRequest({
+            endpoint: `/subscriptions/check`,
+            method: "POST",
+            body: channelId,
+            auth: true,
+          });
           console.log("Subscription response:", subscriptionResponse);
 
-          if (
-            (subscriptionResponse.success || subscriptionResponse.sucess) &&
-            subscriptionResponse.data &&
-            subscriptionResponse.data._id
-          ) {
-            setIsSubscribed(true);
+          if (subscriptionResponse.success) {
+            if (
+              subscriptionResponse.data &&
+              Object.keys(subscriptionResponse.data).length > 0
+            ) {
+              setIsSubscribed(true);
+            } else {
+              setIsSubscribed(false);
+            }
           } else {
-            setIsSubscribed(false);
-            console.error("Subscription check failed:", subscriptionResponse);
+            console.error(
+              "Failed to check subscription:",
+              subscriptionResponse
+            );
           }
 
           // Create history
@@ -49,7 +63,15 @@ const PlayVideo = ({ videoId }) => {
             type: "watch",
             videoId: videoId,
           };
-          const historyResponse = await CreateHistory(historiesData);
+          const historyResponse = await apiRequest({
+            endpoint: "/histories",
+            method: "POST",
+            body: {
+              type: "watch",
+              videoId: videoId,
+            },
+            auth: true,
+          });
           console.log("History response:", historyResponse);
           if (!(historyResponse.success || historyResponse.sucess)) {
             console.error("Failed to create history:", historyResponse);
@@ -69,7 +91,12 @@ const PlayVideo = ({ videoId }) => {
     fetchData();
 
     // Check user feelings
-    checkFeeling({ videoId: videoId }).then((response) => {
+    apiRequest({
+      endpoint: `/feelings/check`,
+      method: "POST",
+      body: { videoId: videoId },
+      auth: true,
+    }).then((response) => {
       console.log("User feelings:", response);
       if (response.success || response.sucess) {
         setUserFeeling(response.data.feeling);

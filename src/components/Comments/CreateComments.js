@@ -5,6 +5,7 @@ import userProfile from "../../assets/user_profile.jpg";
 import { useAuth } from "../../util/AuthContext";
 import { createCommentsApi } from "./Apis/CreateCommentsApi";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
+import { apiRequest } from "../../util/Api";
 
 const CreateComments = ({ videoId, onCommentAdded }) => {
   console.log("CreateComments component rendered");
@@ -24,9 +25,13 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await fetchUserDetails();
+        const user = await apiRequest({
+          endpoint: "/auth/me",
+          method: "POST",
+          auth: true,
+        });
         console.log("Fetched user details:", user);
-        setUserDetails(user);
+        setUserDetails(user.data);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
       }
@@ -65,13 +70,19 @@ const CreateComments = ({ videoId, onCommentAdded }) => {
     };
 
     try {
-      const response = await createCommentsApi(commentsData);
+      const response = await apiRequest({
+        endpoint: `/comments/`,
+        method: "POST",
+        body: commentsData,
+        auth: true,
+      });
       console.log("create comments", response);
       if ((response.success || response.sucess) && response.data) {
         const commentWithChannel = {
           ...response.data,
           channelName: userDetails.channelName,
         };
+        console.log("channelName: ", userDetails.channelName);
         onCommentAdded(commentWithChannel);
 
         setNewComment("");

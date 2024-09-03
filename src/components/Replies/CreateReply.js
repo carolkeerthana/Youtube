@@ -5,6 +5,7 @@ import { useAuth } from "../../util/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { createReplyApi } from "./Api/CreateReplyApi";
 import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
+import { apiRequest } from "../../util/Api";
 
 const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
   console.log("entered create reply");
@@ -19,9 +20,13 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
     const fetchUserData = async () => {
       try {
         console.log("Attempting to fetch user details...");
-        const user = await fetchUserDetails();
+        const user = await apiRequest({
+          endpoint: "/auth/me",
+          method: "POST",
+          auth: true,
+        });
         console.log("Fetched reply user details:", user);
-        setUserDetails(user);
+        setUserDetails(user.data);
       } catch (error) {
         console.error("Failed to fetch user details:", error);
       }
@@ -61,7 +66,12 @@ const CreateReply = forwardRef(({ commentId, onReplyAdded, onCancel }, ref) => {
     console.log(replyData);
 
     try {
-      const response = await createReplyApi(replyData);
+      const response = await apiRequest({
+        endpoint: `/replies/`,
+        method: "POST",
+        body: replyData,
+        auth: true,
+      });
       if ((response.success || response.sucess) && response.data) {
         const replyWithChannel = {
           ...response.data,

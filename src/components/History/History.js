@@ -2,9 +2,9 @@ import "./History.css";
 import React, { useState } from "react";
 import WatchHistory from "./WatchHistory";
 import SearchHistory from "./SearchHistory";
-import { deleteAllHistory } from "./HistoryApi/DeleteHistoriesApi";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../Notification/notificationSlice";
+import { apiRequest } from "../../util/Api";
 
 const History = () => {
   const [historyType, setHistoryType] = useState("watch");
@@ -18,7 +18,11 @@ const History = () => {
 
   const handleClearHistories = async () => {
     try {
-      const response = await deleteAllHistory(historyType);
+      const response = await apiRequest({
+        endpoint: `/histories/${historyType}/all`,
+        method: "DELETE",
+        auth: true,
+      });
       if (response.success) {
         const historyTypeInUppercase =
           historyType.charAt(0).toUpperCase() + historyType.substring(1);
