@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userProfile from "../../assets/user_profile.jpg";
 import { useAuth } from "../../util/AuthContext";
-import { createCommentsApi } from "./Apis/CreateCommentsApi";
-import { fetchUserDetails } from "../User/UserProfile/UserDetailsApi";
 import { apiRequest } from "../../util/Api";
 
 const CreateComments = ({ videoId, onCommentAdded }) => {

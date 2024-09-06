@@ -95,6 +95,7 @@ a.specific-link {
 }
 .side-link p {
   color: black;
+  font-size: 14px;
   /* word-break: break-word; */
 }
 .side-link.active {

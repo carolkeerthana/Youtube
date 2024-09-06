@@ -32,7 +32,18 @@ const UserProfile = ({ userInitialColor }) => {
             className="user-initial"
             style={{ backgroundColor: userInitialColor }}
           >
-            {user.channelName.charAt(0)}
+            {user.channelName.charAt
+            
+            
+            
+            
+
+            
+
+            
+            
+            
+            (0)}
           </div>
         ) : (
           user && (

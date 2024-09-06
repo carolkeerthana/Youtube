@@ -1,6 +1,12 @@
 const API_BASE_URL = "https://apps.rubaktechie.me/api/v1";
 
-export const apiRequest = async ({ endpoint, method = "GET", headers = {}, body = null, auth = false }) => {
+export const apiRequest = async ({
+  endpoint,
+  method = "GET",
+  headers = {},
+  body = null,
+  auth = false,
+}) => {
   try {
     if (auth) {
       const token = localStorage.getItem("token");
@@ -34,10 +40,7 @@ export const apiRequest = async ({ endpoint, method = "GET", headers = {}, body 
     const responseData = await response.json();
     console.log("Server responded with success:", responseData);
     return responseData;
-    
-
   } catch (error) {
-
     console.error("Error during API request:", error.message);
     throw error;
   }

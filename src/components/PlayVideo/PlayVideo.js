@@ -29,6 +29,7 @@ const PlayVideo = ({ videoId }) => {
         console.log("API response:", response);
 
         if ((response.success || response.sucess) && response.data) {
+          localStorage.setItem("token", response.data.token);
           console.log("response.data", response.data);
           setVideoData(response.data);
 
@@ -43,6 +44,7 @@ const PlayVideo = ({ videoId }) => {
           console.log("Subscription response:", subscriptionResponse);
 
           if (subscriptionResponse.success) {
+            localStorage.setItem("token", response.data.token);
             if (
               subscriptionResponse.data &&
               Object.keys(subscriptionResponse.data).length > 0
@@ -72,6 +74,7 @@ const PlayVideo = ({ videoId }) => {
             },
             auth: true,
           });
+          localStorage.setItem("token", response.data.token);
           console.log("History response:", historyResponse);
           if (!(historyResponse.success || historyResponse.sucess)) {
             console.error("Failed to create history:", historyResponse);
@@ -99,6 +102,7 @@ const PlayVideo = ({ videoId }) => {
     }).then((response) => {
       console.log("User feelings:", response);
       if (response.success || response.sucess) {
+        localStorage.setItem("token", response.data.token);
         setUserFeeling(response.data.feeling);
       } else {
         console.error("Failed to check feelings:", response);

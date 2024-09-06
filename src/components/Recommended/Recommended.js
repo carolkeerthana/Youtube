@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Recommended.css";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { fetchVideos } from "../Feed/GetVideosApi";
+import { apiRequest } from "../../util/Api";
 
 const Recommended = ({ videoId }) => {
   const [data, setData] = useState([]);
@@ -10,7 +10,10 @@ const Recommended = ({ videoId }) => {
 
   const fetchData = async () => {
     try {
-      const response = await fetchVideos();
+      const response = await apiRequest({
+        endpoint: "/videos/public",
+        method: "GET",
+      });
       console.log("recommended API response:", response);
       if (response.success && Array.isArray(response.data)) {
         setData(response.data);
